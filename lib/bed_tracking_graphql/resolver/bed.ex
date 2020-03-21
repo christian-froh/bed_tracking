@@ -7,4 +7,10 @@ defmodule BedTrackingGraphql.Resolver.Bed do
       {:ok, %{bed: bed}}
     end
   end
+
+  def get(%{input: %{id: id}}, _info) do
+    with {:ok, bed} <- Context.Bed.get(id) do
+      {:ok, %{bed: bed}}
+    end
+  end
 end

@@ -16,9 +16,25 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
+  object :get_bed_payload do
+    field :bed, :bed
+  end
+
   ### INPUTS ###
   input_object :register_bed_input do
     field(:hospital_id, :id)
+  end
+
+  input_object :get_bed_input do
+    field(:id, :id)
+  end
+
+  ### QUERIES ###
+  object :bed_queries do
+    field :get_bed, :get_bed_payload do
+      arg(:input, non_null(:get_bed_input))
+      resolve(&Resolver.Bed.get/2)
+    end
   end
 
   ### MUTATIONS ###

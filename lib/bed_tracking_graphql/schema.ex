@@ -14,6 +14,7 @@ defmodule BedTrackingGraphql.Schema do
   query do
     import_fields(:error_queries)
     import_fields(:hospital_queries)
+    import_fields(:bed_queries)
   end
 
   mutation do
