@@ -3,6 +3,7 @@ defmodule BedTracking.Repo.Facility do
   alias BedTracking.Repo.Hospital
 
   schema "facilities" do
+    field(:name, :string)
     field(:available, :boolean)
 
     belongs_to(:hospital, Hospital)

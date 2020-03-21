@@ -4,6 +4,7 @@ defmodule BedTrackingGraphql.Schema.Facility do
   ### OBJECTS ###
   object :facility do
     field(:id, non_null(:id))
+    field(:name, non_null(:string))
     field(:available, non_null(:boolean))
 
     field :hospital, non_null(:hospital) do

@@ -1,5 +1,6 @@
 defmodule BedTrackingGraphql.Middlewares.ErrorHandler do
   require ExErrors
+  require Logger
   @behaviour Absinthe.Middleware
   alias BedTracking.Error
 
@@ -41,14 +42,16 @@ defmodule BedTrackingGraphql.Middlewares.ErrorHandler do
   end
 
   defp process_error(error) do
-    {_, stacktrace} = Process.info(self(), :current_stacktrace)
+    # {_, stacktrace} = Process.info(self(), :current_stacktrace)
     error = %Error.UnhandledError{unhandled_error: error}
     error = replace_graphql_keys(error)
 
-    Sentry.capture_message("Unhandled Error: #{inspect(error.unhandledError)}",
-      extra: %{error: inspect(error, pretty: true)},
-      stacktrace: stacktrace
-    )
+    Logger.warn("Unhandled Error: #{inspect(error.unhandledError)}")
+
+    # Sentry.capture_message("Unhandled Error: #{inspect(error.unhandledError)}",
+    #   extra: %{error: inspect(error, pretty: true)},
+    #   stacktrace: stacktrace
+    # )
 
     error
   end

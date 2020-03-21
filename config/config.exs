@@ -11,6 +11,11 @@ config :bed_tracking,
   ecto_repos: [BedTracking.Repo],
   generators: [binary_id: true]
 
+config :cors_plug,
+  origin: ["*"],
+  max_age: 1_728_000,
+  methods: ["GET", "POST"]
+
 # Configures the endpoint
 config :bed_tracking, BedTrackingWeb.Endpoint,
   url: [host: "localhost"],
