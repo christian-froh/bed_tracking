@@ -1,4 +1,27 @@
 defmodule BedTracking.Context.Hospital do
-  def list(), do: BedTracking.Context.Hospital.List.call()
-  def get(hospital_id), do: BedTracking.Context.Hospital.Get.call(hospital_id)
+  alias BedTracking.Context
+  alias BedTracking.Error
+  alias BedTracking.Repo
+  alias BedTracking.Repo.Hospital
+
+  def list() do
+    hospitals =
+      Hospital
+      |> Repo.all()
+
+    {:ok, hospitals}
+  end
+
+  def get(hospital_id) do
+    Hospital
+    |> Context.Hospital.Query.where_id(hospital_id)
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, %Error.NotFoundError{fields: %{id: hospital_id}, type: "Hospital"}}
+
+      hospital ->
+        {:ok, hospital}
+    end
+  end
 end

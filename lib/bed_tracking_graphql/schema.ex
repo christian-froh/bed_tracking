@@ -16,6 +16,10 @@ defmodule BedTrackingGraphql.Schema do
     import_fields(:hospital_queries)
   end
 
+  mutation do
+    import_fields(:bed_mutations)
+  end
+
   def context(ctx) do
     loader =
       Dataloader.new()
