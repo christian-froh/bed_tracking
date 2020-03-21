@@ -22,4 +22,14 @@ defmodule BedTracking.Repo.Bed do
       :hospital_id
     ])
   end
+
+  def update_availability_changeset(struct, params) do
+    struct
+    |> cast(params, [
+      :available
+    ])
+    |> validate_required([
+      :available
+    ])
+  end
 end

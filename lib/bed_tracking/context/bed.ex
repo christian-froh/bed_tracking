@@ -4,24 +4,23 @@ defmodule BedTracking.Context.Bed do
   alias BedTracking.Repo
   alias BedTracking.Repo.Bed
 
-  def register(hospital_id) do
-    with {:ok, bed} <- create_bed(hospital_id) do
-      {:ok, bed}
-    end
-  end
-
   def get(id) do
     with {:ok, bed} <- get_bed(id) do
       {:ok, bed}
     end
   end
 
-  defp create_bed(hospital_id) do
-    params = %{available: true, hospital_id: hospital_id}
+  def register(hospital_id) do
+    with {:ok, bed} <- create_bed(hospital_id) do
+      {:ok, bed}
+    end
+  end
 
-    %Bed{}
-    |> Bed.create_changeset(params)
-    |> Repo.insert()
+  def update_availability(id, available) do
+    with {:ok, bed} <- get_bed(id),
+         {:ok, updated_bed} <- update_bed(bed, available) do
+      {:ok, updated_bed}
+    end
   end
 
   defp get_bed(id) do
@@ -35,5 +34,21 @@ defmodule BedTracking.Context.Bed do
       bed ->
         {:ok, bed}
     end
+  end
+
+  defp create_bed(hospital_id) do
+    params = %{available: true, hospital_id: hospital_id}
+
+    %Bed{}
+    |> Bed.create_changeset(params)
+    |> Repo.insert()
+  end
+
+  defp update_bed(bed, available) do
+    params = %{available: available}
+
+    bed
+    |> Bed.update_availability_changeset(params)
+    |> Repo.update()
   end
 end
