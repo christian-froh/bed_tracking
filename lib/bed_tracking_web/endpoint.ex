@@ -40,5 +40,7 @@ defmodule BedTrackingWeb.Endpoint do
     key: "_bed_tracking_key",
     signing_salt: "yzfQ2hLi"
 
+  plug CORSPlug
+
   plug BedTrackingWeb.Router
 end
