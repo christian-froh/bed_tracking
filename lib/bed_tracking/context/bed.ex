@@ -92,7 +92,7 @@ defmodule BedTracking.Context.Bed do
 
       BedTracking.Repo.insert_all(Bed, available_beds)
 
-      if number_of_beds > available_beds do
+      if number_of_beds >= available_beds do
         not_available_beds =
           1..(number_of_beds - length(available_beds))
           |> Enum.map(fn _number ->
