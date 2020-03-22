@@ -141,7 +141,7 @@ defmodule BedTracking.Context.Bed do
       |> Context.Bed.Query.count()
       |> Repo.one()
 
-    if number_of_available_beds < current_total_beds do
+    if number_of_available_beds <= current_total_beds do
       BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
 
       available_beds =
@@ -152,13 +152,15 @@ defmodule BedTracking.Context.Bed do
 
       BedTracking.Repo.insert_all(Bed, available_beds)
 
-      not_available_beds =
-        1..(current_total_beds - length(available_beds))
-        |> Enum.map(fn _number ->
-          %{available: false, hospital_id: hospital_id, inserted_at: now, updated_at: now}
-        end)
+      if number_of_available_beds != current_total_beds do
+        not_available_beds =
+          1..(current_total_beds - length(available_beds))
+          |> Enum.map(fn _number ->
+            %{available: false, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+          end)
 
-      BedTracking.Repo.insert_all(Bed, not_available_beds)
+        BedTracking.Repo.insert_all(Bed, not_available_beds)
+      end
     end
 
     {:ok, true}
