@@ -19,4 +19,23 @@ defmodule BedTrackingGraphql.Resolver.Bed do
       {:ok, %{bed: bed}}
     end
   end
+
+  def update_number_of_beds(
+        %{input: %{hospital_id: hospital_id, number_of_beds: number_of_beds}},
+        _info
+      ) do
+    with {:ok, success} <- Context.Bed.update_number_of_beds(hospital_id, number_of_beds) do
+      {:ok, %{success: success}}
+    end
+  end
+
+  def update_number_of_available_beds(
+        %{input: %{hospital_id: hospital_id, number_of_available_beds: number_of_available_beds}},
+        _info
+      ) do
+    with {:ok, success} <-
+           Context.Bed.update_number_of_available_beds(hospital_id, number_of_available_beds) do
+      {:ok, %{success: success}}
+    end
+  end
 end

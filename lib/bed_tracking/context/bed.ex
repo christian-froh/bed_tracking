@@ -23,6 +23,18 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
+  def update_number_of_beds(hospital_id, number_of_beds) do
+    with {:ok, true} <- update_number_of_bed(hospital_id, number_of_beds) do
+      {:ok, true}
+    end
+  end
+
+  def update_number_of_available_beds(hospital_id, number_of_available_beds) do
+    with {:ok, true} <- update_number_of_available_bed(hospital_id, number_of_available_beds) do
+      {:ok, true}
+    end
+  end
+
   defp get_bed(id) do
     Bed
     |> Context.Bed.Query.where_id(id)
@@ -50,5 +62,13 @@ defmodule BedTracking.Context.Bed do
     bed
     |> Bed.update_availability_changeset(params)
     |> Repo.update()
+  end
+
+  defp update_number_of_bed(hospital_id, number_of_beds) do
+    {:ok, true}
+  end
+
+  defp update_number_of_available_bed(hospital_id, number_of_beds) do
+    {:ok, true}
   end
 end
