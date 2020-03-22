@@ -85,7 +85,7 @@ defmodule BedTracking.Context.Bed do
 
     if number_of_beds > current_total_beds do
       available_beds =
-        1..(number_of_available_beds + (number_of_beds - current_total_beds))
+        1..number_of_available_beds
         |> Enum.map(fn _number ->
           %{available: true, hospital_id: hospital_id, inserted_at: now, updated_at: now}
         end)
@@ -138,13 +138,6 @@ defmodule BedTracking.Context.Bed do
     current_total_beds =
       Bed
       |> Context.Bed.Query.where_hospital_id(hospital_id)
-      |> Context.Bed.Query.count()
-      |> Repo.one()
-
-    current_number_of_available_beds =
-      Bed
-      |> Context.Bed.Query.where_hospital_id(hospital_id)
-      |> Context.Bed.Query.where_available()
       |> Context.Bed.Query.count()
       |> Repo.one()
 
