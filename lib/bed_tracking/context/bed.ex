@@ -141,7 +141,7 @@ defmodule BedTracking.Context.Bed do
       |> Context.Bed.Query.count()
       |> Repo.one()
 
-    if number_of_available_beds < current_total_beds do
+    if number_of_available_beds <= current_total_beds do
       BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
 
       available_beds =
