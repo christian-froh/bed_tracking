@@ -8,9 +8,19 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.hospital_id == ^id
   end
 
+  def where_active(query) do
+    from b in query,
+      where: b.active == true
+  end
+
   def where_available(query) do
     from b in query,
       where: b.available == true
+  end
+
+  def where_not_available(query) do
+    from b in query,
+      where: b.available == false
   end
 
   def count(query) do

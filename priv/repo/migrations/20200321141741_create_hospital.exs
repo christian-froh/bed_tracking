@@ -14,7 +14,7 @@ defmodule BedTracking.Repo.Migrations.CreateHospital do
 
     create table(:beds, primary_key: false) do
       add(:id, :uuid, primary_key: true)
-      add(:available, :boolean)
+      add(:available, :boolean, default: true)
       add(:hospital_id, references(:hospitals, type: :uuid))
 
       timestamps(type: :utc_datetime)
@@ -22,7 +22,7 @@ defmodule BedTracking.Repo.Migrations.CreateHospital do
 
     create table(:facilities, primary_key: false) do
       add(:id, :uuid, primary_key: true)
-      add(:available, :boolean)
+      add(:available, :boolean, default: true)
       add(:hospital_id, references(:hospitals, type: :uuid))
 
       timestamps(type: :utc_datetime)

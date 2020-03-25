@@ -16,6 +16,14 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
+  object :activate_bed_payload do
+    field :bed, :bed
+  end
+
+  object :deactivate_bed_payload do
+    field :bed, :bed
+  end
+
   object :get_bed_payload do
     field :bed, :bed
   end
@@ -35,6 +43,15 @@ defmodule BedTrackingGraphql.Schema.Bed do
   ### INPUTS ###
   input_object :register_bed_input do
     field(:hospital_id, non_null(:id))
+  end
+
+  input_object :activate_bed_input do
+    field(:id, non_null(:id))
+    field(:reference, non_null(:string))
+  end
+
+  input_object :deactivate_bed_input do
+    field(:id, non_null(:id))
   end
 
   input_object :get_bed_input do
@@ -69,6 +86,16 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :register_bed, type: :register_bed_payload do
       arg(:input, non_null(:register_bed_input))
       resolve(&Resolver.Bed.register/2)
+    end
+
+    field :activate_bed, type: :activate_bed_payload do
+      arg(:input, non_null(:activate_bed_input))
+      resolve(&Resolver.Bed.activate/2)
+    end
+
+    field :deactivate_bed, type: :deactivate_bed_payload do
+      arg(:input, non_null(:deactivate_bed_input))
+      resolve(&Resolver.Bed.deactivate/2)
     end
 
     field :update_bed_availability, type: :update_bed_availability_payload do

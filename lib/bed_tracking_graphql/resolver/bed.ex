@@ -14,6 +14,18 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
+  def activate(%{input: %{id: id, reference: reference}}, _info) do
+    with {:ok, bed} <- Context.Bed.activate(id, reference) do
+      {:ok, %{bed: bed}}
+    end
+  end
+
+  def deactivate(%{input: %{id: id}}, _info) do
+    with {:ok, bed} <- Context.Bed.deactivate(id) do
+      {:ok, %{bed: bed}}
+    end
+  end
+
   def update_availability(%{input: %{id: id, available: available}}, _info) do
     with {:ok, bed} <- Context.Bed.update_availability(id, available) do
       {:ok, %{bed: bed}}

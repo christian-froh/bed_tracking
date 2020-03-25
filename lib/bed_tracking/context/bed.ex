@@ -17,6 +17,20 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
+  def activate(id, reference) do
+    with {:ok, bed} <- get_bed(id),
+         {:ok, updated_bed} <- activate_bed(bed, reference) do
+      {:ok, updated_bed}
+    end
+  end
+
+  def deactivate(id) do
+    with {:ok, bed} <- get_bed(id),
+         {:ok, updated_bed} <- deactivate_bed(bed) do
+      {:ok, updated_bed}
+    end
+  end
+
   def update_availability(id, available) do
     with {:ok, bed} <- get_bed(id),
          {:ok, updated_bed} <- update_bed(bed, available) do
@@ -50,11 +64,27 @@ defmodule BedTracking.Context.Bed do
   end
 
   defp create_bed(hospital_id) do
-    params = %{available: true, hospital_id: hospital_id}
+    params = %{available: true, active: false, hospital_id: hospital_id}
 
     %Bed{}
     |> Bed.create_changeset(params)
     |> Repo.insert()
+  end
+
+  defp activate_bed(bed, reference) do
+    params = %{active: true, reference: reference}
+
+    bed
+    |> Bed.activate_changeset(params)
+    |> Repo.update()
+  end
+
+  defp deactivate_bed(bed) do
+    params = %{active: false}
+
+    bed
+    |> Bed.deactivate_changeset(params)
+    |> Repo.update()
   end
 
   defp update_bed(bed, available) do
@@ -87,7 +117,14 @@ defmodule BedTracking.Context.Bed do
       available_beds =
         1..number_of_available_beds
         |> Enum.map(fn _number ->
-          %{available: true, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+          %{
+            available: true,
+            active: true,
+            reference: Ecto.UUID.generate(),
+            hospital_id: hospital_id,
+            inserted_at: now,
+            updated_at: now
+          }
         end)
 
       BedTracking.Repo.insert_all(Bed, available_beds)
@@ -96,7 +133,14 @@ defmodule BedTracking.Context.Bed do
         not_available_beds =
           1..(number_of_beds - length(available_beds))
           |> Enum.map(fn _number ->
-            %{available: false, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+            %{
+              available: false,
+              active: true,
+              reference: Ecto.UUID.generate(),
+              hospital_id: hospital_id,
+              inserted_at: now,
+              updated_at: now
+            }
           end)
 
         BedTracking.Repo.insert_all(Bed, not_available_beds)
@@ -106,7 +150,14 @@ defmodule BedTracking.Context.Bed do
         available_beds =
           1..number_of_available_beds
           |> Enum.map(fn _number ->
-            %{available: true, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+            %{
+              available: true,
+              active: true,
+              reference: Ecto.UUID.generate(),
+              hospital_id: hospital_id,
+              inserted_at: now,
+              updated_at: now
+            }
           end)
 
         BedTracking.Repo.insert_all(Bed, available_beds)
@@ -114,7 +165,14 @@ defmodule BedTracking.Context.Bed do
         not_available_beds =
           1..(number_of_beds - length(available_beds))
           |> Enum.map(fn _number ->
-            %{available: false, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+            %{
+              available: false,
+              active: true,
+              reference: Ecto.UUID.generate(),
+              hospital_id: hospital_id,
+              inserted_at: now,
+              updated_at: now
+            }
           end)
 
         BedTracking.Repo.insert_all(Bed, not_available_beds)
@@ -122,7 +180,14 @@ defmodule BedTracking.Context.Bed do
         available_beds =
           1..number_of_beds
           |> Enum.map(fn _number ->
-            %{available: true, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+            %{
+              available: true,
+              active: true,
+              reference: Ecto.UUID.generate(),
+              hospital_id: hospital_id,
+              inserted_at: now,
+              updated_at: now
+            }
           end)
 
         BedTracking.Repo.insert_all(Bed, available_beds)
@@ -147,7 +212,14 @@ defmodule BedTracking.Context.Bed do
       available_beds =
         1..number_of_available_beds
         |> Enum.map(fn _number ->
-          %{available: true, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+          %{
+            available: true,
+            active: true,
+            reference: Ecto.UUID.generate(),
+            hospital_id: hospital_id,
+            inserted_at: now,
+            updated_at: now
+          }
         end)
 
       BedTracking.Repo.insert_all(Bed, available_beds)
@@ -156,7 +228,14 @@ defmodule BedTracking.Context.Bed do
         not_available_beds =
           1..(current_total_beds - length(available_beds))
           |> Enum.map(fn _number ->
-            %{available: false, hospital_id: hospital_id, inserted_at: now, updated_at: now}
+            %{
+              available: false,
+              active: true,
+              reference: Ecto.UUID.generate(),
+              hospital_id: hospital_id,
+              inserted_at: now,
+              updated_at: now
+            }
           end)
 
         BedTracking.Repo.insert_all(Bed, not_available_beds)

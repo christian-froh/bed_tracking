@@ -1,5 +1,8 @@
 defmodule BedTrackingGraphql.Schema.Hospital do
   use BedTrackingGraphql.Schema.Base
+  alias BedTracking.Context
+  alias BedTracking.Repo
+  alias BedTracking.Repo.Bed
 
   ### OBJECTS ###
   object :hospital do
@@ -58,22 +61,37 @@ defmodule BedTrackingGraphql.Schema.Hospital do
 
   ### FUNCTIONS ###
   defp resolve_total_beds(hospital, _params, _info) do
-    hospital = BedTracking.Repo.preload(hospital, :beds)
-    total_beds = length(hospital.beds)
+    total_beds =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
     {:ok, total_beds}
   end
 
   defp resolve_available_beds(hospital, _params, _info) do
-    hospital = BedTracking.Repo.preload(hospital, :beds)
+    available_beds =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_available()
+      |> Context.Bed.Query.count()
+      |> Repo.one()
 
-    available_beds = length(Enum.filter(hospital.beds, fn bed -> bed.available end))
     {:ok, available_beds}
   end
 
   defp resolve_unavailable_beds(hospital, _params, _info) do
-    hospital = BedTracking.Repo.preload(hospital, :beds)
+    unavailable_beds =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_not_available()
+      |> Context.Bed.Query.count()
+      |> Repo.one()
 
-    unavailable_beds = length(Enum.filter(hospital.beds, fn bed -> bed.available == false end))
     {:ok, unavailable_beds}
   end
 end
