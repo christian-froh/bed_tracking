@@ -6,7 +6,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:id, non_null(:id))
     field(:available, non_null(:boolean))
     field(:active, non_null(:boolean))
-    field(:reference, non_null(:string))
+    field(:reference, :string)
 
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
