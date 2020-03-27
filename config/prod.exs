@@ -9,7 +9,7 @@ config :bed_tracking, BedTrackingWeb.Endpoint,
 config :bed_tracking, BedTracking.Repo,
   adapter: Ecto.Adapters.Postgres,
   ssl: true,
-  pool_size: 2,
+  pool_size: 1,
   queue_target: 2_000,
   queue_interval: 5_000
 
