@@ -11,6 +11,12 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
+  def register_multiple(number_of_beds, hospital_id) do
+    with {:ok, beds} <- create_multiple_beds(number_of_beds, hospital_id) do
+      {:ok, beds}
+    end
+  end
+
   def register(hospital_id) do
     with {:ok, bed} <- create_bed(hospital_id) do
       {:ok, bed}
@@ -61,6 +67,26 @@ defmodule BedTracking.Context.Bed do
       bed ->
         {:ok, bed}
     end
+  end
+
+  defp create_multiple_beds(number_of_beds, hospital_id) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    beds =
+      1..number_of_beds
+      |> Enum.map(fn _number ->
+        %{
+          available: true,
+          active: false,
+          hospital_id: hospital_id,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    {_, beds} = BedTracking.Repo.insert_all(Bed, beds, returning: true)
+
+    {:ok, beds}
   end
 
   defp create_bed(hospital_id) do

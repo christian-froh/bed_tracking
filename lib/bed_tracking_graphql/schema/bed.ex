@@ -14,6 +14,10 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   ### PAYLOADS ###
+  object :register_beds_payload do
+    field :beds, list_of(:bed)
+  end
+
   object :register_bed_payload do
     field :bed, :bed
   end
@@ -43,6 +47,10 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   ### INPUTS ###
+  input_object :register_beds_input do
+    field(:number_of_beds, non_null(:integer))
+  end
+
   input_object :activate_bed_input do
     field(:id, non_null(:id))
     field(:reference, non_null(:string))
@@ -79,6 +87,11 @@ defmodule BedTrackingGraphql.Schema.Bed do
 
   ### MUTATIONS ###
   object :bed_mutations do
+    field :register_beds, type: :register_beds_payload do
+      arg(:input, non_null(:register_beds_input))
+      resolve(&Resolver.Bed.register_multiple/2)
+    end
+
     field :register_bed, type: :register_bed_payload do
       resolve(&Resolver.Bed.register/2)
     end
