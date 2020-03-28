@@ -32,4 +32,10 @@ defmodule BedTracking.Repo.Hospital do
       :address
     ])
   end
+
+  def use_qr_code_changeset(struct, params) do
+    struct
+    |> cast(params, [:use_qr_code])
+    |> validate_required([:use_qr_code])
+  end
 end

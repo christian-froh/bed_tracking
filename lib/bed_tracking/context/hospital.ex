@@ -31,9 +31,23 @@ defmodule BedTracking.Context.Hospital do
     end
   end
 
+  def use_qr_code_system(use_qr_code, hospital_id) do
+    with {:ok, hospital} <- get(hospital_id),
+         {:ok, updated_hospital} <- update_qr_code(use_qr_code, hospital) do
+      {:ok, updated_hospital}
+    end
+  end
+
   defp create_hospital(params) do
     %Hospital{}
     |> Hospital.create_changeset(params)
     |> Repo.insert()
+  end
+
+  defp update_qr_code(use_qr_code, hospital) do
+    params = %{use_qr_code: use_qr_code}
+
+    Hospital.use_qr_code_changeset(hospital, params)
+    |> Repo.update()
   end
 end

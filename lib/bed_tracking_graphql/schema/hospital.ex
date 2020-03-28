@@ -47,12 +47,20 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :hospital, :hospital
   end
 
+  object :use_qr_code_system_payload do
+    field :hospital, :hospital
+  end
+
   ### INPUTS ###
   input_object :create_hospital_input do
     field(:name, non_null(:string))
     field(:latitude, non_null(:float))
     field(:longitude, non_null(:float))
-    field(:address, non_null(:string))
+    field(:address, :string)
+  end
+
+  input_object :use_qr_code_system_input do
+    field(:use_qr_code, non_null(:boolean))
   end
 
   ### QUERIES ###
@@ -71,6 +79,11 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :create_hospital, type: :create_hospital_payload do
       arg(:input, non_null(:create_hospital_input))
       resolve(&Resolver.Hospital.create_hospital/2)
+    end
+
+    field :use_qr_code_system, type: :use_qr_code_system_payload do
+      arg(:input, non_null(:use_qr_code_system_input))
+      resolve(&Resolver.Hospital.use_qr_code_system/2)
     end
   end
 
