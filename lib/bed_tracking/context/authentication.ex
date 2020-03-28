@@ -10,6 +10,12 @@ defmodule BedTracking.Context.Authentication do
 
   def current_admin(_info), do: {:error, %Error.AuthenticationError{}}
 
+  def current_hospital(%{context: %{current_hospital: current_hospital}}) do
+    {:ok, current_hospital}
+  end
+
+  def current_hospital(_info), do: {:error, %Error.AuthenticationError{}}
+
   def parse_token(token) do
     with {:ok, admin_id} <- verify_token(token),
          {:ok, admin} <- get_admin(admin_id) do

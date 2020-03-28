@@ -2,51 +2,58 @@ defmodule BedTrackingGraphql.Resolver.Bed do
   use BedTrackingGraphql.Resolver.Base
   alias BedTracking.Context
 
-  def get(%{input: %{id: id}}, _info) do
-    with {:ok, bed} <- Context.Bed.get(id) do
+  def get(%{input: %{id: id}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, bed} <- Context.Bed.get(id) do
       {:ok, %{bed: bed}}
     end
   end
 
-  def register(%{input: %{hospital_id: hospital_id}}, _info) do
-    with {:ok, bed} <- Context.Bed.register(hospital_id) do
+  def register(_params, info) do
+    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, bed} <- Context.Bed.register(current_hospital.id) do
       {:ok, %{bed: bed}}
     end
   end
 
-  def activate(%{input: %{id: id, reference: reference}}, _info) do
-    with {:ok, bed} <- Context.Bed.activate(id, reference) do
+  def activate(%{input: %{id: id, reference: reference}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, bed} <- Context.Bed.activate(id, reference) do
       {:ok, %{bed: bed}}
     end
   end
 
-  def deactivate(%{input: %{id: id}}, _info) do
-    with {:ok, bed} <- Context.Bed.deactivate(id) do
+  def deactivate(%{input: %{id: id}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, bed} <- Context.Bed.deactivate(id) do
       {:ok, %{bed: bed}}
     end
   end
 
-  def update_availability(%{input: %{id: id, available: available}}, _info) do
-    with {:ok, bed} <- Context.Bed.update_availability(id, available) do
+  def update_availability(%{input: %{id: id, available: available}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, bed} <- Context.Bed.update_availability(id, available) do
       {:ok, %{bed: bed}}
     end
   end
 
-  def update_number_of_beds(
-        %{input: %{hospital_id: hospital_id, number_of_beds: number_of_beds}},
-        _info
-      ) do
-    with {:ok, success} <- Context.Bed.update_number_of_beds(hospital_id, number_of_beds) do
+  def update_number_of_beds(%{input: %{number_of_beds: number_of_beds}}, info) do
+    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, success} <- Context.Bed.update_number_of_beds(current_hospital.id, number_of_beds) do
       {:ok, %{success: success}}
     end
   end
 
   def update_number_of_available_beds(
-        %{input: %{hospital_id: hospital_id, number_of_available_beds: number_of_available_beds}},
-        _info
+        %{input: %{number_of_available_beds: number_of_available_beds}},
+        info
       ) do
-    with {:ok, success} <-
-           Context.Bed.update_number_of_available_beds(hospital_id, number_of_available_beds) do
+    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, success} <-
+           Context.Bed.update_number_of_available_beds(
+             current_hospital.id,
+             number_of_available_beds
+           ) do
       {:ok, %{success: success}}
     end
   end

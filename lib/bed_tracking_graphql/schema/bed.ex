@@ -43,10 +43,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   ### INPUTS ###
-  input_object :register_bed_input do
-    field(:hospital_id, non_null(:id))
-  end
-
   input_object :activate_bed_input do
     field(:id, non_null(:id))
     field(:reference, non_null(:string))
@@ -66,12 +62,10 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   input_object :update_number_of_beds_input do
-    field(:hospital_id, non_null(:id))
     field(:number_of_beds, non_null(:integer))
   end
 
   input_object :update_number_of_available_beds_input do
-    field(:hospital_id, non_null(:id))
     field(:number_of_available_beds, non_null(:integer))
   end
 
@@ -86,7 +80,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
   ### MUTATIONS ###
   object :bed_mutations do
     field :register_bed, type: :register_bed_payload do
-      arg(:input, non_null(:register_bed_input))
       resolve(&Resolver.Bed.register/2)
     end
 

@@ -6,10 +6,10 @@ defmodule BedTrackingGraphql.Schema do
 
   import_types(Absinthe.Plug.Types)
   import_types(Absinthe.Type.Custom)
-  import_types(BedTrackingGraphql.Schema.Error)
   import_types(BedTrackingGraphql.Schema.Admin)
-  import_types(BedTrackingGraphql.Schema.Hospital)
   import_types(BedTrackingGraphql.Schema.Bed)
+  import_types(BedTrackingGraphql.Schema.Error)
+  import_types(BedTrackingGraphql.Schema.Hospital)
   import_types(BedTrackingGraphql.Schema.Facility)
 
   query do
