@@ -36,7 +36,6 @@ defmodule BedTracking.MixProject do
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4.0"},
-      {:apollo_tracing, "~> 0.4.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
       {:dataloader, "~> 1.0.0"},

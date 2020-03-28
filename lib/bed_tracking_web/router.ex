@@ -10,12 +10,8 @@ defmodule BedTrackingWeb.Router do
   scope "/api" do
     pipe_through :graphql_api
 
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: BedTrackingGraphql.Schema,
-      pipeline: {ApolloTracing.Pipeline, :plug}
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: BedTrackingGraphql.Schema
 
-    forward "/", Absinthe.Plug,
-      schema: BedTrackingGraphql.Schema,
-      pipeline: {ApolloTracing.Pipeline, :plug}
+    forward "/", Absinthe.Plug, schema: BedTrackingGraphql.Schema
   end
 end

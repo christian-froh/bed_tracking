@@ -38,9 +38,7 @@ defmodule BedTrackingGraphql.Schema do
   def middleware(middleware, _field, _object) do
     middleware ++
       [
-        BedTrackingGraphql.Middlewares.ErrorHandler,
-        ApolloTracing.Middleware.Tracing,
-        ApolloTracing.Middleware.Caching
+        BedTrackingGraphql.Middlewares.ErrorHandler
       ]
   end
 
