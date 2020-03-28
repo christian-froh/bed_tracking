@@ -11,6 +11,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field(:latitude, non_null(:float))
     field(:longitude, non_null(:float))
     field(:address, :string)
+    field(:use_qr_code, :boolean)
 
     field :total_beds, :integer do
       resolve(&resolve_total_beds/3)

@@ -9,6 +9,7 @@ defmodule BedTracking.Repo.Hospital do
     field(:latitude, :float)
     field(:longitude, :float)
     field(:address, :string)
+    field(:use_qr_code, :boolean)
 
     has_many(:beds, Bed)
     has_many(:facilities, Facility)
