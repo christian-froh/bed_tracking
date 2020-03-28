@@ -40,7 +40,8 @@ defmodule BedTrackingWeb.Endpoint do
     key: "_bed_tracking_key",
     signing_salt: "yzfQ2hLi"
 
-  plug CORSPlug
+  plug CORSPlug,
+    headers: ["hospitalId" | CORSPlug.defaults()[:headers]]
 
   plug BedTrackingWeb.Router
 end
