@@ -3,6 +3,8 @@ defmodule BedTrackingWeb.Router do
 
   pipeline :graphql_api do
     plug :accepts, ["json"]
+
+    plug(BedTrackingWeb.Plugs.GraphqlContext)
   end
 
   scope "/api" do
