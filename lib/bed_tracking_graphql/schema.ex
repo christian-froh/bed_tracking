@@ -10,6 +10,7 @@ defmodule BedTrackingGraphql.Schema do
   import_types(BedTrackingGraphql.Schema.Bed)
   import_types(BedTrackingGraphql.Schema.Error)
   import_types(BedTrackingGraphql.Schema.Hospital)
+  import_types(BedTrackingGraphql.Schema.HospitalManager)
   import_types(BedTrackingGraphql.Schema.Facility)
 
   query do
@@ -23,6 +24,7 @@ defmodule BedTrackingGraphql.Schema do
     import_fields(:admin_mutations)
     import_fields(:bed_mutations)
     import_fields(:hospital_mutations)
+    import_fields(:hospital_manager_mutations)
   end
 
   def context(ctx) do
