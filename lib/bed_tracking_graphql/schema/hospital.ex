@@ -48,10 +48,6 @@ defmodule BedTrackingGraphql.Schema.Hospital do
   end
 
   ### INPUTS ###
-  input_object :get_hospital_input do
-    field(:hospital_id, non_null(:id))
-  end
-
   input_object :create_hospital_input do
     field(:name, non_null(:string))
     field(:latitude, non_null(:float))
@@ -66,7 +62,6 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     end
 
     field :get_hospital, :get_hospital_payload do
-      arg(:input, non_null(:get_hospital_input))
       resolve(&Resolver.Hospital.get_hospital/2)
     end
   end

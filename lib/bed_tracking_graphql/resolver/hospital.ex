@@ -9,8 +9,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end
   end
 
-  def get_hospital(%{input: %{hospital_id: hospital_id}}, _info) do
-    with {:ok, hospital} <- Context.Hospital.get(hospital_id) do
+  def get_hospital(_params, info) do
+    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, hospital} <- Context.Hospital.get(current_hospital.id) do
       {:ok, %{hospital: hospital}}
     end
   end
