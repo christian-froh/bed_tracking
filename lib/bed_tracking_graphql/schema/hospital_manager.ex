@@ -5,7 +5,9 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   object :hospital_manager do
     field(:id, non_null(:id))
     field(:email, non_null(:string))
-    field(:name, non_null(:string))
+    field(:firstname, non_null(:string))
+    field(:lastname, non_null(:string))
+    field(:phone_number, :string)
 
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
@@ -23,9 +25,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
 
   ### INPUTS ###
   input_object :create_hospital_manager_input do
-    field(:name, non_null(:string))
     field(:email, non_null(:string))
     field(:password, non_null(:string))
+    field(:firstname, non_null(:string))
+    field(:lastname, non_null(:string))
+    field(:phone_number, :string)
     field(:hospital_id, non_null(:id))
   end
 
@@ -33,13 +37,6 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:email, non_null(:string))
     field(:password, non_null(:string))
   end
-
-  ### QUERIES ###
-  # object :admin_queries do
-  #   field :current_admin, type: :current_admin_payload do
-  #     resolve(&Resolver.Admin.get_current/2)
-  #   end
-  # end
 
   ### MUTATIONS ###
   object :hospital_manager_mutations do
