@@ -22,6 +22,7 @@ defmodule BedTrackingGraphql.Schema do
   mutation do
     import_fields(:admin_mutations)
     import_fields(:bed_mutations)
+    import_fields(:hospital_mutations)
   end
 
   def context(ctx) do

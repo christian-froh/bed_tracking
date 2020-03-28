@@ -24,4 +24,16 @@ defmodule BedTracking.Context.Hospital do
         {:ok, hospital}
     end
   end
+
+  def create(params) do
+    with {:ok, hospital} <- create_hospital(params) do
+      {:ok, hospital}
+    end
+  end
+
+  defp create_hospital(params) do
+    %Hospital{}
+    |> Hospital.create_changeset(params)
+    |> Repo.insert()
+  end
 end

@@ -1,5 +1,6 @@
 defmodule BedTracking.Repo.Hospital do
   use BedTracking.Repo.Schema
+  import Ecto.Changeset
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Facility
 
@@ -13,5 +14,21 @@ defmodule BedTracking.Repo.Hospital do
     has_many(:facilities, Facility)
 
     timestamps()
+  end
+
+  def create_changeset(struct, params) do
+    struct
+    |> cast(params, [
+      :name,
+      :latitude,
+      :longitude,
+      :address
+    ])
+    |> validate_required([
+      :name,
+      :latitude,
+      :longitude,
+      :address
+    ])
   end
 end

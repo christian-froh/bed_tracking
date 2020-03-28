@@ -42,9 +42,20 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :hospital, :hospital
   end
 
+  object :create_hospital_payload do
+    field :hospital, :hospital
+  end
+
   ### INPUTS ###
   input_object :get_hospital_input do
     field(:hospital_id, non_null(:id))
+  end
+
+  input_object :create_hospital_input do
+    field(:name, non_null(:string))
+    field(:latitude, non_null(:float))
+    field(:longitude, non_null(:float))
+    field(:address, non_null(:string))
   end
 
   ### QUERIES ###
@@ -56,6 +67,14 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :get_hospital, :get_hospital_payload do
       arg(:input, non_null(:get_hospital_input))
       resolve(&Resolver.Hospital.get_hospital/2)
+    end
+  end
+
+  ### MUTATIONS ###
+  object :hospital_mutations do
+    field :create_hospital, type: :create_hospital_payload do
+      arg(:input, non_null(:create_hospital_input))
+      resolve(&Resolver.Hospital.create_hospital/2)
     end
   end
 
