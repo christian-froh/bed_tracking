@@ -8,4 +8,10 @@ defmodule BedTrackingGraphql.Resolver.HospitalManager do
       {:ok, %{hospital_manager: hospital_manager}}
     end
   end
+
+  def login(%{input: %{email: email, password: password}}, _info) do
+    with {:ok, hospital_manager} <- Context.HospitalManager.login(email, password) do
+      {:ok, %{hospital_manager: hospital_manager}}
+    end
+  end
 end
