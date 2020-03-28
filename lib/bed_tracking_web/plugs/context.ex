@@ -24,7 +24,7 @@ defmodule BedTrackingWeb.Plugs.Context do
   end
 
   defp build_hospital_authorization(context, conn) do
-    with [hospital_id | _] <- get_req_header(conn, "hospitalid"),
+    with [hospital_id | _] <- get_req_header(conn, "hospital-id"),
          {:ok, current_hospital} <- get_hospital(hospital_id) do
       Map.merge(context, %{current_hospital: current_hospital})
     else
