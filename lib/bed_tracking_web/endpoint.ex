@@ -41,7 +41,7 @@ defmodule BedTrackingWeb.Endpoint do
     signing_salt: "yzfQ2hLi"
 
   plug CORSPlug,
-    headers: ["hospital-id" | CORSPlug.defaults()[:headers]]
+    headers: ["hospitalid" | CORSPlug.defaults()[:headers]]
 
   plug BedTrackingWeb.Router
 end
