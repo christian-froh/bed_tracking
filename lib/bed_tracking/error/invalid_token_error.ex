@@ -5,6 +5,6 @@ defmodule BedTracking.Error.InvalidTokenError do
   defstruct [
     :token,
     message: "Invalid token",
-    __typename: "InvalidTokenError"
+    error_code: "InvalidTokenError"
   ]
 end

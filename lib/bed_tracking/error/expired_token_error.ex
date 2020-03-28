@@ -5,6 +5,6 @@ defmodule BedTracking.Error.ExpiredTokenError do
   defstruct [
     :token,
     message: "Expired token",
-    __typename: "ExpiredTokenError"
+    error_code: "ExpiredTokenError"
   ]
 end

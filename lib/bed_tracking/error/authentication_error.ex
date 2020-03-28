@@ -3,5 +3,5 @@ defmodule BedTracking.Error.AuthenticationError do
 
   @enforce_keys []
   defstruct message: "Authentication failed",
-            __typename: "AuthenticationError"
+            error_code: "AuthenticationError"
 end
