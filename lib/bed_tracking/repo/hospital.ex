@@ -3,6 +3,7 @@ defmodule BedTracking.Repo.Hospital do
   import Ecto.Changeset
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Facility
+  alias BedTracking.Repo.HospitalManager
 
   schema "hospitals" do
     field(:name, :string)
@@ -13,6 +14,7 @@ defmodule BedTracking.Repo.Hospital do
 
     has_many(:beds, Bed)
     has_many(:facilities, Facility)
+    has_many(:hospital_managers, HospitalManager)
 
     timestamps()
   end

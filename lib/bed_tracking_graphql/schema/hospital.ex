@@ -29,6 +29,10 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(dataloader(Repo))
     end
 
+    field :hospital_managers, list_of(:hospital_manager) do
+      resolve(dataloader(Repo))
+    end
+
     field :facilities, list_of(:facility) do
       resolve(dataloader(Repo))
     end
