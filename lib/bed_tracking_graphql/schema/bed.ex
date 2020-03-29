@@ -42,10 +42,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :success, :boolean
   end
 
-  object :update_number_of_available_beds_payload do
-    field :success, :boolean
-  end
-
   ### INPUTS ###
   input_object :register_beds_input do
     field(:number_of_beds, non_null(:integer))
@@ -70,10 +66,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   input_object :update_number_of_beds_input do
-    field(:number_of_beds, non_null(:integer))
-  end
-
-  input_object :update_number_of_available_beds_input do
+    field(:number_of_total_beds, non_null(:integer))
     field(:number_of_available_beds, non_null(:integer))
   end
 
@@ -114,11 +107,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :update_number_of_beds, type: :update_number_of_beds_payload do
       arg(:input, non_null(:update_number_of_beds_input))
       resolve(&Resolver.Bed.update_number_of_beds/2)
-    end
-
-    field :update_number_of_available_beds, type: :update_number_of_available_beds_payload do
-      arg(:input, non_null(:update_number_of_available_beds_input))
-      resolve(&Resolver.Bed.update_number_of_available_beds/2)
     end
   end
 end
