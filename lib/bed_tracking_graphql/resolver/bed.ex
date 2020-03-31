@@ -31,10 +31,10 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
-  def deactivate(%{input: %{id: id}}, info) do
+  def remove(%{input: %{id: id}}, info) do
     with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, bed} <- Context.Bed.deactivate(id) do
-      {:ok, %{bed: bed}}
+         {:ok, success} <- Context.Bed.remove(id) do
+      {:ok, %{success: success}}
     end
   end
 

@@ -26,8 +26,8 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
-  object :deactivate_bed_payload do
-    field :bed, :bed
+  object :remove_bed_payload do
+    field :success, :boolean
   end
 
   object :get_bed_payload do
@@ -52,7 +52,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:reference, non_null(:string))
   end
 
-  input_object :deactivate_bed_input do
+  input_object :remove_bed_input do
     field(:id, non_null(:id))
   end
 
@@ -94,9 +94,9 @@ defmodule BedTrackingGraphql.Schema.Bed do
       resolve(&Resolver.Bed.activate/2)
     end
 
-    field :deactivate_bed, type: :deactivate_bed_payload do
-      arg(:input, non_null(:deactivate_bed_input))
-      resolve(&Resolver.Bed.deactivate/2)
+    field :remove_bed, type: :remove_bed_payload do
+      arg(:input, non_null(:remove_bed_input))
+      resolve(&Resolver.Bed.remove/2)
     end
 
     field :update_bed_availability, type: :update_bed_availability_payload do

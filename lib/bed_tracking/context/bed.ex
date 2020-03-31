@@ -30,10 +30,10 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def deactivate(id) do
+  def remove(id) do
     with {:ok, bed} <- get_bed(id),
-         {:ok, updated_bed} <- deactivate_bed(bed) do
-      {:ok, updated_bed}
+         {:ok, _deleted_bed} <- remove_bed(bed) do
+      {:ok, true}
     end
   end
 
@@ -99,12 +99,9 @@ defmodule BedTracking.Context.Bed do
     |> Repo.update()
   end
 
-  defp deactivate_bed(bed) do
-    params = %{active: false}
-
+  defp remove_bed(bed) do
     bed
-    |> Bed.deactivate_changeset(params)
-    |> Repo.update()
+    |> Repo.delete()
   end
 
   defp update_bed(bed, available) do
