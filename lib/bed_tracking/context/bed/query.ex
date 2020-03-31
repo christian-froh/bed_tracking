@@ -23,6 +23,11 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.available == false
   end
 
+  def ordered_by(query, order, field) do
+    from b in query,
+      order_by: [{^order, field(b, ^field)}]
+  end
+
   def count(query) do
     from b in query,
       select: count(b.id)
