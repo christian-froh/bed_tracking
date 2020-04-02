@@ -49,6 +49,7 @@ defmodule BedTrackingGraphql.Resolver.Bed do
   def update_number_of_beds(
         %{
           input: %{
+            ward_id: ward_id,
             number_of_total_beds: number_of_total_beds,
             number_of_available_beds: number_of_available_beds
           }
@@ -60,6 +61,7 @@ defmodule BedTrackingGraphql.Resolver.Bed do
            validate_update_number_of_beds(number_of_total_beds, number_of_available_beds),
          {:ok, success} <-
            Context.Bed.update_number_of_beds(
+             ward_id,
              current_hospital.id,
              number_of_total_beds,
              number_of_available_beds

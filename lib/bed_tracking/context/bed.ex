@@ -44,8 +44,9 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def update_number_of_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
-    with {:ok, true} <- update_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
+  def update_number_of_beds(ward_id, hospital_id, number_of_total_beds, number_of_available_beds) do
+    with {:ok, true} <-
+           update_beds(ward_id, hospital_id, number_of_total_beds, number_of_available_beds) do
       {:ok, true}
     end
   end
@@ -113,21 +114,22 @@ defmodule BedTracking.Context.Bed do
     |> Repo.update()
   end
 
-  defp update_beds(hospital_id, 0, 0) do
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
+  defp update_beds(ward_id, _hospital_id, 0, 0) do
+    BedTracking.Repo.delete_all(from(b in Bed, where: b.ward_id == ^ward_id))
     {:ok, true}
   end
 
-  defp update_beds(hospital_id, 1, 0) do
+  defp update_beds(ward_id, hospital_id, 1, 0) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
+    BedTracking.Repo.delete_all(from(b in Bed, where: b.ward_id == ^ward_id))
 
     not_available_beds = [
       %{
         available: false,
         active: true,
         reference: Ecto.UUID.generate(),
+        ward_id: ward_id,
         hospital_id: hospital_id,
         inserted_at: now,
         updated_at: now
@@ -138,16 +140,17 @@ defmodule BedTracking.Context.Bed do
     {:ok, true}
   end
 
-  defp update_beds(hospital_id, 1, 1) do
+  defp update_beds(ward_id, hospital_id, 1, 1) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
+    BedTracking.Repo.delete_all(from(b in Bed, where: b.ward_id == ^ward_id))
 
     available_beds = [
       %{
         available: true,
         active: true,
         reference: Ecto.UUID.generate(),
+        ward_id: ward_id,
         hospital_id: hospital_id,
         inserted_at: now,
         updated_at: now
@@ -158,10 +161,10 @@ defmodule BedTracking.Context.Bed do
     {:ok, true}
   end
 
-  defp update_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
+  defp update_beds(ward_id, hospital_id, number_of_total_beds, number_of_available_beds) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
+    BedTracking.Repo.delete_all(from(b in Bed, where: b.ward_id == ^ward_id))
 
     available_beds =
       1..number_of_available_beds
@@ -170,6 +173,7 @@ defmodule BedTracking.Context.Bed do
           available: true,
           active: true,
           reference: Ecto.UUID.generate(),
+          ward_id: ward_id,
           hospital_id: hospital_id,
           inserted_at: now,
           updated_at: now
@@ -185,6 +189,7 @@ defmodule BedTracking.Context.Bed do
           available: false,
           active: true,
           reference: Ecto.UUID.generate(),
+          ward_id: ward_id,
           hospital_id: hospital_id,
           inserted_at: now,
           updated_at: now
