@@ -37,6 +37,18 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       )
     end
 
+    field :wards, list_of(:ward) do
+      resolve(
+        dataloader(Repo, :wards,
+          args: %{
+            query_fun: fn query ->
+              Context.Ward.Query.ordered_by(query, :asc, :name)
+            end
+          }
+        )
+      )
+    end
+
     field :hospital_managers, list_of(:hospital_manager) do
       resolve(dataloader(Repo))
     end

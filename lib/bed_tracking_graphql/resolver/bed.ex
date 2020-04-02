@@ -10,16 +10,17 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
-  def register_multiple(%{input: %{number_of_beds: number_of_beds}}, info) do
+  def register_multiple(%{input: %{ward_id: ward_id, number_of_beds: number_of_beds}}, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, beds} <- Context.Bed.register_multiple(number_of_beds, current_hospital.id) do
+         {:ok, beds} <-
+           Context.Bed.register_multiple(number_of_beds, ward_id, current_hospital.id) do
       {:ok, %{beds: beds}}
     end
   end
 
-  def register(_params, info) do
+  def register(%{input: %{ward_id: ward_id}}, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, bed} <- Context.Bed.register(current_hospital.id) do
+         {:ok, bed} <- Context.Bed.register(ward_id, current_hospital.id) do
       {:ok, %{bed: bed}}
     end
   end

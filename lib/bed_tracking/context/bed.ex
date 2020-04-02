@@ -11,14 +11,14 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def register_multiple(number_of_beds, hospital_id) do
-    with {:ok, beds} <- create_multiple_beds(number_of_beds, hospital_id) do
+  def register_multiple(number_of_beds, ward_id, hospital_id) do
+    with {:ok, beds} <- create_multiple_beds(number_of_beds, ward_id, hospital_id) do
       {:ok, beds}
     end
   end
 
-  def register(hospital_id) do
-    with {:ok, bed} <- create_bed(hospital_id) do
+  def register(ward_id, hospital_id) do
+    with {:ok, bed} <- create_bed(ward_id, hospital_id) do
       {:ok, bed}
     end
   end
@@ -63,7 +63,7 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  defp create_multiple_beds(number_of_beds, hospital_id) do
+  defp create_multiple_beds(number_of_beds, ward_id, hospital_id) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     beds =
@@ -72,6 +72,7 @@ defmodule BedTracking.Context.Bed do
         %{
           available: true,
           active: false,
+          ward_id: ward_id,
           hospital_id: hospital_id,
           inserted_at: now,
           updated_at: now
@@ -83,8 +84,8 @@ defmodule BedTracking.Context.Bed do
     {:ok, beds}
   end
 
-  defp create_bed(hospital_id) do
-    params = %{available: true, active: false, hospital_id: hospital_id}
+  defp create_bed(ward_id, hospital_id) do
+    params = %{available: true, active: false, ward_id: ward_id, hospital_id: hospital_id}
 
     %Bed{}
     |> Bed.create_changeset(params)
