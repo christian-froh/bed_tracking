@@ -123,7 +123,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
           |> Context.Bed.Query.count()
           |> Repo.one()
 
-        false ->
+        _ ->
           Ward
           |> Context.Ward.Query.where_hospital_id(hospital.id)
           |> Context.Ward.Query.total_beds()
@@ -144,7 +144,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
           |> Context.Bed.Query.count()
           |> Repo.one()
 
-        false ->
+        _ ->
           Ward
           |> Context.Ward.Query.where_hospital_id(hospital.id)
           |> Context.Ward.Query.available_beds()
@@ -165,7 +165,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
           |> Context.Bed.Query.count()
           |> Repo.one()
 
-        false ->
+        _ ->
           Ward
           |> Context.Ward.Query.where_hospital_id(hospital.id)
           |> Context.Ward.Query.unavailable_beds()
