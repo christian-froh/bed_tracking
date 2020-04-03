@@ -3,6 +3,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
   alias BedTracking.Context
   alias BedTracking.Repo
   alias BedTracking.Repo.Bed
+  alias BedTracking.Repo.Ward
 
   ### OBJECTS ###
   object :hospital do
@@ -31,6 +32,18 @@ defmodule BedTrackingGraphql.Schema.Hospital do
           args: %{
             query_fun: fn query ->
               Context.Bed.Query.ordered_by(query, :asc, :inserted_at)
+            end
+          }
+        )
+      )
+    end
+
+    field :wards, list_of(:ward) do
+      resolve(
+        dataloader(Repo, :wards,
+          args: %{
+            query_fun: fn query ->
+              Context.Ward.Query.ordered_by(query, :asc, :name)
             end
           }
         )
@@ -102,36 +115,63 @@ defmodule BedTrackingGraphql.Schema.Hospital do
   ### FUNCTIONS ###
   defp resolve_total_beds(hospital, _params, _info) do
     total_beds =
-      Bed
-      |> Context.Bed.Query.where_hospital_id(hospital.id)
-      |> Context.Bed.Query.where_active()
-      |> Context.Bed.Query.count()
-      |> Repo.one()
+      case hospital.use_qr_code do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_hospital_id(hospital.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
 
-    {:ok, total_beds}
+        false ->
+          Ward
+          |> Context.Ward.Query.where_hospital_id(hospital.id)
+          |> Context.Ward.Query.total_beds()
+          |> Repo.one()
+      end
+
+    {:ok, total_beds || 0}
   end
 
   defp resolve_available_beds(hospital, _params, _info) do
     available_beds =
-      Bed
-      |> Context.Bed.Query.where_hospital_id(hospital.id)
-      |> Context.Bed.Query.where_active()
-      |> Context.Bed.Query.where_available()
-      |> Context.Bed.Query.count()
-      |> Repo.one()
+      case hospital.use_qr_code do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_hospital_id(hospital.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.where_available()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
 
-    {:ok, available_beds}
+        false ->
+          Ward
+          |> Context.Ward.Query.where_hospital_id(hospital.id)
+          |> Context.Ward.Query.available_beds()
+          |> Repo.one()
+      end
+
+    {:ok, available_beds || 0}
   end
 
   defp resolve_unavailable_beds(hospital, _params, _info) do
     unavailable_beds =
-      Bed
-      |> Context.Bed.Query.where_hospital_id(hospital.id)
-      |> Context.Bed.Query.where_active()
-      |> Context.Bed.Query.where_not_available()
-      |> Context.Bed.Query.count()
-      |> Repo.one()
+      case hospital.use_qr_code do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_hospital_id(hospital.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.where_not_available()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
 
-    {:ok, unavailable_beds}
+        false ->
+          Ward
+          |> Context.Ward.Query.where_hospital_id(hospital.id)
+          |> Context.Ward.Query.unavailable_beds()
+          |> Repo.one()
+      end
+
+    {:ok, unavailable_beds || 0}
   end
 end

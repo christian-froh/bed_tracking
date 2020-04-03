@@ -4,6 +4,7 @@ defmodule BedTracking.Repo.Hospital do
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Facility
   alias BedTracking.Repo.HospitalManager
+  alias BedTracking.Repo.Ward
 
   schema "hospitals" do
     field(:name, :string)
@@ -12,9 +13,10 @@ defmodule BedTracking.Repo.Hospital do
     field(:address, :string)
     field(:use_qr_code, :boolean)
 
-    has_many(:beds, Bed)
+    has_many(:wards, Ward)
     has_many(:facilities, Facility)
     has_many(:hospital_managers, HospitalManager)
+    has_many(:beds, Bed)
 
     timestamps()
   end

@@ -2,6 +2,7 @@ defmodule BedTracking.Repo.Bed do
   use BedTracking.Repo.Schema
   import Ecto.Changeset
   alias BedTracking.Repo.Hospital
+  alias BedTracking.Repo.Ward
 
   schema "beds" do
     field(:available, :boolean)
@@ -9,6 +10,7 @@ defmodule BedTracking.Repo.Bed do
     field(:active, :boolean)
 
     belongs_to(:hospital, Hospital)
+    belongs_to(:ward, Ward)
 
     timestamps()
   end
@@ -18,9 +20,11 @@ defmodule BedTracking.Repo.Bed do
     |> cast(params, [
       :available,
       :active,
+      :ward_id,
       :hospital_id
     ])
     |> validate_required([
+      :ward_id,
       :hospital_id
     ])
   end

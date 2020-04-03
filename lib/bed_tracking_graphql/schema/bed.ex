@@ -8,6 +8,10 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:active, non_null(:boolean))
     field(:reference, :string)
 
+    field :ward, non_null(:ward) do
+      resolve(dataloader(Repo))
+    end
+
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
     end
@@ -38,13 +42,14 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
-  object :update_number_of_beds_payload do
-    field :success, :boolean
-  end
-
   ### INPUTS ###
   input_object :register_beds_input do
     field(:number_of_beds, non_null(:integer))
+    field(:ward_id, non_null(:id))
+  end
+
+  input_object :register_bed_input do
+    field(:ward_id, non_null(:id))
   end
 
   input_object :activate_bed_input do
@@ -65,11 +70,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:available, non_null(:boolean))
   end
 
-  input_object :update_number_of_beds_input do
-    field(:number_of_total_beds, non_null(:integer))
-    field(:number_of_available_beds, non_null(:integer))
-  end
-
   ### QUERIES ###
   object :bed_queries do
     field :get_bed, :get_bed_payload do
@@ -86,6 +86,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     end
 
     field :register_bed, type: :register_bed_payload do
+      arg(:input, non_null(:register_bed_input))
       resolve(&Resolver.Bed.register/2)
     end
 
@@ -102,11 +103,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :update_bed_availability, type: :update_bed_availability_payload do
       arg(:input, non_null(:update_bed_availability_input))
       resolve(&Resolver.Bed.update_availability/2)
-    end
-
-    field :update_number_of_beds, type: :update_number_of_beds_payload do
-      arg(:input, non_null(:update_number_of_beds_input))
-      resolve(&Resolver.Bed.update_number_of_beds/2)
     end
   end
 end

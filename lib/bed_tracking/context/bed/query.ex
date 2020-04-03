@@ -8,6 +8,13 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.hospital_id == ^id
   end
 
+  def where_ward_id(query, nil), do: query
+
+  def where_ward_id(query, id) when is_binary(id) do
+    from b in query,
+      where: b.ward_id == ^id
+  end
+
   def where_active(query) do
     from b in query,
       where: b.active == true

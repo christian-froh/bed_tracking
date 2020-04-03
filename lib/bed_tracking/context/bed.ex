@@ -1,5 +1,4 @@
 defmodule BedTracking.Context.Bed do
-  import Ecto.Query
   alias BedTracking.Context
   alias BedTracking.Error
   alias BedTracking.Repo
@@ -11,14 +10,14 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def register_multiple(number_of_beds, hospital_id) do
-    with {:ok, beds} <- create_multiple_beds(number_of_beds, hospital_id) do
+  def register_multiple(number_of_beds, ward_id, hospital_id) do
+    with {:ok, beds} <- create_multiple_beds(number_of_beds, ward_id, hospital_id) do
       {:ok, beds}
     end
   end
 
-  def register(hospital_id) do
-    with {:ok, bed} <- create_bed(hospital_id) do
+  def register(ward_id, hospital_id) do
+    with {:ok, bed} <- create_bed(ward_id, hospital_id) do
       {:ok, bed}
     end
   end
@@ -44,12 +43,6 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def update_number_of_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
-    with {:ok, true} <- update_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
-      {:ok, true}
-    end
-  end
-
   defp get_bed(id) do
     Bed
     |> Context.Bed.Query.where_id(id)
@@ -63,7 +56,7 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  defp create_multiple_beds(number_of_beds, hospital_id) do
+  defp create_multiple_beds(number_of_beds, ward_id, hospital_id) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     beds =
@@ -72,6 +65,7 @@ defmodule BedTracking.Context.Bed do
         %{
           available: true,
           active: false,
+          ward_id: ward_id,
           hospital_id: hospital_id,
           inserted_at: now,
           updated_at: now
@@ -83,8 +77,8 @@ defmodule BedTracking.Context.Bed do
     {:ok, beds}
   end
 
-  defp create_bed(hospital_id) do
-    params = %{available: true, active: false, hospital_id: hospital_id}
+  defp create_bed(ward_id, hospital_id) do
+    params = %{available: true, active: false, ward_id: ward_id, hospital_id: hospital_id}
 
     %Bed{}
     |> Bed.create_changeset(params)
@@ -110,88 +104,5 @@ defmodule BedTracking.Context.Bed do
     bed
     |> Bed.update_availability_changeset(params)
     |> Repo.update()
-  end
-
-  defp update_beds(hospital_id, 0, 0) do
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
-    {:ok, true}
-  end
-
-  defp update_beds(hospital_id, 1, 0) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
-
-    not_available_beds = [
-      %{
-        available: false,
-        active: true,
-        reference: Ecto.UUID.generate(),
-        hospital_id: hospital_id,
-        inserted_at: now,
-        updated_at: now
-      }
-    ]
-
-    BedTracking.Repo.insert_all(Bed, not_available_beds)
-    {:ok, true}
-  end
-
-  defp update_beds(hospital_id, 1, 1) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
-
-    available_beds = [
-      %{
-        available: true,
-        active: true,
-        reference: Ecto.UUID.generate(),
-        hospital_id: hospital_id,
-        inserted_at: now,
-        updated_at: now
-      }
-    ]
-
-    BedTracking.Repo.insert_all(Bed, available_beds)
-    {:ok, true}
-  end
-
-  defp update_beds(hospital_id, number_of_total_beds, number_of_available_beds) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    BedTracking.Repo.delete_all(from(b in Bed, where: b.hospital_id == ^hospital_id))
-
-    available_beds =
-      1..number_of_available_beds
-      |> Enum.map(fn _number ->
-        %{
-          available: true,
-          active: true,
-          reference: Ecto.UUID.generate(),
-          hospital_id: hospital_id,
-          inserted_at: now,
-          updated_at: now
-        }
-      end)
-
-    BedTracking.Repo.insert_all(Bed, available_beds)
-
-    not_available_beds =
-      1..(number_of_total_beds - number_of_available_beds)
-      |> Enum.map(fn _number ->
-        %{
-          available: false,
-          active: true,
-          reference: Ecto.UUID.generate(),
-          hospital_id: hospital_id,
-          inserted_at: now,
-          updated_at: now
-        }
-      end)
-
-    BedTracking.Repo.insert_all(Bed, not_available_beds)
-
-    {:ok, true}
   end
 end
