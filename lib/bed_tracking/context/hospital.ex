@@ -31,9 +31,9 @@ defmodule BedTracking.Context.Hospital do
     end
   end
 
-  def use_qr_code_system(use_qr_code, hospital_id) do
+  def use_management_system(use_management, hospital_id) do
     with {:ok, hospital} <- get(hospital_id),
-         {:ok, updated_hospital} <- update_qr_code(use_qr_code, hospital) do
+         {:ok, updated_hospital} <- update_use_management(use_management, hospital) do
       {:ok, updated_hospital}
     end
   end
@@ -44,10 +44,10 @@ defmodule BedTracking.Context.Hospital do
     |> Repo.insert()
   end
 
-  defp update_qr_code(use_qr_code, hospital) do
-    params = %{use_qr_code: use_qr_code}
+  defp update_use_management(use_management, hospital) do
+    params = %{use_management: use_management}
 
-    Hospital.use_qr_code_changeset(hospital, params)
+    Hospital.use_management_changeset(hospital, params)
     |> Repo.update()
   end
 end

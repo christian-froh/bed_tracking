@@ -12,7 +12,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field(:latitude, non_null(:float))
     field(:longitude, non_null(:float))
     field(:address, :string)
-    field(:use_qr_code, :boolean)
+    field(:use_management, :boolean)
 
     field :total_beds, :integer do
       resolve(&resolve_total_beds/3)
@@ -72,7 +72,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :hospital, :hospital
   end
 
-  object :use_qr_code_system_payload do
+  object :use_management_system_payload do
     field :hospital, :hospital
   end
 
@@ -84,8 +84,8 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field(:address, :string)
   end
 
-  input_object :use_qr_code_system_input do
-    field(:use_qr_code, non_null(:boolean))
+  input_object :use_management_system_input do
+    field(:use_management, non_null(:boolean))
   end
 
   ### QUERIES ###
@@ -106,16 +106,16 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&Resolver.Hospital.create_hospital/2)
     end
 
-    field :use_qr_code_system, type: :use_qr_code_system_payload do
-      arg(:input, non_null(:use_qr_code_system_input))
-      resolve(&Resolver.Hospital.use_qr_code_system/2)
+    field :use_management_system, type: :use_management_system_payload do
+      arg(:input, non_null(:use_management_system_input))
+      resolve(&Resolver.Hospital.use_management_system/2)
     end
   end
 
   ### FUNCTIONS ###
   defp resolve_total_beds(hospital, _params, _info) do
     total_beds =
-      case hospital.use_qr_code do
+      case hospital.use_management do
         true ->
           Bed
           |> Context.Bed.Query.where_hospital_id(hospital.id)
@@ -135,7 +135,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
 
   defp resolve_available_beds(hospital, _params, _info) do
     available_beds =
-      case hospital.use_qr_code do
+      case hospital.use_management do
         true ->
           Bed
           |> Context.Bed.Query.where_hospital_id(hospital.id)
@@ -156,7 +156,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
 
   defp resolve_unavailable_beds(hospital, _params, _info) do
     unavailable_beds =
-      case hospital.use_qr_code do
+      case hospital.use_management do
         true ->
           Bed
           |> Context.Bed.Query.where_hospital_id(hospital.id)

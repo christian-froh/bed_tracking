@@ -23,9 +23,10 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end
   end
 
-  def use_qr_code_system(%{input: %{use_qr_code: use_qr_code}}, info) do
+  def use_management_system(%{input: %{use_management: use_management}}, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, hospital} <- Context.Hospital.use_qr_code_system(use_qr_code, current_hospital.id) do
+         {:ok, hospital} <-
+           Context.Hospital.use_management_system(use_management, current_hospital.id) do
       {:ok, %{hospital: hospital}}
     end
   end

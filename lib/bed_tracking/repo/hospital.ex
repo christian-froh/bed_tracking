@@ -11,7 +11,7 @@ defmodule BedTracking.Repo.Hospital do
     field(:latitude, :float)
     field(:longitude, :float)
     field(:address, :string)
-    field(:use_qr_code, :boolean)
+    field(:use_management, :boolean)
 
     has_many(:wards, Ward)
     has_many(:facilities, Facility)
@@ -37,9 +37,9 @@ defmodule BedTracking.Repo.Hospital do
     ])
   end
 
-  def use_qr_code_changeset(struct, params) do
+  def use_management_changeset(struct, params) do
     struct
-    |> cast(params, [:use_qr_code])
-    |> validate_required([:use_qr_code])
+    |> cast(params, [:use_management])
+    |> validate_required([:use_management])
   end
 end
