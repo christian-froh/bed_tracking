@@ -8,6 +8,8 @@ defmodule BedTracking.Repo.Bed do
     field(:available, :boolean)
     field(:reference, :string)
     field(:active, :boolean)
+    field(:ventilator_in_use, :boolean)
+    field(:covid_status, :string)
 
     belongs_to(:hospital, Hospital)
     belongs_to(:ward, Ward)
@@ -29,6 +31,11 @@ defmodule BedTracking.Repo.Bed do
     ])
   end
 
+  def update_changeset(struct, params) do
+    struct
+    |> cast(params, [:available, :ventilator_in_use, :covid_status])
+  end
+
   def activate_changeset(struct, params) do
     struct
     |> cast(params, [
@@ -47,16 +54,6 @@ defmodule BedTracking.Repo.Bed do
     ])
     |> validate_required([
       :active
-    ])
-  end
-
-  def update_availability_changeset(struct, params) do
-    struct
-    |> cast(params, [
-      :available
-    ])
-    |> validate_required([
-      :available
     ])
   end
 end

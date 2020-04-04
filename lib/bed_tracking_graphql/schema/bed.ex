@@ -1,12 +1,21 @@
 defmodule BedTrackingGraphql.Schema.Bed do
   use BedTrackingGraphql.Schema.Base
 
+  ### ENUMS ###
+  enum :covid_status do
+    value(:suspected, as: "suspected")
+    value(:negative, as: "negative")
+    value(:positive, as: "positive")
+  end
+
   ### OBJECTS ###
   object :bed do
     field(:id, non_null(:id))
     field(:available, non_null(:boolean))
     field(:active, non_null(:boolean))
     field(:reference, :string)
+    field(:ventilator_in_use, :boolean)
+    field(:covid_status, :covid_status)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -38,7 +47,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
-  object :update_bed_availability_payload do
+  object :update_bed_payload do
     field :bed, :bed
   end
 
@@ -65,9 +74,11 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:id, non_null(:id))
   end
 
-  input_object :update_bed_availability_input do
+  input_object :update_bed_input do
     field(:id, non_null(:id))
-    field(:available, non_null(:boolean))
+    field(:available, :boolean)
+    field(:ventilator_in_use, :boolean)
+    field(:covid_status, :covid_status)
   end
 
   ### QUERIES ###
@@ -100,9 +111,9 @@ defmodule BedTrackingGraphql.Schema.Bed do
       resolve(&Resolver.Bed.remove/2)
     end
 
-    field :update_bed_availability, type: :update_bed_availability_payload do
-      arg(:input, non_null(:update_bed_availability_input))
-      resolve(&Resolver.Bed.update_availability/2)
+    field :update_bed, type: :update_bed_payload do
+      arg(:input, non_null(:update_bed_input))
+      resolve(&Resolver.Bed.update/2)
     end
   end
 end

@@ -2,7 +2,6 @@ defmodule BedTracking.Repo.Hospital do
   use BedTracking.Repo.Schema
   import Ecto.Changeset
   alias BedTracking.Repo.Bed
-  alias BedTracking.Repo.Facility
   alias BedTracking.Repo.HospitalManager
   alias BedTracking.Repo.Ward
 
@@ -14,7 +13,6 @@ defmodule BedTracking.Repo.Hospital do
     field(:use_management, :boolean)
 
     has_many(:wards, Ward)
-    has_many(:facilities, Facility)
     has_many(:hospital_managers, HospitalManager)
     has_many(:beds, Bed)
 

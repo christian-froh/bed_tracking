@@ -38,9 +38,9 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
-  def update_availability(%{input: %{id: id, available: available}}, info) do
+  def update(%{input: %{id: id} = params}, info) do
     with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, bed} <- Context.Bed.update_availability(id, available) do
+         {:ok, bed} <- Context.Bed.update(id, params) do
       {:ok, %{bed: bed}}
     end
   end

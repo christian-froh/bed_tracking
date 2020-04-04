@@ -11,7 +11,6 @@ defmodule BedTrackingGraphql.Schema do
   import_types(BedTrackingGraphql.Schema.Error)
   import_types(BedTrackingGraphql.Schema.Hospital)
   import_types(BedTrackingGraphql.Schema.HospitalManager)
-  import_types(BedTrackingGraphql.Schema.Facility)
   import_types(BedTrackingGraphql.Schema.Ward)
 
   query do

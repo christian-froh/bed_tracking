@@ -22,6 +22,13 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
+  def update(id, params) do
+    with {:ok, bed} <- get_bed(id),
+         {:ok, updated_bed} <- update_bed(bed, params) do
+      {:ok, updated_bed}
+    end
+  end
+
   def activate(id, reference) do
     with {:ok, bed} <- get_bed(id),
          {:ok, updated_bed} <- activate_bed(bed, reference) do
@@ -33,13 +40,6 @@ defmodule BedTracking.Context.Bed do
     with {:ok, bed} <- get_bed(id),
          {:ok, _deleted_bed} <- remove_bed(bed) do
       {:ok, true}
-    end
-  end
-
-  def update_availability(id, available) do
-    with {:ok, bed} <- get_bed(id),
-         {:ok, updated_bed} <- update_bed(bed, available) do
-      {:ok, updated_bed}
     end
   end
 
@@ -85,6 +85,12 @@ defmodule BedTracking.Context.Bed do
     |> Repo.insert()
   end
 
+  defp update_bed(bed, params) do
+    bed
+    |> Bed.update_changeset(params)
+    |> Repo.update()
+  end
+
   defp activate_bed(bed, reference) do
     params = %{active: true, reference: reference}
 
@@ -96,13 +102,5 @@ defmodule BedTracking.Context.Bed do
   defp remove_bed(bed) do
     bed
     |> Repo.delete()
-  end
-
-  defp update_bed(bed, available) do
-    params = %{available: available}
-
-    bed
-    |> Bed.update_availability_changeset(params)
-    |> Repo.update()
   end
 end
