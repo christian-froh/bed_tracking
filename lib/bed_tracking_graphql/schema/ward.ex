@@ -10,8 +10,13 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:short_name, non_null(:string))
     field(:long_name, :string)
 
-    field(:total_beds, :integer)
-    field(:available_beds, :integer)
+    field :total_beds, :integer do
+      resolve(&resolve_total_beds/3)
+    end
+
+    field :available_beds, :integer do
+      resolve(&resolve_available_beds/3)
+    end
 
     field :unavailable_beds, :integer do
       resolve(&resolve_unavailable_beds/3)
@@ -85,10 +90,63 @@ defmodule BedTrackingGraphql.Schema.Ward do
   end
 
   ### FUNCTIONS ###
-  defp resolve_unavailable_beds(ward, _params, _info) do
-    unavailable_beds = ward.total_beds - ward.available_beds
+  defp resolve_total_beds(ward, _params, _info) do
+    ward = Repo.preload(ward, :hospital)
 
-    {:ok, unavailable_beds}
+    total_beds =
+      case ward.hospital.use_management do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_ward_id(ward.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
+
+        _ ->
+          ward.total_beds
+      end
+
+    {:ok, total_beds || 0}
+  end
+
+  defp resolve_available_beds(ward, _params, _info) do
+    ward = Repo.preload(ward, :hospital)
+
+    available_beds =
+      case ward.hospital.use_management do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_ward_id(ward.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.where_available()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
+
+        _ ->
+          ward.available_beds
+      end
+
+    {:ok, available_beds || 0}
+  end
+
+  defp resolve_unavailable_beds(ward, _params, _info) do
+    ward = Repo.preload(ward, :hospital)
+
+    unavailable_beds =
+      case ward.hospital.use_management do
+        true ->
+          Bed
+          |> Context.Bed.Query.where_ward_id(ward.id)
+          |> Context.Bed.Query.where_active()
+          |> Context.Bed.Query.where_not_available()
+          |> Context.Bed.Query.count()
+          |> Repo.one()
+
+        _ ->
+          ward.total_beds - ward.available_beds
+      end
+
+    {:ok, unavailable_beds || 0}
   end
 
   defp resolve_total_ventilator_in_use(ward, _params, _info) do
