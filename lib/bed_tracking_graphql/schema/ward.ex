@@ -1,6 +1,8 @@
 defmodule BedTrackingGraphql.Schema.Ward do
   use BedTrackingGraphql.Schema.Base
   alias BedTracking.Context
+  alias BedTracking.Repo
+  alias BedTracking.Repo.Bed
 
   ### OBJECTS ###
   object :ward do
@@ -13,6 +15,22 @@ defmodule BedTrackingGraphql.Schema.Ward do
 
     field :unavailable_beds, :integer do
       resolve(&resolve_unavailable_beds/3)
+    end
+
+    field :total_ventilator_in_use, :integer do
+      resolve(&resolve_total_ventilator_in_use/3)
+    end
+
+    field :total_covid_status_suspected, :integer do
+      resolve(&resolve_total_covid_status_suspected/3)
+    end
+
+    field :total_covid_status_negative, :integer do
+      resolve(&resolve_total_covid_status_negative/3)
+    end
+
+    field :total_covid_status_positive, :integer do
+      resolve(&resolve_total_covid_status_positive/3)
     end
 
     field :beds, list_of(:bed) do
@@ -71,5 +89,53 @@ defmodule BedTrackingGraphql.Schema.Ward do
     unavailable_beds = ward.total_beds - ward.available_beds
 
     {:ok, unavailable_beds}
+  end
+
+  defp resolve_total_ventilator_in_use(ward, _params, _info) do
+    total_ventilator_in_use =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_ventilator_in_use()
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_ventilator_in_use || 0}
+  end
+
+  defp resolve_total_covid_status_suspected(ward, _params, _info) do
+    total_covid_suspected =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_covid_status("suspected")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_covid_suspected || 0}
+  end
+
+  defp resolve_total_covid_status_negative(ward, _params, _info) do
+    total_covid_negative =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_covid_status("negative")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_covid_negative || 0}
+  end
+
+  defp resolve_total_covid_status_positive(ward, _params, _info) do
+    total_covid_positive =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_active()
+      |> Context.Bed.Query.where_covid_status("positive")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_covid_positive || 0}
   end
 end

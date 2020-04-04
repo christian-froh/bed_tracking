@@ -30,6 +30,16 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.available == false
   end
 
+  def where_ventilator_in_use(query) do
+    from b in query,
+      where: b.ventilator_in_use == true
+  end
+
+  def where_covid_status(query, status) do
+    from b in query,
+      where: b.covid_status == ^status
+  end
+
   def ordered_by(query, order, field) do
     from b in query,
       order_by: [{^order, field(b, ^field)}]
