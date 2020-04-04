@@ -5,7 +5,8 @@ defmodule BedTracking.Repo.Ward do
   alias BedTracking.Repo.Hospital
 
   schema "wards" do
-    field(:name, :string)
+    field(:short_name, :string)
+    field(:long_name, :string)
     field(:total_beds, :integer)
     field(:available_beds, :integer)
 
@@ -17,8 +18,8 @@ defmodule BedTracking.Repo.Ward do
 
   def create_changeset(struct, params) do
     struct
-    |> cast(params, [:name, :hospital_id])
-    |> validate_required([:name, :hospital_id])
+    |> cast(params, [:short_name, :long_name, :hospital_id])
+    |> validate_required([:short_name, :hospital_id])
   end
 
   def update_number_of_beds_changeset(struct, params) do

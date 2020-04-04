@@ -3,9 +3,9 @@ defmodule BedTrackingGraphql.Resolver.Ward do
   alias BedTracking.Context
   alias BedTracking.Error
 
-  def create(%{input: %{name: name}}, info) do
+  def create(%{input: %{short_name: _short_name} = params}, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, ward} <- Context.Ward.create(name, current_hospital.id) do
+         {:ok, ward} <- Context.Ward.create(params, current_hospital.id) do
       {:ok, %{ward: ward}}
     end
   end

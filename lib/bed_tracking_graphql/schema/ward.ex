@@ -5,7 +5,8 @@ defmodule BedTrackingGraphql.Schema.Ward do
   ### OBJECTS ###
   object :ward do
     field(:id, non_null(:id))
-    field(:name, :string)
+    field(:short_name, non_null(:string))
+    field(:long_name, :string)
 
     field(:total_beds, :integer)
     field(:available_beds, :integer)
@@ -42,7 +43,8 @@ defmodule BedTrackingGraphql.Schema.Ward do
 
   ### INPUTS ###
   input_object :create_ward_input do
-    field(:name, non_null(:string))
+    field(:short_name, non_null(:string))
+    field(:long_name, :string)
   end
 
   input_object :update_number_of_beds_input do
