@@ -6,8 +6,6 @@ defmodule BedTracking.Repo.Bed do
 
   schema "beds" do
     field(:available, :boolean)
-    field(:reference, :string)
-    field(:active, :boolean)
     field(:ventilator_in_use, :boolean)
     field(:covid_status, :string)
 
@@ -21,7 +19,6 @@ defmodule BedTracking.Repo.Bed do
     struct
     |> cast(params, [
       :available,
-      :active,
       :ward_id,
       :hospital_id
     ])
@@ -34,26 +31,5 @@ defmodule BedTracking.Repo.Bed do
   def update_changeset(struct, params) do
     struct
     |> cast(params, [:available, :ventilator_in_use, :covid_status])
-  end
-
-  def activate_changeset(struct, params) do
-    struct
-    |> cast(params, [
-      :reference,
-      :active
-    ])
-    |> validate_required([
-      :reference
-    ])
-  end
-
-  def deactivate_changeset(struct, params) do
-    struct
-    |> cast(params, [
-      :active
-    ])
-    |> validate_required([
-      :active
-    ])
   end
 end

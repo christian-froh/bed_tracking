@@ -24,13 +24,6 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
-  def activate(%{input: %{id: id, reference: reference}}, info) do
-    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, bed} <- Context.Bed.activate(id, reference) do
-      {:ok, %{bed: bed}}
-    end
-  end
-
   def remove(%{input: %{id: id}}, info) do
     with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
          {:ok, success} <- Context.Bed.remove(id) do

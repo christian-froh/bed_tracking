@@ -12,8 +12,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
   object :bed do
     field(:id, non_null(:id))
     field(:available, non_null(:boolean))
-    field(:active, non_null(:boolean))
-    field(:reference, :string)
     field(:ventilator_in_use, :boolean)
     field(:covid_status, :covid_status)
 
@@ -32,10 +30,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   object :register_bed_payload do
-    field :bed, :bed
-  end
-
-  object :activate_bed_payload do
     field :bed, :bed
   end
 
@@ -59,11 +53,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
 
   input_object :register_bed_input do
     field(:ward_id, non_null(:id))
-  end
-
-  input_object :activate_bed_input do
-    field(:id, non_null(:id))
-    field(:reference, non_null(:string))
   end
 
   input_object :remove_bed_input do
@@ -99,11 +88,6 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :register_bed, type: :register_bed_payload do
       arg(:input, non_null(:register_bed_input))
       resolve(&Resolver.Bed.register/2)
-    end
-
-    field :activate_bed, type: :activate_bed_payload do
-      arg(:input, non_null(:activate_bed_input))
-      resolve(&Resolver.Bed.activate/2)
     end
 
     field :remove_bed, type: :remove_bed_payload do

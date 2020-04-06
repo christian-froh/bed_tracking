@@ -15,11 +15,6 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.ward_id == ^id
   end
 
-  def where_active(query) do
-    from b in query,
-      where: b.active == true
-  end
-
   def where_available(query) do
     from b in query,
       where: b.available == true

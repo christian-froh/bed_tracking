@@ -98,7 +98,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
         true ->
           Bed
           |> Context.Bed.Query.where_ward_id(ward.id)
-          |> Context.Bed.Query.where_active()
           |> Context.Bed.Query.count()
           |> Repo.one()
 
@@ -117,7 +116,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
         true ->
           Bed
           |> Context.Bed.Query.where_ward_id(ward.id)
-          |> Context.Bed.Query.where_active()
           |> Context.Bed.Query.where_available()
           |> Context.Bed.Query.count()
           |> Repo.one()
@@ -137,7 +135,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
         true ->
           Bed
           |> Context.Bed.Query.where_ward_id(ward.id)
-          |> Context.Bed.Query.where_active()
           |> Context.Bed.Query.where_not_available()
           |> Context.Bed.Query.count()
           |> Repo.one()
@@ -153,7 +150,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
     total_ventilator_in_use =
       Bed
       |> Context.Bed.Query.where_ward_id(ward.id)
-      |> Context.Bed.Query.where_active()
       |> Context.Bed.Query.where_ventilator_in_use()
       |> Context.Bed.Query.count()
       |> Repo.one()
@@ -165,7 +161,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
     total_covid_suspected =
       Bed
       |> Context.Bed.Query.where_ward_id(ward.id)
-      |> Context.Bed.Query.where_active()
       |> Context.Bed.Query.where_covid_status("suspected")
       |> Context.Bed.Query.count()
       |> Repo.one()
@@ -177,7 +172,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
     total_covid_negative =
       Bed
       |> Context.Bed.Query.where_ward_id(ward.id)
-      |> Context.Bed.Query.where_active()
       |> Context.Bed.Query.where_covid_status("negative")
       |> Context.Bed.Query.count()
       |> Repo.one()
@@ -189,7 +183,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
     total_covid_positive =
       Bed
       |> Context.Bed.Query.where_ward_id(ward.id)
-      |> Context.Bed.Query.where_active()
       |> Context.Bed.Query.where_covid_status("positive")
       |> Context.Bed.Query.count()
       |> Repo.one()

@@ -29,13 +29,6 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def activate(id, reference) do
-    with {:ok, bed} <- get_bed(id),
-         {:ok, updated_bed} <- activate_bed(bed, reference) do
-      {:ok, updated_bed}
-    end
-  end
-
   def remove(id) do
     with {:ok, bed} <- get_bed(id),
          {:ok, _deleted_bed} <- remove_bed(bed) do
@@ -64,7 +57,6 @@ defmodule BedTracking.Context.Bed do
       |> Enum.map(fn _number ->
         %{
           available: true,
-          active: false,
           ward_id: ward_id,
           hospital_id: hospital_id,
           inserted_at: now,
@@ -78,7 +70,7 @@ defmodule BedTracking.Context.Bed do
   end
 
   defp create_bed(ward_id, hospital_id) do
-    params = %{available: true, active: false, ward_id: ward_id, hospital_id: hospital_id}
+    params = %{available: true, ward_id: ward_id, hospital_id: hospital_id}
 
     %Bed{}
     |> Bed.create_changeset(params)
@@ -88,14 +80,6 @@ defmodule BedTracking.Context.Bed do
   defp update_bed(bed, params) do
     bed
     |> Bed.update_changeset(params)
-    |> Repo.update()
-  end
-
-  defp activate_bed(bed, reference) do
-    params = %{active: true, reference: reference}
-
-    bed
-    |> Bed.activate_changeset(params)
     |> Repo.update()
   end
 
