@@ -8,4 +8,4 @@ config :bed_tracking, BedTrackingWeb.Endpoint,
 
 config :bed_tracking, BedTracking.Repo,
   url: System.fetch_env!("DATABASE_URL"),
-  pool_size: System.fetch_env!("POOL_SIZE")
+  pool_size: String.to_integer(System.fetch_env!("POOL_SIZE"))
