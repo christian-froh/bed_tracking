@@ -22,6 +22,11 @@ defmodule BedTracking.Repo.Ward do
     |> validate_required([:short_name, :hospital_id])
   end
 
+  def update_changeset(struct, params) do
+    struct
+    |> cast(params, [:short_name, :long_name])
+  end
+
   def update_number_of_beds_changeset(struct, params) do
     struct
     |> cast(params, [:total_beds, :available_beds])

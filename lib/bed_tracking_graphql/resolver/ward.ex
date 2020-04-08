@@ -10,6 +10,13 @@ defmodule BedTrackingGraphql.Resolver.Ward do
     end
   end
 
+  def update(%{input: %{id: id} = params}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, ward} <- Context.Ward.update(id, params) do
+      {:ok, %{ward: ward}}
+    end
+  end
+
   def update_number_of_beds(
         %{
           input: %{

@@ -60,6 +60,10 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field :ward, :ward
   end
 
+  object :update_ward_payload do
+    field :ward, :ward
+  end
+
   object :update_number_of_beds_payload do
     field :ward, :ward
   end
@@ -67,6 +71,12 @@ defmodule BedTrackingGraphql.Schema.Ward do
   ### INPUTS ###
   input_object :create_ward_input do
     field(:short_name, non_null(:string))
+    field(:long_name, :string)
+  end
+
+  input_object :update_ward_input do
+    field(:id, non_null(:id))
+    field(:short_name, :string)
     field(:long_name, :string)
   end
 
@@ -81,6 +91,11 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field :create_ward, type: :create_ward_payload do
       arg(:input, non_null(:create_ward_input))
       resolve(&Resolver.Ward.create/2)
+    end
+
+    field :update_ward, type: :update_ward_payload do
+      arg(:input, non_null(:update_ward_input))
+      resolve(&Resolver.Ward.update/2)
     end
 
     field :update_number_of_beds, type: :update_number_of_beds_payload do

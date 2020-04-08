@@ -10,12 +10,11 @@ defmodule BedTracking.Context.Ward do
     end
   end
 
-  defp create_ward(params, hospital_id) do
-    params = Map.merge(params, %{hospital_id: hospital_id})
-
-    %Ward{}
-    |> Ward.create_changeset(params)
-    |> Repo.insert()
+  def update(id, params) do
+    with {:ok, ward} <- get_ward(id),
+         {:ok, ward} <- update_ward(ward, params) do
+      {:ok, ward}
+    end
   end
 
   def update_number_of_beds(ward_id, number_of_total_beds, number_of_available_beds) do
@@ -24,6 +23,20 @@ defmodule BedTracking.Context.Ward do
            update_beds(ward, number_of_total_beds, number_of_available_beds) do
       {:ok, updated_ward}
     end
+  end
+
+  defp create_ward(params, hospital_id) do
+    params = Map.merge(params, %{hospital_id: hospital_id})
+
+    %Ward{}
+    |> Ward.create_changeset(params)
+    |> Repo.insert()
+  end
+
+  defp update_ward(ward, params) do
+    ward
+    |> Ward.update_changeset(params)
+    |> Repo.update()
   end
 
   defp get_ward(id) do
