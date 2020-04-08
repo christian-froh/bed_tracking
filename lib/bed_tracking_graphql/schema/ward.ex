@@ -39,7 +39,15 @@ defmodule BedTrackingGraphql.Schema.Ward do
     end
 
     field :beds, list_of(:bed) do
-      resolve(dataloader(Repo))
+      resolve(
+        dataloader(Repo, :beds,
+          args: %{
+            query_fun: fn query ->
+              Context.Bed.Query.ordered_by(query, :asc, :inserted_at)
+            end
+          }
+        )
+      )
     end
 
     field :hospital, non_null(:hospital) do

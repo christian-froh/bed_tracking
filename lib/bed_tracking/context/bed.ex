@@ -50,11 +50,13 @@ defmodule BedTracking.Context.Bed do
   end
 
   defp create_multiple_beds(number_of_beds, ward_id, hospital_id) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    now = DateTime.utc_now()
 
     beds =
       1..number_of_beds
-      |> Enum.map(fn _number ->
+      |> Enum.map(fn number ->
+        now = DateTime.add(now, number, :microsecond)
+
         %{
           available: true,
           ward_id: ward_id,
