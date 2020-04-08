@@ -7,6 +7,7 @@ defmodule BedTracking.Context.Hospital do
   def list() do
     hospitals =
       Hospital
+      |> Context.Hospital.Query.ordered_by(:asc, :name)
       |> Repo.all()
 
     {:ok, hospitals}
