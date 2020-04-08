@@ -42,18 +42,6 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&resolve_total_covid_status_positive/3)
     end
 
-    field :beds, list_of(:bed) do
-      resolve(
-        dataloader(Repo, :beds,
-          args: %{
-            query_fun: fn query ->
-              Context.Bed.Query.ordered_by(query, :asc, :inserted_at)
-            end
-          }
-        )
-      )
-    end
-
     field :wards, list_of(:ward) do
       resolve(
         dataloader(Repo, :wards,
