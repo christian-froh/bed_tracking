@@ -10,6 +10,13 @@ defmodule BedTracking.Context.HospitalManager do
     end
   end
 
+  def update(id, params) do
+    with {:ok, hospital_manager} <- get_hospital_manager(id),
+         {:ok, hospital_manager} <- update_hospital_manager(hospital_manager, params) do
+      {:ok, hospital_manager}
+    end
+  end
+
   def login(email, password) do
     with email <- String.downcase(email),
          {:ok, hospital_manager} <- fetch_by_email(email),
@@ -22,6 +29,12 @@ defmodule BedTracking.Context.HospitalManager do
     %HospitalManager{}
     |> HospitalManager.create_changeset(params)
     |> Repo.insert()
+  end
+
+  defp update_hospital_manager(hospital_manager, params) do
+    hospital_manager
+    |> HospitalManager.update_changeset(params)
+    |> Repo.update()
   end
 
   defp fetch_by_email(email) do
@@ -42,6 +55,19 @@ defmodule BedTracking.Context.HospitalManager do
       {:ok, :verified}
     else
       {:error, %Error.AuthenticationError{}}
+    end
+  end
+
+  defp get_hospital_manager(id) do
+    HospitalManager
+    |> Context.HospitalManager.Query.where_id(id)
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, %Error.NotFoundError{fields: %{id: id}, type: "HospitalManager"}}
+
+      hospital_manager ->
+        {:ok, hospital_manager}
     end
   end
 end

@@ -23,6 +23,11 @@ defmodule BedTracking.Repo.HospitalManager do
     |> set_password_hash()
   end
 
+  def update_changeset(struct, params) do
+    struct
+    |> cast(params, [:firstname, :lastname, :phone_number])
+  end
+
   defp set_password_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
