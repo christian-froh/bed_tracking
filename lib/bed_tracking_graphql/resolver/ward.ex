@@ -17,6 +17,13 @@ defmodule BedTrackingGraphql.Resolver.Ward do
     end
   end
 
+  def remove(%{input: %{id: id}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, success} <- Context.Ward.remove(id) do
+      {:ok, %{success: success}}
+    end
+  end
+
   def update_number_of_beds(
         %{
           input: %{

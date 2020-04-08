@@ -17,6 +17,13 @@ defmodule BedTracking.Context.Ward do
     end
   end
 
+  def remove(id) do
+    with {:ok, ward} <- get_ward(id),
+         {:ok, _deleted_ward} <- remove_ward(ward) do
+      {:ok, true}
+    end
+  end
+
   def update_number_of_beds(ward_id, number_of_total_beds, number_of_available_beds) do
     with {:ok, ward} <- get_ward(ward_id),
          {:ok, updated_ward} <-
@@ -37,6 +44,11 @@ defmodule BedTracking.Context.Ward do
     ward
     |> Ward.update_changeset(params)
     |> Repo.update()
+  end
+
+  defp remove_ward(ward) do
+    ward
+    |> Repo.delete()
   end
 
   defp get_ward(id) do

@@ -10,7 +10,7 @@ defmodule BedTracking.Repo.Ward do
     field(:total_beds, :integer)
     field(:available_beds, :integer)
 
-    has_many(:beds, Bed)
+    has_many(:beds, Bed, on_delete: :delete_all)
     belongs_to(:hospital, Hospital)
 
     timestamps()

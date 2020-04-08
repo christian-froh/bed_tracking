@@ -64,6 +64,10 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field :ward, :ward
   end
 
+  object :remove_ward_payload do
+    field :success, :boolean
+  end
+
   object :update_number_of_beds_payload do
     field :ward, :ward
   end
@@ -78,6 +82,10 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:id, non_null(:id))
     field(:short_name, :string)
     field(:long_name, :string)
+  end
+
+  input_object :remove_ward_input do
+    field(:id, non_null(:id))
   end
 
   input_object :update_number_of_beds_input do
@@ -96,6 +104,11 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field :update_ward, type: :update_ward_payload do
       arg(:input, non_null(:update_ward_input))
       resolve(&Resolver.Ward.update/2)
+    end
+
+    field :remove_ward, type: :remove_ward_payload do
+      arg(:input, non_null(:remove_ward_input))
+      resolve(&Resolver.Ward.remove/2)
     end
 
     field :update_number_of_beds, type: :update_number_of_beds_payload do
