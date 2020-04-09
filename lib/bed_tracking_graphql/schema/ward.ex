@@ -7,8 +7,9 @@ defmodule BedTrackingGraphql.Schema.Ward do
   ### OBJECTS ###
   object :ward do
     field(:id, non_null(:id))
-    field(:short_name, non_null(:string))
-    field(:long_name, :string)
+    field(:name, non_null(:string))
+    field(:description, :string)
+    field(:is_covid_ward, :boolean)
 
     field :total_beds, :integer do
       resolve(&resolve_total_beds/3)
@@ -74,14 +75,16 @@ defmodule BedTrackingGraphql.Schema.Ward do
 
   ### INPUTS ###
   input_object :create_ward_input do
-    field(:short_name, non_null(:string))
-    field(:long_name, :string)
+    field(:name, non_null(:string))
+    field(:description, :string)
+    field(:is_covid_ward, :boolean)
   end
 
   input_object :update_ward_input do
     field(:id, non_null(:id))
-    field(:short_name, :string)
-    field(:long_name, :string)
+    field(:name, :string)
+    field(:description, :string)
+    field(:is_covid_ward, :boolean)
   end
 
   input_object :remove_ward_input do

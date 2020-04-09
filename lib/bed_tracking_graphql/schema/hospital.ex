@@ -47,7 +47,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
         dataloader(Repo, :wards,
           args: %{
             query_fun: fn query ->
-              Context.Ward.Query.ordered_by(query, :asc, :short_name)
+              Context.Ward.Query.ordered_by(query, :asc, :name)
             end
           }
         )
