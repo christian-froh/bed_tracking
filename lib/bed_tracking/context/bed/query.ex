@@ -35,6 +35,11 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.covid_status == ^status
   end
 
+  def where_level_of_care(query, level) do
+    from b in query,
+      where: b.level_of_care == ^level
+  end
+
   def ordered_by(query, order, field) do
     from b in query,
       order_by: [{^order, field(b, ^field)}]

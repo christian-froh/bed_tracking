@@ -8,12 +8,19 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:positive, as: "positive")
   end
 
+  enum :level_of_care do
+    value(:level_1, as: "level_1")
+    value(:level_2, as: "level_2")
+    value(:level_3, as: "level_3")
+  end
+
   ### OBJECTS ###
   object :bed do
     field(:id, non_null(:id))
     field(:available, non_null(:boolean))
     field(:ventilator_in_use, :boolean)
     field(:covid_status, :covid_status)
+    field(:level_of_care, :level_of_care)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -68,6 +75,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:available, :boolean)
     field(:ventilator_in_use, :boolean)
     field(:covid_status, :covid_status)
+    field(:level_of_care, :level_of_care)
   end
 
   ### QUERIES ###

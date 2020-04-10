@@ -42,6 +42,18 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&resolve_total_covid_status_positive/3)
     end
 
+    field :total_level_of_care_level_1, :integer do
+      resolve(&resolve_total_level_of_care_level_1/3)
+    end
+
+    field :total_level_of_care_level_2, :integer do
+      resolve(&resolve_total_level_of_care_level_2/3)
+    end
+
+    field :total_level_of_care_level_3, :integer do
+      resolve(&resolve_total_level_of_care_level_3/3)
+    end
+
     field :wards, list_of(:ward) do
       resolve(
         dataloader(Repo, :wards,
@@ -214,5 +226,38 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       |> Repo.one()
 
     {:ok, total_covid_positive || 0}
+  end
+
+  defp resolve_total_level_of_care_level_1(hospital, _params, _info) do
+    total_level_1 =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_level_of_care("level_1")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_level_1 || 0}
+  end
+
+  defp resolve_total_level_of_care_level_2(hospital, _params, _info) do
+    total_level_2 =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_level_of_care("level_2")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_level_2 || 0}
+  end
+
+  defp resolve_total_level_of_care_level_3(hospital, _params, _info) do
+    total_level_3 =
+      Bed
+      |> Context.Bed.Query.where_hospital_id(hospital.id)
+      |> Context.Bed.Query.where_level_of_care("level_3")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_level_3 || 0}
   end
 end

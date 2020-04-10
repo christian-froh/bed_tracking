@@ -8,6 +8,7 @@ defmodule BedTracking.Repo.Bed do
     field(:available, :boolean)
     field(:ventilator_in_use, :boolean)
     field(:covid_status, :string)
+    field(:level_of_care, :string)
 
     belongs_to(:hospital, Hospital)
     belongs_to(:ward, Ward)
@@ -30,6 +31,6 @@ defmodule BedTracking.Repo.Bed do
 
   def update_changeset(struct, params) do
     struct
-    |> cast(params, [:available, :ventilator_in_use, :covid_status])
+    |> cast(params, [:available, :ventilator_in_use, :covid_status, :level_of_care])
   end
 end
