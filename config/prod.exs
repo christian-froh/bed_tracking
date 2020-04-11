@@ -13,7 +13,7 @@ config :bed_tracking, BedTracking.Repo,
   queue_interval: 5_000
 
 # Do not print debug messages in production
-config :logger, level: :info
+# config :logger, level: :info
 
 # ## SSL Support
 #
