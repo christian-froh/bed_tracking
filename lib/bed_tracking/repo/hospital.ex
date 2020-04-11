@@ -11,6 +11,7 @@ defmodule BedTracking.Repo.Hospital do
     field(:longitude, :float)
     field(:address, :string)
     field(:use_management, :boolean)
+    field(:total_hemofilter, :integer)
 
     has_many(:wards, Ward)
     has_many(:hospital_managers, HospitalManager)

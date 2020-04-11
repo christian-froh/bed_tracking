@@ -11,6 +11,7 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field(:longitude, non_null(:float))
     field(:address, :string)
     field(:use_management, :boolean)
+    field(:total_hemofilter, :integer)
 
     field :total_beds, :integer do
       resolve(&Resolver.Hospital.dataloader_total_beds/3)
