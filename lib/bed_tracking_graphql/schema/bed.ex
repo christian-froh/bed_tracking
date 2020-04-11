@@ -27,6 +27,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
+    field(:hemofilter_in_use, :boolean)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -82,6 +83,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
+    field(:hemofilter_in_use, :boolean)
   end
 
   ### QUERIES ###

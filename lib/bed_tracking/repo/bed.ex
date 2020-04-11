@@ -9,6 +9,7 @@ defmodule BedTracking.Repo.Bed do
     field(:covid_status, :string)
     field(:level_of_care, :string)
     field(:ventilation_type, :string)
+    field(:hemofilter_in_use, :boolean)
 
     belongs_to(:hospital, Hospital)
     belongs_to(:ward, Ward)
@@ -35,7 +36,8 @@ defmodule BedTracking.Repo.Bed do
       :available,
       :covid_status,
       :level_of_care,
-      :ventilation_type
+      :ventilation_type,
+      :hemofilter_in_use
     ])
   end
 end
