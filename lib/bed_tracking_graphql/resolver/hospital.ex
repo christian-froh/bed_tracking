@@ -36,16 +36,12 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
   def dataloader_total_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward, query_fun: {Ward, nil}}, hospital_id: hospital.id)
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      wards =
-        Dataloader.get(loader, Repo, {:many, Ward, query_fun: {Ward, nil}},
-          hospital_id: hospital.id
-        )
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
 
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_beds =
         if hospital.use_management == true do
@@ -61,16 +57,12 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
   def dataloader_available_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward, query_fun: {Ward, nil}}, hospital_id: hospital.id)
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      wards =
-        Dataloader.get(loader, Repo, {:many, Ward, query_fun: {Ward, nil}},
-          hospital_id: hospital.id
-        )
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
 
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       available_beds =
         if hospital.use_management == true do
@@ -87,16 +79,12 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
   def dataloader_unavailable_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward, query_fun: {Ward, nil}}, hospital_id: hospital.id)
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      wards =
-        Dataloader.get(loader, Repo, {:many, Ward, query_fun: {Ward, nil}},
-          hospital_id: hospital.id
-        )
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
 
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       unavailable_beds =
         if hospital.use_management == true do
@@ -119,10 +107,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_covid_suspected =
         Enum.filter(beds, fn bed -> bed.covid_status == "suspected" end) |> length()
@@ -137,10 +124,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_covid_negative =
         Enum.filter(beds, fn bed -> bed.covid_status == "negative" end) |> length()
@@ -155,10 +141,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_covid_positive =
         Enum.filter(beds, fn bed -> bed.covid_status == "positive" end) |> length()
@@ -173,10 +158,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_level_1 = Enum.filter(beds, fn bed -> bed.level_of_care == "level_1" end) |> length()
 
@@ -190,10 +174,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_level_2 = Enum.filter(beds, fn bed -> bed.level_of_care == "level_2" end) |> length()
 
@@ -207,10 +190,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_level_3 = Enum.filter(beds, fn bed -> bed.level_of_care == "level_3" end) |> length()
 
@@ -224,10 +206,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_sv = Enum.filter(beds, fn bed -> bed.ventilation_type == "sv" end) |> length()
 
@@ -241,10 +222,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_niv = Enum.filter(beds, fn bed -> bed.ventilation_type == "niv" end) |> length()
 
@@ -258,10 +238,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         %{context: %{loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_intubated =
         Enum.filter(beds, fn bed -> bed.ventilation_type == "intubated" end) |> length()
@@ -272,10 +251,9 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
   def dataloader_total_ventilator_in_use(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
-      beds =
-        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       total_ventilator_in_use =
         Enum.filter(beds, fn bed -> bed.ventilation_type != nil end) |> length()
