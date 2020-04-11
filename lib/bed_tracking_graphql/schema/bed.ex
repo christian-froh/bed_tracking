@@ -17,7 +17,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
   enum :ventilation_type do
     value(:sv, as: "sv")
     value(:niv, as: "niv")
-    value(:intuabated, as: "intuabated")
+    value(:intubated, as: "intubated")
   end
 
   ### OBJECTS ###
