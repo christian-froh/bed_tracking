@@ -269,4 +269,18 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       {:ok, total_intubated}
     end)
   end
+
+  def dataloader_total_ventilator_in_use(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      beds =
+        Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, hospital_id: hospital.id)
+
+      total_ventilator_in_use =
+        Enum.filter(beds, fn bed -> bed.ventilation_type != nil end) |> length()
+
+      {:ok, total_ventilator_in_use}
+    end)
+  end
 end

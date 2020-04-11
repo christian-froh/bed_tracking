@@ -269,6 +269,19 @@ defmodule BedTrackingGraphql.Resolver.Ward do
     end)
   end
 
+  def dataloader_total_ventilator_in_use(ward, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed, query_fun: {Bed, nil}}, ward_id: ward.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed, query_fun: {Bed, nil}}, ward_id: ward.id)
+
+      total_ventilator_in_use =
+        Enum.filter(beds, fn bed -> bed.ventilation_type != nil end) |> length()
+
+      {:ok, total_ventilator_in_use}
+    end)
+  end
+
   defp validate_update_number_of_beds(number_of_total_beds, number_of_available_beds) do
     if number_of_total_beds >= number_of_available_beds do
       {:ok, true}

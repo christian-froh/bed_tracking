@@ -58,6 +58,10 @@ defmodule BedTrackingGraphql.Schema.Ward do
       resolve(&Resolver.Ward.dataloader_total_ventilation_type_intubated/3)
     end
 
+    field :total_ventilator_in_use, :integer do
+      resolve(&Resolver.Ward.dataloader_total_ventilator_in_use/3)
+    end
+
     field :beds, list_of(:bed) do
       resolve(
         dataloader(Repo, :beds,
