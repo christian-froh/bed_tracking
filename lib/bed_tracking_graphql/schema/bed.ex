@@ -14,13 +14,19 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:level_3, as: "level_3")
   end
 
+  enum :ventilation_type do
+    value(:sv, as: "sv")
+    value(:niv, as: "niv")
+    value(:intuabated, as: "intuabated")
+  end
+
   ### OBJECTS ###
   object :bed do
     field(:id, non_null(:id))
     field(:available, non_null(:boolean))
-    field(:ventilator_in_use, :boolean)
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
+    field(:ventilation_type, :ventilation_type)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -73,9 +79,9 @@ defmodule BedTrackingGraphql.Schema.Bed do
   input_object :update_bed_input do
     field(:id, non_null(:id))
     field(:available, :boolean)
-    field(:ventilator_in_use, :boolean)
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
+    field(:ventilation_type, :ventilation_type)
   end
 
   ### QUERIES ###

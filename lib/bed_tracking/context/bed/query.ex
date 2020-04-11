@@ -25,11 +25,6 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.available == false
   end
 
-  def where_ventilator_in_use(query) do
-    from b in query,
-      where: b.ventilator_in_use == true
-  end
-
   def where_covid_status(query, status) do
     from b in query,
       where: b.covid_status == ^status
@@ -38,6 +33,11 @@ defmodule BedTracking.Context.Bed.Query do
   def where_level_of_care(query, level) do
     from b in query,
       where: b.level_of_care == ^level
+  end
+
+  def where_ventilation_type(query, ventilation_type) do
+    from b in query,
+      where: b.ventilation_type == ^ventilation_type
   end
 
   def ordered_by(query, order, field) do

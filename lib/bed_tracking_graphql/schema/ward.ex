@@ -23,10 +23,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
       resolve(&resolve_unavailable_beds/3)
     end
 
-    field :total_ventilator_in_use, :integer do
-      resolve(&resolve_total_ventilator_in_use/3)
-    end
-
     field :total_covid_status_suspected, :integer do
       resolve(&resolve_total_covid_status_suspected/3)
     end
@@ -49,6 +45,18 @@ defmodule BedTrackingGraphql.Schema.Ward do
 
     field :total_level_of_care_level_3, :integer do
       resolve(&resolve_total_level_of_care_level_3/3)
+    end
+
+    field :total_ventilation_type_sv, :integer do
+      resolve(&resolve_total_ventilation_type_sv/3)
+    end
+
+    field :total_ventilation_type_niv, :integer do
+      resolve(&resolve_total_ventilation_type_niv/3)
+    end
+
+    field :total_ventilation_type_intubated, :integer do
+      resolve(&resolve_total_ventilation_type_intubated/3)
     end
 
     field :beds, list_of(:bed) do
@@ -189,17 +197,6 @@ defmodule BedTrackingGraphql.Schema.Ward do
     {:ok, unavailable_beds || 0}
   end
 
-  defp resolve_total_ventilator_in_use(ward, _params, _info) do
-    total_ventilator_in_use =
-      Bed
-      |> Context.Bed.Query.where_ward_id(ward.id)
-      |> Context.Bed.Query.where_ventilator_in_use()
-      |> Context.Bed.Query.count()
-      |> Repo.one()
-
-    {:ok, total_ventilator_in_use || 0}
-  end
-
   defp resolve_total_covid_status_suspected(ward, _params, _info) do
     total_covid_suspected =
       Bed
@@ -264,5 +261,38 @@ defmodule BedTrackingGraphql.Schema.Ward do
       |> Repo.one()
 
     {:ok, total_level_3 || 0}
+  end
+
+  defp resolve_total_ventilation_type_sv(ward, _params, _info) do
+    total_sv =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_ventilation_type("sv")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_sv || 0}
+  end
+
+  defp resolve_total_ventilation_type_niv(ward, _params, _info) do
+    total_niv =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_ventilation_type("niv")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_niv || 0}
+  end
+
+  defp resolve_total_ventilation_type_intubated(ward, _params, _info) do
+    total_intubated =
+      Bed
+      |> Context.Bed.Query.where_ward_id(ward.id)
+      |> Context.Bed.Query.where_ventilation_type("intubated")
+      |> Context.Bed.Query.count()
+      |> Repo.one()
+
+    {:ok, total_intubated || 0}
   end
 end
