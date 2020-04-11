@@ -273,6 +273,19 @@ defmodule BedTrackingGraphql.Resolver.Ward do
     end)
   end
 
+  def dataloader_available_hemofilter(ward, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed}, ward_id: ward.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, ward_id: ward.id)
+
+      available_hemofiler =
+        Enum.filter(beds, fn bed -> bed.hemofilter_in_use == true end) |> length()
+
+      {:ok, available_hemofiler}
+    end)
+  end
+
   defp validate_update_number_of_beds(number_of_total_beds, number_of_available_beds) do
     if number_of_total_beds >= number_of_available_beds do
       {:ok, true}

@@ -261,4 +261,17 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       {:ok, total_ventilator_in_use}
     end)
   end
+
+  def dataloader_available_hemofilter(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      available_hemofiler =
+        Enum.filter(beds, fn bed -> bed.hemofilter_in_use == true end) |> length()
+
+      {:ok, available_hemofiler}
+    end)
+  end
 end
