@@ -101,6 +101,118 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
+  def dataloader_total_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
+      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+
+      total_beds =
+        if hospital.use_management == true do
+          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) end)
+          length(beds)
+        else
+          wards_total_beds = Enum.map(wards, fn ward -> ward.total_beds end)
+          Enum.sum(wards_total_beds)
+        end
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_available_covid_beds(
+        hospital,
+        _params,
+        %{context: %{loader: loader}} = _info
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
+      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+
+      total_beds =
+        if hospital.use_management == true do
+          beds =
+            Enum.filter(beds, fn bed ->
+              Enum.member?(ward_ids, bed.ward_id) && bed.available == true
+            end)
+
+          length(beds)
+        else
+          wards_available_beds = Enum.map(wards, fn ward -> ward.available_beds end)
+          Enum.sum(wards_available_beds)
+        end
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_non_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
+      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+
+      total_beds =
+        if hospital.use_management == true do
+          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) end)
+          length(beds)
+        else
+          wards_total_beds = Enum.map(wards, fn ward -> ward.total_beds end)
+          Enum.sum(wards_total_beds)
+        end
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_available_non_covid_beds(
+        hospital,
+        _params,
+        %{context: %{loader: loader}} = _info
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
+      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+
+      total_beds =
+        if hospital.use_management == true do
+          beds =
+            Enum.filter(beds, fn bed ->
+              Enum.member?(ward_ids, bed.ward_id) && bed.available == true
+            end)
+
+          length(beds)
+        else
+          wards_available_beds = Enum.map(wards, fn ward -> ward.available_beds end)
+          Enum.sum(wards_available_beds)
+        end
+
+      {:ok, total_beds}
+    end)
+  end
+
   def dataloader_total_covid_status_suspected(
         hospital,
         _params,
