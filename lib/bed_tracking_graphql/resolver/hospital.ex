@@ -114,7 +114,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
       total_beds =
         if hospital.use_management == true do
-          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) end)
+          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true end)
           length(beds)
         else
           wards_total_beds = Enum.map(wards, fn ward -> ward.total_beds end)
@@ -144,7 +144,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         if hospital.use_management == true do
           beds =
             Enum.filter(beds, fn bed ->
-              Enum.member?(ward_ids, bed.ward_id) && bed.available == true
+              Enum.member?(ward_ids, bed.ward_id) == true && bed.available == true
             end)
 
           length(beds)
@@ -170,7 +170,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
 
       total_beds =
         if hospital.use_management == true do
-          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) end)
+          beds = Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true end)
           length(beds)
         else
           wards_total_beds = Enum.map(wards, fn ward -> ward.total_beds end)
@@ -200,7 +200,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
         if hospital.use_management == true do
           beds =
             Enum.filter(beds, fn bed ->
-              Enum.member?(ward_ids, bed.ward_id) && bed.available == true
+              Enum.member?(ward_ids, bed.ward_id) == true && bed.available == true
             end)
 
           length(beds)
