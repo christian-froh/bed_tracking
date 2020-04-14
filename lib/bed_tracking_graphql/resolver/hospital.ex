@@ -110,7 +110,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
-      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
         if hospital.use_management == true do
@@ -138,7 +138,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
-      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
         if hospital.use_management == true do
@@ -166,7 +166,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
-      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
         if hospital.use_management == true do
@@ -194,7 +194,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
       wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
-      ward_ids = Enum.filter(wards, fn ward -> ward.id end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
         if hospital.use_management == true do
