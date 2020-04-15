@@ -10,6 +10,7 @@ defmodule BedTracking.Repo.HospitalManager do
     field(:firstname, :string)
     field(:lastname, :string)
     field(:phone_number, :string)
+    field(:last_login_at, :utc_datetime)
 
     belongs_to(:hospital, Hospital)
 
@@ -25,7 +26,7 @@ defmodule BedTracking.Repo.HospitalManager do
 
   def update_changeset(struct, params) do
     struct
-    |> cast(params, [:firstname, :lastname, :phone_number])
+    |> cast(params, [:firstname, :lastname, :phone_number, :last_login_at])
   end
 
   defp set_password_hash(changeset) do

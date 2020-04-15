@@ -20,8 +20,9 @@ defmodule BedTracking.Context.HospitalManager do
   def login(email, password) do
     with email <- String.downcase(email),
          {:ok, hospital_manager} <- fetch_by_email(email),
-         {:ok, :verified} <- verify_password(hospital_manager, password) do
-      {:ok, hospital_manager}
+         {:ok, :verified} <- verify_password(hospital_manager, password),
+         {:ok, updated_hospital_manager} <- update_last_login(hospital_manager) do
+      {:ok, updated_hospital_manager}
     end
   end
 
@@ -56,6 +57,14 @@ defmodule BedTracking.Context.HospitalManager do
     else
       {:error, %Error.AuthenticationError{}}
     end
+  end
+
+  defp update_last_login(hospital_manager) do
+    params = %{last_login_at: DateTime.utc_now()}
+
+    hospital_manager
+    |> HospitalManager.update_changeset(params)
+    |> Repo.update()
   end
 
   defp get_hospital_manager(id) do
