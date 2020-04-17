@@ -20,6 +20,11 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:intubated, as: "intubated")
   end
 
+  enum :sex do
+    value(:male, as: "male")
+    value(:female, as: "female")
+  end
+
   ### OBJECTS ###
   object :bed do
     field(:id, non_null(:id))
@@ -28,6 +33,9 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
     field(:hemofilter_in_use, :boolean)
+    field(:reference, :string)
+    field(:initials, :string)
+    field(:sex, :sex)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -84,6 +92,9 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
     field(:hemofilter_in_use, :boolean)
+    field(:reference, :string)
+    field(:initials, :string)
+    field(:sex, :sex)
   end
 
   ### QUERIES ###
