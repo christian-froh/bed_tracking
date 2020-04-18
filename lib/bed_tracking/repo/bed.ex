@@ -25,6 +25,7 @@ defmodule BedTracking.Repo.Bed do
     |> cast(params, [
       :available,
       :ward_id,
+      :reference,
       :hospital_id
     ])
     |> validate_required([

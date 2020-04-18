@@ -71,6 +71,8 @@ defmodule BedTrackingGraphql.Schema.Bed do
   input_object :register_beds_input do
     field(:number_of_beds, non_null(:integer))
     field(:ward_id, non_null(:id))
+    field(:prefix, :string)
+    field(:start_from, :integer)
   end
 
   input_object :register_bed_input do

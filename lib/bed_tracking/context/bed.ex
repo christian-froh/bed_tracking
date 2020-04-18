@@ -10,8 +10,8 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def register_multiple(number_of_beds, ward_id, hospital_id) do
-    with {:ok, beds} <- create_multiple_beds(number_of_beds, ward_id, hospital_id) do
+  def register_multiple(number_of_beds, ward_id, params, hospital_id) do
+    with {:ok, beds} <- create_multiple_beds(number_of_beds, ward_id, params, hospital_id) do
       {:ok, beds}
     end
   end
@@ -49,7 +49,7 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  defp create_multiple_beds(number_of_beds, ward_id, hospital_id) do
+  defp create_multiple_beds(number_of_beds, ward_id, params, hospital_id) do
     now = DateTime.utc_now()
 
     beds =
@@ -64,12 +64,29 @@ defmodule BedTracking.Context.Bed do
           inserted_at: now,
           updated_at: now
         }
+        |> add_reference(params, number)
       end)
 
     {_, beds} = BedTracking.Repo.insert_all(Bed, beds, returning: true)
 
     {:ok, beds}
   end
+
+  defp add_reference(bed_params, %{start_from: start_from} = params, index)
+       when is_integer(start_from) do
+    reference = Integer.to_string(start_from + (index - 1))
+
+    reference =
+      if params[:prefix] != nil do
+        params[:prefix] <> " " <> reference
+      else
+        reference
+      end
+
+    Map.merge(bed_params, %{reference: reference})
+  end
+
+  defp add_reference(bed_params, _params, _index), do: bed_params
 
   defp create_bed(ward_id, hospital_id) do
     params = %{available: true, ward_id: ward_id, hospital_id: hospital_id}
