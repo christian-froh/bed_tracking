@@ -40,4 +40,11 @@ defmodule BedTrackingGraphql.Resolver.Bed do
       {:ok, %{bed: bed}}
     end
   end
+
+  def discharge_patient(%{input: %{id: id, reason: reason}}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, success} <- Context.Bed.discharge_patient(id, reason) do
+      {:ok, %{success: success}}
+    end
+  end
 end

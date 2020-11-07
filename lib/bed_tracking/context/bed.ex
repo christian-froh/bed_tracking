@@ -3,6 +3,7 @@ defmodule BedTracking.Context.Bed do
   alias BedTracking.Error
   alias BedTracking.Repo
   alias BedTracking.Repo.Bed
+  alias BedTracking.Repo.Discharge
 
   def get(id) do
     with {:ok, bed} <- get_bed(id) do
@@ -32,6 +33,14 @@ defmodule BedTracking.Context.Bed do
   def remove(id) do
     with {:ok, bed} <- get_bed(id),
          {:ok, _deleted_bed} <- remove_bed(bed) do
+      {:ok, true}
+    end
+  end
+
+  def discharge_patient(id, reason) do
+    with {:ok, bed} <- get_bed(id),
+         {:ok, _discharge} <- create_discharge(bed.ward_id, bed.hospital_id, reason),
+         {:ok, _deleted_bed} <- clean_bed(bed) do
       {:ok, true}
     end
   end
@@ -105,5 +114,19 @@ defmodule BedTracking.Context.Bed do
   defp remove_bed(bed) do
     bed
     |> Repo.delete()
+  end
+
+  defp clean_bed(bed) do
+    bed
+    |> Bed.clean_changeset()
+    |> Repo.update()
+  end
+
+  defp create_discharge(ward_id, hospital_id, reason) do
+    params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason}
+
+    %Discharge{}
+    |> Discharge.create_changeset(params)
+    |> Repo.insert()
   end
 end

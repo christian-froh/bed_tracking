@@ -10,8 +10,6 @@ defmodule BedTracking.Repo.Hospital do
     field(:latitude, :float)
     field(:longitude, :float)
     field(:address, :string)
-    field(:use_management, :boolean)
-    field(:total_hemofilter, :integer)
 
     has_many(:wards, Ward)
     has_many(:hospital_managers, HospitalManager)
@@ -34,11 +32,5 @@ defmodule BedTracking.Repo.Hospital do
       :longitude,
       :address
     ])
-  end
-
-  def use_management_changeset(struct, params) do
-    struct
-    |> cast(params, [:use_management])
-    |> validate_required([:use_management])
   end
 end

@@ -10,8 +10,6 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field(:latitude, non_null(:float))
     field(:longitude, non_null(:float))
     field(:address, :string)
-    field(:use_management, :boolean)
-    field(:total_hemofilter, :integer)
 
     field :total_beds, :integer do
       resolve(&Resolver.Hospital.dataloader_total_beds/3)
@@ -53,6 +51,10 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&Resolver.Hospital.dataloader_total_covid_status_positive/3)
     end
 
+    field :total_covid_status_green, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_covid_status_green/3)
+    end
+
     field :total_level_of_care_level_one, :integer do
       resolve(&Resolver.Hospital.dataloader_total_level_of_care_level_1/3)
     end
@@ -65,24 +67,28 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&Resolver.Hospital.dataloader_total_level_of_care_level_3/3)
     end
 
-    field :total_ventilation_type_sv, :integer do
-      resolve(&Resolver.Hospital.dataloader_total_ventilation_type_sv/3)
+    field :total_rtt_type_none, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_rtt_type_none/3)
     end
 
-    field :total_ventilation_type_niv, :integer do
-      resolve(&Resolver.Hospital.dataloader_total_ventilation_type_niv/3)
+    field :total_rtt_type_risk_of_next_twenty_four_h, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_rtt_type_risk_of_next_twenty_four_h/3)
     end
 
-    field :total_ventilation_type_intubated, :integer do
-      resolve(&Resolver.Hospital.dataloader_total_ventilation_type_intubated/3)
+    field :total_rtt_type_haemodialysis, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_rtt_type_haemodialysis/3)
+    end
+
+    field :total_rtt_type_haemofiltration, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_rtt_type_haemofiltration/3)
+    end
+
+    field :total_rtt_type_pd, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_rtt_type_pd/3)
     end
 
     field :total_ventilator_in_use, :integer do
       resolve(&Resolver.Hospital.dataloader_total_ventilator_in_use/3)
-    end
-
-    field :available_hemofilter, :integer do
-      resolve(&Resolver.Hospital.dataloader_available_hemofilter/3)
     end
 
     field :wards, list_of(:ward) do
@@ -115,20 +121,12 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :hospital, :hospital
   end
 
-  object :use_management_system_payload do
-    field :hospital, :hospital
-  end
-
   ### INPUTS ###
   input_object :create_hospital_input do
     field(:name, non_null(:string))
     field(:latitude, non_null(:float))
     field(:longitude, non_null(:float))
     field(:address, :string)
-  end
-
-  input_object :use_management_system_input do
-    field(:use_management, non_null(:boolean))
   end
 
   ### QUERIES ###
@@ -147,11 +145,6 @@ defmodule BedTrackingGraphql.Schema.Hospital do
     field :create_hospital, type: :create_hospital_payload do
       arg(:input, non_null(:create_hospital_input))
       resolve(&Resolver.Hospital.create_hospital/2)
-    end
-
-    field :use_management_system, type: :use_management_system_payload do
-      arg(:input, non_null(:use_management_system_input))
-      resolve(&Resolver.Hospital.use_management_system/2)
     end
   end
 end

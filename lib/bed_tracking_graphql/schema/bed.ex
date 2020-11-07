@@ -6,6 +6,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:suspected, as: "suspected")
     value(:negative, as: "negative")
     value(:positive, as: "positive")
+    value(:green, as: "green")
   end
 
   enum :level_of_care do
@@ -15,14 +16,43 @@ defmodule BedTrackingGraphql.Schema.Bed do
   end
 
   enum :ventilation_type do
+    value(:none, as: "none")
     value(:sv, as: "sv")
-    value(:niv, as: "niv")
-    value(:intubated, as: "intubated")
+    value(:nasal, as: "nasal")
+    value(:crap, as: "crap")
+    value(:hfno, as: "hfno")
+    value(:bipap, as: "bipap")
+    value(:invasive, as: "invasive")
   end
 
   enum :sex do
     value(:male, as: "male")
     value(:female, as: "female")
+  end
+
+  enum :source_of_admission do
+    value(:ed, as: "ed")
+    value(:internal_ward, as: "internal_ward")
+    value(:internal_itu, as: "internal_itu")
+    value(:external_ward, as: "external_ward")
+    value(:external_itu, as: "external_itu")
+  end
+
+  enum :rtt_type do
+    value(:none, as: "none")
+    value(:risk_of_next_twenty_four_h, as: "risk_of_next_twenty_four_h")
+    value(:haemodialysis, as: "haemodialysis")
+    value(:haemofiltration, as: "haemofiltration")
+    value(:pd, as: "pd")
+  end
+
+  enum :discharge_reason do
+    value(:internal_ward, as: "internal_ward")
+    value(:internal_icu, as: "internal_icu")
+    value(:external_ward, as: "external_ward")
+    value(:external_icu, as: "external_icu")
+    value(:death, as: "death")
+    value(:other, as: "other")
   end
 
   ### OBJECTS ###
@@ -32,10 +62,13 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
-    field(:hemofilter_in_use, :boolean)
     field(:reference, :string)
     field(:initials, :string)
     field(:sex, :sex)
+    field(:date_of_admission, :datetime)
+    field(:source_of_admission, :source_of_admission)
+    field(:use_tracheostomy, :boolean)
+    field(:rtt_type, :rtt_type)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -67,6 +100,10 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :bed, :bed
   end
 
+  object :discharge_patient_payload do
+    field :success, :boolean
+  end
+
   ### INPUTS ###
   input_object :register_beds_input do
     field(:number_of_beds, non_null(:integer))
@@ -93,10 +130,18 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:covid_status, :covid_status)
     field(:level_of_care, :level_of_care)
     field(:ventilation_type, :ventilation_type)
-    field(:hemofilter_in_use, :boolean)
     field(:reference, :string)
     field(:initials, :string)
     field(:sex, :sex)
+    field(:date_of_admission, :datetime)
+    field(:source_of_admission, :source_of_admission)
+    field(:rtt_type, :rtt_type)
+    field(:use_tracheostomy, :boolean)
+  end
+
+  input_object :discharge_patient_input do
+    field(:id, non_null(:id))
+    field(:reason, non_null(:discharge_reason))
   end
 
   ### QUERIES ###
@@ -127,6 +172,11 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field :update_bed, type: :update_bed_payload do
       arg(:input, non_null(:update_bed_input))
       resolve(&Resolver.Bed.update/2)
+    end
+
+    field :discharge_patient, type: :discharge_patient_payload do
+      arg(:input, non_null(:discharge_patient_input))
+      resolve(&Resolver.Bed.discharge_patient/2)
     end
   end
 end
