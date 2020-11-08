@@ -61,6 +61,21 @@ defmodule BedTracking.Repo.Bed do
     |> clean_bed()
   end
 
+  def move_changeset(struct, old_bed) do
+    struct
+    |> cast(%{}, [])
+    |> set_field_to(:available, false)
+    |> set_field_to(:covid_status, old_bed.covid_status)
+    |> set_field_to(:level_of_care, old_bed.level_of_care)
+    |> set_field_to(:ventilation_type, old_bed.ventilation_type)
+    |> set_field_to(:initials, old_bed.initials)
+    |> set_field_to(:sex, old_bed.sex)
+    |> set_field_to(:date_of_admission, old_bed.date_of_admission)
+    |> set_field_to(:source_of_admission, old_bed.source_of_admission)
+    |> set_field_to(:use_tracheostomy, old_bed.use_tracheostomy)
+    |> set_field_to(:rtt_type, old_bed.rtt_type)
+  end
+
   defp clean_bed_if_available_set_to_true(changeset) do
     changeset
     |> fetch_change(:available)

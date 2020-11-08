@@ -37,8 +37,9 @@ defmodule BedTracking.Context.Bed do
     end
   end
 
-  def discharge_patient(id, reason) do
+  def discharge_patient(id, %{reason: reason} = params) do
     with {:ok, bed} <- get_bed(id),
+         {:ok, _bed} <- move_to_another_bed_if_reason_internal_icu(bed, params),
          {:ok, _discharge} <- create_discharge(bed.ward_id, bed.hospital_id, reason),
          {:ok, _deleted_bed} <- clean_bed(bed) do
       {:ok, true}
@@ -128,5 +129,24 @@ defmodule BedTracking.Context.Bed do
     %Discharge{}
     |> Discharge.create_changeset(params)
     |> Repo.insert()
+  end
+
+  defp move_to_another_bed_if_reason_internal_icu(bed, %{reason: "internal_icu", bed_id: bed_id}) do
+    with {:ok, bed_to_move_to} <- get_bed(bed_id),
+         {:ok, true} <- bed_available?(bed_to_move_to),
+         {:ok, updated_bed} <- move_bed(bed, bed_to_move_to) do
+      {:ok, updated_bed}
+    end
+  end
+
+  defp move_to_another_bed_if_reason_internal_icu(_bed, _params), do: {:ok, :noop}
+
+  defp bed_available?(%{available: true}), do: {:ok, true}
+  defp bed_available?(bed), do: {:error, %Error.BedAlreadyInUseError{bed_id: bed.id}}
+
+  defp move_bed(old_bed, new_bed) do
+    new_bed
+    |> Bed.move_changeset(old_bed)
+    |> Repo.update()
   end
 end

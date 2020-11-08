@@ -41,10 +41,24 @@ defmodule BedTrackingGraphql.Resolver.Bed do
     end
   end
 
-  def discharge_patient(%{input: %{id: id, reason: reason}}, info) do
+  def discharge_patient(
+        %{input: %{id: id, reason: "internal_icu"} = params},
+        info
+      ) do
     with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, success} <- Context.Bed.discharge_patient(id, reason) do
+         {:ok, true} <- validate_params(params),
+         {:ok, success} <- Context.Bed.discharge_patient(id, params) do
       {:ok, %{success: success}}
     end
   end
+
+  def discharge_patient(%{input: %{id: id, reason: _reason} = params}, info) do
+    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+         {:ok, success} <- Context.Bed.discharge_patient(id, params) do
+      {:ok, %{success: success}}
+    end
+  end
+
+  defp validate_params(%{bed_id: _bed_id}), do: {:ok, true}
+  defp validate_params(_params), do: {:error, "bed_id is missing"}
 end

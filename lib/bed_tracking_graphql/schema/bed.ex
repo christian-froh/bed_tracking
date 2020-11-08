@@ -142,6 +142,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
   input_object :discharge_patient_input do
     field(:id, non_null(:id))
     field(:reason, non_null(:discharge_reason))
+    field(:bed_id, :id)
   end
 
   ### QUERIES ###
