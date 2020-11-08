@@ -20,11 +20,15 @@ defmodule BedTrackingWeb.ConnCase do
   using do
     quote do
       # Import conveniences for testing with connections
+      import ExUnit.CaptureLog
+      import BedTrackingWeb.Helper.Graphql
+      import BedTracking.Factory
       use Phoenix.ConnTest
       alias BedTrackingWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
       @endpoint BedTrackingWeb.Endpoint
+      @password "123123123"
     end
   end
 

@@ -123,6 +123,8 @@ defmodule BedTracking.Context.Bed do
     |> Repo.update()
   end
 
+  defp create_discharge(_ward_id, _hospital_id, "internal_icu"), do: {:ok, :noop}
+
   defp create_discharge(ward_id, hospital_id, reason) do
     params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason}
 

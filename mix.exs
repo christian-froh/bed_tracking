@@ -20,7 +20,7 @@ defmodule BedTracking.MixProject do
   def application do
     [
       mod: {BedTracking.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ex_machina]
     ]
   end
 
@@ -46,7 +46,8 @@ defmodule BedTracking.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ex_machina, "~> 2.4", only: :test}
     ]
   end
 
