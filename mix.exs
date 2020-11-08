@@ -20,7 +20,7 @@ defmodule BedTracking.MixProject do
   def application do
     [
       mod: {BedTracking.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ex_machina]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 

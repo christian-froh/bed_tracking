@@ -2,7 +2,9 @@ defmodule BedTracking.Factory do
   use ExMachina.Ecto, repo: BedTracking.Repo
 
   use BedTracking.Factory.{
+    Bed,
     Hospital,
-    HospitalManager
+    HospitalManager,
+    Ward
   }
 end
