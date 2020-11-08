@@ -66,68 +66,44 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
                hospital_manager.hospital.id
     end
 
-    # test "returns error when password is wrong", %{dealer: dealer} do
-    #   response =
-    #     graphql_public_query(
-    #       query: @query,
-    #       variables: %{input: %{email: dealer.email, password: "wrong_pw"}}
-    #     )
-    #     |> BedTrackingWeb.Endpoint.call([])
-    #     |> Map.get(:resp_body)
-    #     |> Jason.decode!()
+    test "returns error when password is wrong", %{hospital_manager: hospital_manager} do
+      response =
+        graphql_public_query(
+          query: @query,
+          variables: %{input: %{email: hospital_manager.email, password: "wrong_pw"}}
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
 
-    #   assert [
-    #            %{
-    #              "__typename" => "AuthenticationError",
-    #              "message" => "Authentication failed",
-    #              "path" => ["login"]
-    #            }
-    #          ] = response["errors"]
-    # end
+      assert [
+               %{
+                 "errorCode" => "AuthenticationError",
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "Authentication failed",
+                 "path" => ["loginHospitalManager"]
+               }
+             ] = response["errors"]
+    end
 
-    # test "returns error when dealer doesnt exist" do
-    #   response =
-    #     graphql_public_query(
-    #       query: @query,
-    #       variables: %{input: %{email: "wrong_email", password: @password}}
-    #     )
-    #     |> BedTrackingWeb.Endpoint.call([])
-    #     |> Map.get(:resp_body)
-    #     |> Jason.decode!()
+    test "returns error when hospital manager doesnt exist" do
+      response =
+        graphql_public_query(
+          query: @query,
+          variables: %{input: %{email: "wrong_email", password: @password}}
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
 
-    #   assert [
-    #            %{
-    #              "__typename" => "AuthenticationError",
-    #              "message" => "Authentication failed",
-    #              "path" => ["login"]
-    #            }
-    #          ] = response["errors"]
-    # end
-
-    # test "set the context to en when the header is en", %{dealer: dealer} do
-    #   response =
-    #     graphql_public_query(
-    #       query: @query,
-    #       variables: %{input: %{email: dealer.email, password: @password}},
-    #       locale: "en"
-    #     )
-    #     |> BedTrackingWeb.Endpoint.call([])
-
-    #   private = Map.get(response, :private)
-    #   assert get_in(private, [:absinthe, :context, :locale]) == "en"
-    # end
-
-    # test "set the context to de when the header is de", %{dealer: dealer} do
-    #   response =
-    #     graphql_public_query(
-    #       query: @query,
-    #       variables: %{input: %{email: dealer.email, password: @password}},
-    #       locale: "de"
-    #     )
-    #     |> BedTrackingWeb.Endpoint.call([])
-
-    #   private = Map.get(response, :private)
-    #   assert get_in(private, [:absinthe, :context, :locale]) == "de"
-    # end
+      assert [
+               %{
+                 "errorCode" => "AuthenticationError",
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "Authentication failed",
+                 "path" => ["loginHospitalManager"]
+               }
+             ] = response["errors"]
+    end
   end
 end

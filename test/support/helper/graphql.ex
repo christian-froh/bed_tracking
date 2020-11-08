@@ -5,21 +5,16 @@ defmodule BedTrackingWeb.Helper.Graphql do
   use Plug.Test
 
   def graphql_public_query(options) do
-    locale = options[:locale] || "en"
-
     conn(:post, "/api", build_query(options[:query], options[:variables]))
     |> put_req_header("content-type", "application/json")
-    |> put_req_header("accept-language", locale)
   end
 
   def graphql_query(options) do
-    auth_token = options[:token]
-    locale = options[:locale] || "en"
+    token = options[:token]
 
     conn(:post, "/api", build_query(options[:query], options[:variables]))
     |> put_req_header("content-type", "application/json")
-    |> put_req_header("authorization", "Bearer #{auth_token}")
-    |> put_req_header("accept-language", locale)
+    |> put_req_header("hospitalid", token)
   end
 
   defp build_query(query, variables) do

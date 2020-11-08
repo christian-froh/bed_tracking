@@ -36,6 +36,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:internal_itu, as: "internal_itu")
     value(:external_ward, as: "external_ward")
     value(:external_itu, as: "external_itu")
+    value(:itu_readmission, as: "itu_readmission")
   end
 
   enum :rtt_type do
