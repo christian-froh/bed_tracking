@@ -7,7 +7,7 @@ defmodule BedTracking.Factory.Ward do
         %BedTracking.Repo.Ward{
           name: "Lung Ward",
           description: "The ward responsible for lungs",
-          is_covid_ward: true,
+          ward_type: "covid",
           hospital: hospital
         }
       end

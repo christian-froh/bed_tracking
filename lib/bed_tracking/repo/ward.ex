@@ -7,7 +7,7 @@ defmodule BedTracking.Repo.Ward do
   schema "wards" do
     field(:name, :string)
     field(:description, :string)
-    field(:is_covid_ward, :boolean)
+    field(:ward_type, :string)
 
     has_many(:beds, Bed, on_delete: :delete_all)
     belongs_to(:hospital, Hospital)
@@ -17,12 +17,12 @@ defmodule BedTracking.Repo.Ward do
 
   def create_changeset(struct, params) do
     struct
-    |> cast(params, [:name, :description, :is_covid_ward, :hospital_id])
-    |> validate_required([:name, :hospital_id])
+    |> cast(params, [:name, :description, :ward_type, :hospital_id])
+    |> validate_required([:name, :ward_type, :hospital_id])
   end
 
   def update_changeset(struct, params) do
     struct
-    |> cast(params, [:name, :description, :is_covid_ward])
+    |> cast(params, [:name, :description, :ward_type])
   end
 end

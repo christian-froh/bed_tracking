@@ -23,20 +23,28 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&Resolver.Hospital.dataloader_unavailable_beds/3)
     end
 
+    field :total_amber_beds, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_amber_beds/3)
+    end
+
+    field :total_available_amber_beds, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_available_amber_beds/3)
+    end
+
+    field :total_green_beds, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_green_beds/3)
+    end
+
+    field :total_available_green_beds, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_available_green_beds/3)
+    end
+
     field :total_covid_beds, :integer do
       resolve(&Resolver.Hospital.dataloader_total_covid_beds/3)
     end
 
     field :total_available_covid_beds, :integer do
       resolve(&Resolver.Hospital.dataloader_total_available_covid_beds/3)
-    end
-
-    field :total_non_covid_beds, :integer do
-      resolve(&Resolver.Hospital.dataloader_total_non_covid_beds/3)
-    end
-
-    field :total_available_non_covid_beds, :integer do
-      resolve(&Resolver.Hospital.dataloader_total_available_non_covid_beds/3)
     end
 
     field :total_covid_status_suspected, :integer do

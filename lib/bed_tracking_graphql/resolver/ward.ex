@@ -5,7 +5,7 @@ defmodule BedTrackingGraphql.Resolver.Ward do
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Hospital
 
-  def create(%{input: %{name: _name} = params}, info) do
+  def create(%{input: %{name: _name, ward_type: _ward_type} = params}, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
          {:ok, ward} <- Context.Ward.create(params, current_hospital.id) do
       {:ok, %{ward: ward}}

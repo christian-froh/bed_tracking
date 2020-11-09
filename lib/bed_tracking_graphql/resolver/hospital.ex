@@ -75,7 +75,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+  def dataloader_total_amber_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
@@ -83,7 +83,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "amber" end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
@@ -94,11 +94,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_available_covid_beds(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
+  def dataloader_total_available_amber_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
@@ -106,7 +102,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == true end)
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "amber" end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
@@ -119,7 +115,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_non_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+  def dataloader_total_green_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
@@ -127,7 +123,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "green" end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
@@ -138,11 +134,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_available_non_covid_beds(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
+  def dataloader_total_available_green_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
@@ -150,7 +142,47 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      wards = Enum.filter(wards, fn ward -> ward.is_covid_ward == false end)
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "green" end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed ->
+          Enum.member?(ward_ids, bed.ward_id) == true && bed.available == true
+        end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "covid" end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_available_covid_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == "covid" end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =

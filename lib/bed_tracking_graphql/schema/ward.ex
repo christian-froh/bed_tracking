@@ -3,12 +3,19 @@ defmodule BedTrackingGraphql.Schema.Ward do
   alias BedTracking.Context
   alias BedTracking.Repo
 
+  ### ENUMS ###
+  enum :ward_type do
+    value(:amber, as: "amber")
+    value(:green, as: "green")
+    value(:covid, as: "covid")
+  end
+
   ### OBJECTS ###
   object :ward do
     field(:id, non_null(:id))
     field(:name, non_null(:string))
     field(:description, :string)
-    field(:is_covid_ward, :boolean)
+    field(:ward_type, non_null(:ward_type))
 
     field :total_beds, :integer do
       resolve(&Resolver.Ward.dataloader_total_beds/3)
@@ -108,14 +115,14 @@ defmodule BedTrackingGraphql.Schema.Ward do
   input_object :create_ward_input do
     field(:name, non_null(:string))
     field(:description, :string)
-    field(:is_covid_ward, :boolean)
+    field(:ward_type, non_null(:ward_type))
   end
 
   input_object :update_ward_input do
     field(:id, non_null(:id))
     field(:name, :string)
     field(:description, :string)
-    field(:is_covid_ward, :boolean)
+    field(:ward_type, :ward_type)
   end
 
   input_object :remove_ward_input do
