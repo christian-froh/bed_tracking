@@ -289,7 +289,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_rtt_type_none(
+  def dataloader_total_rrt_type_none(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info
@@ -299,15 +299,15 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_rtt_type_none =
-        Enum.filter(beds, fn bed -> bed.rtt_type == "none" end)
+      total_rrt_type_none =
+        Enum.filter(beds, fn bed -> bed.rrt_type == "none" end)
         |> length()
 
-      {:ok, total_rtt_type_none}
+      {:ok, total_rrt_type_none}
     end)
   end
 
-  def dataloader_total_rtt_type_risk_of_next_twenty_four_h(
+  def dataloader_total_rrt_type_risk_of_next_twenty_four_h(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info
@@ -317,15 +317,15 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_rtt_type_risk_of_next_twenty_four_h =
-        Enum.filter(beds, fn bed -> bed.rtt_type == "risk_of_next_twenty_four_h" end)
+      total_rrt_type_risk_of_next_twenty_four_h =
+        Enum.filter(beds, fn bed -> bed.rrt_type == "risk_of_next_twenty_four_h" end)
         |> length()
 
-      {:ok, total_rtt_type_risk_of_next_twenty_four_h}
+      {:ok, total_rrt_type_risk_of_next_twenty_four_h}
     end)
   end
 
-  def dataloader_total_rtt_type_haemodialysis(
+  def dataloader_total_rrt_type_haemodialysis(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info
@@ -335,15 +335,15 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_rtt_type_haemodialysis =
-        Enum.filter(beds, fn bed -> bed.rtt_type == "haemodialysis" end)
+      total_rrt_type_haemodialysis =
+        Enum.filter(beds, fn bed -> bed.rrt_type == "haemodialysis" end)
         |> length()
 
-      {:ok, total_rtt_type_haemodialysis}
+      {:ok, total_rrt_type_haemodialysis}
     end)
   end
 
-  def dataloader_total_rtt_type_haemofiltration(
+  def dataloader_total_rrt_type_haemofiltration(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info
@@ -353,15 +353,15 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_rtt_type_haemofiltration =
-        Enum.filter(beds, fn bed -> bed.rtt_type == "haemofiltration" end)
+      total_rrt_type_haemofiltration =
+        Enum.filter(beds, fn bed -> bed.rrt_type == "haemofiltration" end)
         |> length()
 
-      {:ok, total_rtt_type_haemofiltration}
+      {:ok, total_rrt_type_haemofiltration}
     end)
   end
 
-  def dataloader_total_rtt_type_pd(
+  def dataloader_total_rrt_type_pd(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info
@@ -371,11 +371,11 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_rtt_type_pd =
-        Enum.filter(beds, fn bed -> bed.rtt_type == "pd" end)
+      total_rrt_type_pd =
+        Enum.filter(beds, fn bed -> bed.rrt_type == "pd" end)
         |> length()
 
-      {:ok, total_rtt_type_pd}
+      {:ok, total_rrt_type_pd}
     end)
   end
 

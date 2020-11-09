@@ -6,7 +6,7 @@ defmodule BedTracking.Repo.Migrations.AddDateOfAdmissionToBeds do
       add(:date_of_admission, :utc_datetime)
       add(:source_of_admission, :string)
       add(:use_tracheostomy, :boolean)
-      add(:rtt_type, :string)
+      add(:rrt_type, :string)
       remove(:hemofilter_in_use)
     end
 

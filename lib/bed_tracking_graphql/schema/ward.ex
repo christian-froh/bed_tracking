@@ -50,24 +50,24 @@ defmodule BedTrackingGraphql.Schema.Ward do
       resolve(&Resolver.Ward.dataloader_total_level_of_care_level_3/3)
     end
 
-    field :total_rtt_type_none, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rtt_type_none/3)
+    field :total_rrt_type_none, :integer do
+      resolve(&Resolver.Ward.dataloader_total_rrt_type_none/3)
     end
 
-    field :total_rtt_type_risk_of_next_twenty_four_h, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rtt_type_risk_of_next_twenty_four_h/3)
+    field :total_rrt_type_risk_of_next_twenty_four_h, :integer do
+      resolve(&Resolver.Ward.dataloader_total_rrt_type_risk_of_next_twenty_four_h/3)
     end
 
-    field :total_rtt_type_haemodialysis, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rtt_type_haemodialysis/3)
+    field :total_rrt_type_haemodialysis, :integer do
+      resolve(&Resolver.Ward.dataloader_total_rrt_type_haemodialysis/3)
     end
 
-    field :total_rtt_type_haemofiltration, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rtt_type_haemofiltration/3)
+    field :total_rrt_type_haemofiltration, :integer do
+      resolve(&Resolver.Ward.dataloader_total_rrt_type_haemofiltration/3)
     end
 
-    field :total_rtt_type_pd, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rtt_type_pd/3)
+    field :total_rrt_type_pd, :integer do
+      resolve(&Resolver.Ward.dataloader_total_rrt_type_pd/3)
     end
 
     field :total_ventilator_in_use, :integer do

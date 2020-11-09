@@ -15,7 +15,7 @@ defmodule BedTracking.Repo.Bed do
     field(:date_of_admission, :utc_datetime)
     field(:source_of_admission, :string)
     field(:use_tracheostomy, :boolean)
-    field(:rtt_type, :string)
+    field(:rrt_type, :string)
 
     belongs_to(:hospital, Hospital)
     belongs_to(:ward, Ward)
@@ -50,7 +50,7 @@ defmodule BedTracking.Repo.Bed do
       :date_of_admission,
       :source_of_admission,
       :use_tracheostomy,
-      :rtt_type
+      :rrt_type
     ])
     |> clean_bed_if_available_set_to_true()
   end
@@ -73,7 +73,7 @@ defmodule BedTracking.Repo.Bed do
     |> set_field_to(:date_of_admission, old_bed.date_of_admission)
     |> set_field_to(:source_of_admission, old_bed.source_of_admission)
     |> set_field_to(:use_tracheostomy, old_bed.use_tracheostomy)
-    |> set_field_to(:rtt_type, old_bed.rtt_type)
+    |> set_field_to(:rrt_type, old_bed.rrt_type)
   end
 
   defp clean_bed_if_available_set_to_true(changeset) do
@@ -100,7 +100,7 @@ defmodule BedTracking.Repo.Bed do
     |> set_field_to(:date_of_admission, nil)
     |> set_field_to(:source_of_admission, nil)
     |> set_field_to(:use_tracheostomy, nil)
-    |> set_field_to(:rtt_type, nil)
+    |> set_field_to(:rrt_type, nil)
   end
 
   defp set_field_to(changeset, field, value) do

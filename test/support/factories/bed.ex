@@ -16,7 +16,7 @@ defmodule BedTracking.Factory.Bed do
           date_of_admission: nil,
           source_of_admission: nil,
           use_tracheostomy: nil,
-          rtt_type: nil,
+          rrt_type: nil,
           hospital: hospital,
           ward: ward
         }

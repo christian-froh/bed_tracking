@@ -39,7 +39,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:itu_readmission, as: "itu_readmission")
   end
 
-  enum :rtt_type do
+  enum :rrt_type do
     value(:none, as: "none")
     value(:risk_of_next_twenty_four_h, as: "risk_of_next_twenty_four_h")
     value(:haemodialysis, as: "haemodialysis")
@@ -69,7 +69,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:date_of_admission, :datetime)
     field(:source_of_admission, :source_of_admission)
     field(:use_tracheostomy, :boolean)
-    field(:rtt_type, :rtt_type)
+    field(:rrt_type, :rrt_type)
 
     field :ward, non_null(:ward) do
       resolve(dataloader(Repo))
@@ -136,7 +136,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     field(:sex, :sex)
     field(:date_of_admission, :datetime)
     field(:source_of_admission, :source_of_admission)
-    field(:rtt_type, :rtt_type)
+    field(:rrt_type, :rrt_type)
     field(:use_tracheostomy, :boolean)
   end
 
