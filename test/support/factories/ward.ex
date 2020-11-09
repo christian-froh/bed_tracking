@@ -8,6 +8,7 @@ defmodule BedTracking.Factory.Ward do
           name: "Lung Ward",
           description: "The ward responsible for lungs",
           ward_type: "covid",
+          is_surge_ward: false,
           hospital: hospital
         }
       end

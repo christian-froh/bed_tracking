@@ -16,6 +16,12 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:name, non_null(:string))
     field(:description, :string)
     field(:ward_type, non_null(:ward_type))
+    field(:is_surge_ward, :boolean)
+    field(:number_of_critcare_nurses, :integer)
+    field(:number_of_other_rns, :integer)
+    field(:number_of_nurse_support_staff, :integer)
+    field(:max_admission_capacity, :integer)
+    field(:can_provide_ics_ratios, :boolean)
 
     field :total_beds, :integer do
       resolve(&Resolver.Ward.dataloader_total_beds/3)
@@ -116,6 +122,12 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:name, non_null(:string))
     field(:description, :string)
     field(:ward_type, non_null(:ward_type))
+    field(:is_surge_ward, :boolean)
+    field(:number_of_critcare_nurses, :integer)
+    field(:number_of_other_rns, :integer)
+    field(:number_of_nurse_support_staff, :integer)
+    field(:max_admission_capacity, :integer)
+    field(:can_provide_ics_ratios, :boolean)
   end
 
   input_object :update_ward_input do
@@ -123,6 +135,12 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:name, :string)
     field(:description, :string)
     field(:ward_type, :ward_type)
+    field(:is_surge_ward, :boolean)
+    field(:number_of_critcare_nurses, :integer)
+    field(:number_of_other_rns, :integer)
+    field(:number_of_nurse_support_staff, :integer)
+    field(:max_admission_capacity, :integer)
+    field(:can_provide_ics_ratios, :boolean)
   end
 
   input_object :remove_ward_input do
