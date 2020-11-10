@@ -270,4 +270,43 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
       {:ok, total_ventilation_type}
     end)
   end
+
+  def dataloader_total_number_of_critcare_nurses(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+
+      total_number_of_critcare_nurses = Enum.map(wards, fn ward -> ward.number_of_critcare_nurses || 0 end) |> Enum.sum()
+
+      {:ok, total_number_of_critcare_nurses}
+    end)
+  end
+
+  def dataloader_total_number_of_other_rns(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+
+      total_number_of_other_rns = Enum.map(wards, fn ward -> ward.number_of_other_rns || 0 end) |> Enum.sum()
+
+      {:ok, total_number_of_other_rns}
+    end)
+  end
+
+  def dataloader_total_number_of_nurse_support_staff(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+
+      total_number_of_nurse_support_staff = Enum.map(wards, fn ward -> ward.number_of_nurse_support_staff || 0 end) |> Enum.sum()
+
+      {:ok, total_number_of_nurse_support_staff}
+    end)
+  end
 end

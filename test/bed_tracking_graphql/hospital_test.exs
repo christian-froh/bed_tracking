@@ -6,9 +6,9 @@ defmodule BedTrackingGraphql.HospitalTest do
       hospital = insert(:hospital)
       hospital_manager = insert(:hospital_manager, hospital: hospital)
 
-      ward_amber = insert(:ward, ward_type: "amber", hospital: hospital)
-      ward_green = insert(:ward, ward_type: "green", hospital: hospital)
-      ward_covid = insert(:ward, ward_type: "covid", hospital: hospital)
+      ward_amber = insert(:ward, ward_type: "amber", number_of_critcare_nurses: 10, number_of_other_rns: 0, hospital: hospital)
+      ward_green = insert(:ward, ward_type: "green", number_of_critcare_nurses: 5, number_of_other_rns: 10, hospital: hospital)
+      ward_covid = insert(:ward, ward_type: "covid", number_of_critcare_nurses: 8, number_of_other_rns: nil, hospital: hospital)
 
       insert(:bed, available: true, ward: ward_amber, hospital: hospital)
       insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "risk_of_next_twenty_four_h", ward: ward_amber, hospital: hospital)
@@ -50,6 +50,9 @@ defmodule BedTrackingGraphql.HospitalTest do
           totalVentilatorTypeNone
           totalVentilatorTypeSv
           totalVentilatorTypeInvasive
+
+          totalNumberOfCritcareNurses
+          totalNumberOfOtherRns
         }
       }
     }
@@ -88,7 +91,9 @@ defmodule BedTrackingGraphql.HospitalTest do
                "totalRrtTypePd" => 2,
                "totalVentilatorTypeNone" => 1,
                "totalVentilatorTypeSv" => 1,
-               "totalVentilatorTypeInvasive" => 4
+               "totalVentilatorTypeInvasive" => 4,
+               "totalNumberOfCritcareNurses" => 23,
+               "totalNumberOfOtherRns" => 10
              } = response["data"]["getHospital"]["hospital"]
     end
   end

@@ -123,6 +123,18 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "invasive") end)
     end
 
+    field :total_number_of_critcare_nurses, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_number_of_critcare_nurses/3)
+    end
+
+    field :total_number_of_other_rns, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_number_of_other_rns/3)
+    end
+
+    field :total_number_of_nurse_support_staff, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_number_of_nurse_support_staff/3)
+    end
+
     field :wards, list_of(:ward) do
       resolve(
         dataloader(Repo, :wards,
