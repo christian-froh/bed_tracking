@@ -36,55 +36,79 @@ defmodule BedTrackingGraphql.Schema.Ward do
     end
 
     field :total_covid_status_suspected, :integer do
-      resolve(&Resolver.Ward.dataloader_total_covid_status_suspected/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "suspected") end)
     end
 
     field :total_covid_status_negative, :integer do
-      resolve(&Resolver.Ward.dataloader_total_covid_status_negative/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "negative") end)
     end
 
     field :total_covid_status_positive, :integer do
-      resolve(&Resolver.Ward.dataloader_total_covid_status_positive/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "positive") end)
     end
 
     field :total_covid_status_green, :integer do
-      resolve(&Resolver.Ward.dataloader_total_covid_status_green/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "green") end)
     end
 
     field :total_level_of_care_level_one, :integer do
-      resolve(&Resolver.Ward.dataloader_total_level_of_care_level_1/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_level_of_care(hospital, params, info, "level_1") end)
     end
 
     field :total_level_of_care_level_two, :integer do
-      resolve(&Resolver.Ward.dataloader_total_level_of_care_level_2/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_level_of_care(hospital, params, info, "level_2") end)
     end
 
     field :total_level_of_care_level_three, :integer do
-      resolve(&Resolver.Ward.dataloader_total_level_of_care_level_3/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_level_of_care(hospital, params, info, "level_3") end)
     end
 
     field :total_rrt_type_none, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rrt_type_none/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_rrt_type(hospital, params, info, "none") end)
     end
 
     field :total_rrt_type_risk_of_next_twenty_four_h, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rrt_type_risk_of_next_twenty_four_h/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_rrt_type(hospital, params, info, "risk_of_next_twenty_four_h") end)
     end
 
     field :total_rrt_type_haemodialysis, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rrt_type_haemodialysis/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_rrt_type(hospital, params, info, "haemodialysis") end)
     end
 
     field :total_rrt_type_haemofiltration, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rrt_type_haemofiltration/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_rrt_type(hospital, params, info, "haemofiltration") end)
     end
 
     field :total_rrt_type_pd, :integer do
-      resolve(&Resolver.Ward.dataloader_total_rrt_type_pd/3)
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_rrt_type(hospital, params, info, "pd") end)
     end
 
-    field :total_ventilator_in_use, :integer do
-      resolve(&Resolver.Ward.dataloader_total_ventilator_in_use/3)
+    field :total_ventilator_type_none, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "none") end)
+    end
+
+    field :total_ventilator_type_sv, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "sv") end)
+    end
+
+    field :total_ventilator_type_nasal, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "nasal") end)
+    end
+
+    field :total_ventilator_type_cpap, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "cpap") end)
+    end
+
+    field :total_ventilator_type_hfno, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "hfno") end)
+    end
+
+    field :total_ventilator_type_bipap, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "bipap") end)
+    end
+
+    field :total_ventilator_type_invasive, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_ventilator_type(hospital, params, info, "invasive") end)
     end
 
     field :beds, list_of(:bed) do

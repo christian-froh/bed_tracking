@@ -195,233 +195,79 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_covid_status_suspected(
+  def dataloader_total_covid_status(
         hospital,
         _params,
-        %{context: %{loader: loader}} = _info
+        %{context: %{loader: loader}} = _info,
+        covid_status
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_covid_suspected =
-        Enum.filter(beds, fn bed -> bed.covid_status == "suspected" end)
+      total_covid_status =
+        Enum.filter(beds, fn bed -> bed.covid_status == covid_status end)
         |> length()
 
-      {:ok, total_covid_suspected}
+      {:ok, total_covid_status}
     end)
   end
 
-  def dataloader_total_covid_status_negative(
+  def dataloader_total_level_of_care(
         hospital,
         _params,
-        %{context: %{loader: loader}} = _info
+        %{context: %{loader: loader}} = _info,
+        care_level
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_covid_negative =
-        Enum.filter(beds, fn bed -> bed.covid_status == "negative" end)
+      total_care_level =
+        Enum.filter(beds, fn bed -> bed.level_of_care == care_level end)
         |> length()
 
-      {:ok, total_covid_negative}
+      {:ok, total_care_level}
     end)
   end
 
-  def dataloader_total_covid_status_positive(
+  def dataloader_total_rrt_type(
         hospital,
         _params,
-        %{context: %{loader: loader}} = _info
+        %{context: %{loader: loader}} = _info,
+        rrt_type
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_covid_positive =
-        Enum.filter(beds, fn bed -> bed.covid_status == "positive" end)
+      total_rrt_type =
+        Enum.filter(beds, fn bed -> bed.rrt_type == rrt_type end)
         |> length()
 
-      {:ok, total_covid_positive}
+      {:ok, total_rrt_type}
     end)
   end
 
-  def dataloader_total_covid_status_green(
+  def dataloader_total_ventilator_type(
         hospital,
         _params,
-        %{context: %{loader: loader}} = _info
+        %{context: %{loader: loader}} = _info,
+        ventilation_type
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
 
-      total_covid_green =
-        Enum.filter(beds, fn bed -> bed.covid_status == "green" end)
+      total_ventilation_type =
+        Enum.filter(beds, fn bed -> bed.ventilation_type == ventilation_type end)
         |> length()
 
-      {:ok, total_covid_green}
-    end)
-  end
-
-  def dataloader_total_level_of_care_level_1(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_level_1 =
-        Enum.filter(beds, fn bed -> bed.level_of_care == "level_1" end)
-        |> length()
-
-      {:ok, total_level_1}
-    end)
-  end
-
-  def dataloader_total_level_of_care_level_2(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_level_2 =
-        Enum.filter(beds, fn bed -> bed.level_of_care == "level_2" end)
-        |> length()
-
-      {:ok, total_level_2}
-    end)
-  end
-
-  def dataloader_total_level_of_care_level_3(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_level_3 =
-        Enum.filter(beds, fn bed -> bed.level_of_care == "level_3" end)
-        |> length()
-
-      {:ok, total_level_3}
-    end)
-  end
-
-  def dataloader_total_rrt_type_none(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_rrt_type_none =
-        Enum.filter(beds, fn bed -> bed.rrt_type == "none" end)
-        |> length()
-
-      {:ok, total_rrt_type_none}
-    end)
-  end
-
-  def dataloader_total_rrt_type_risk_of_next_twenty_four_h(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_rrt_type_risk_of_next_twenty_four_h =
-        Enum.filter(beds, fn bed -> bed.rrt_type == "risk_of_next_twenty_four_h" end)
-        |> length()
-
-      {:ok, total_rrt_type_risk_of_next_twenty_four_h}
-    end)
-  end
-
-  def dataloader_total_rrt_type_haemodialysis(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_rrt_type_haemodialysis =
-        Enum.filter(beds, fn bed -> bed.rrt_type == "haemodialysis" end)
-        |> length()
-
-      {:ok, total_rrt_type_haemodialysis}
-    end)
-  end
-
-  def dataloader_total_rrt_type_haemofiltration(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_rrt_type_haemofiltration =
-        Enum.filter(beds, fn bed -> bed.rrt_type == "haemofiltration" end)
-        |> length()
-
-      {:ok, total_rrt_type_haemofiltration}
-    end)
-  end
-
-  def dataloader_total_rrt_type_pd(
-        hospital,
-        _params,
-        %{context: %{loader: loader}} = _info
-      ) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_rrt_type_pd =
-        Enum.filter(beds, fn bed -> bed.rrt_type == "pd" end)
-        |> length()
-
-      {:ok, total_rrt_type_pd}
-    end)
-  end
-
-  def dataloader_total_ventilator_in_use(hospital, _params, %{context: %{loader: loader}} = _info) do
-    loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
-    |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
-
-      total_ventilator_in_use =
-        Enum.filter(beds, fn bed -> bed.ventilation_type != nil end)
-        |> length()
-
-      {:ok, total_ventilator_in_use}
+      {:ok, total_ventilation_type}
     end)
   end
 end

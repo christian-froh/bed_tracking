@@ -19,7 +19,7 @@ defmodule BedTrackingGraphql.Schema.Bed do
     value(:none, as: "none")
     value(:sv, as: "sv")
     value(:nasal, as: "nasal")
-    value(:crap, as: "crap")
+    value(:cpap, as: "cpap")
     value(:hfno, as: "hfno")
     value(:bipap, as: "bipap")
     value(:invasive, as: "invasive")

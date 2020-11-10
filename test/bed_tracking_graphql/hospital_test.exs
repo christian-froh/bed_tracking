@@ -11,16 +11,16 @@ defmodule BedTrackingGraphql.HospitalTest do
       ward_covid = insert(:ward, ward_type: "covid", hospital: hospital)
 
       insert(:bed, available: true, ward: ward_amber, hospital: hospital)
-      insert(:bed, available: false, ward: ward_amber, hospital: hospital)
-      insert(:bed, available: false, ward: ward_amber, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "risk_of_next_twenty_four_h", ward: ward_amber, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "sv", rrt_type: "pd", ward: ward_amber, hospital: hospital)
 
       insert(:bed, available: true, ward: ward_green, hospital: hospital)
-      insert(:bed, available: false, ward: ward_green, hospital: hospital)
-      insert(:bed, available: false, ward: ward_green, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "risk_of_next_twenty_four_h", ward: ward_green, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "none", rrt_type: "pd", ward: ward_green, hospital: hospital)
 
       insert(:bed, available: true, ward: ward_covid, hospital: hospital)
-      insert(:bed, available: false, ward: ward_covid, hospital: hospital)
-      insert(:bed, available: false, ward: ward_covid, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "haemodialysis", ward: ward_covid, hospital: hospital)
+      insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "haemodialysis", ward: ward_covid, hospital: hospital)
 
       token = hospital_manager.hospital_id
 
@@ -42,6 +42,14 @@ defmodule BedTrackingGraphql.HospitalTest do
           totalAvailableGreenBeds
           totalCovidBeds
           totalAvailableCovidBeds
+
+          totalRrtTypeRiskOfNextTwentyFourH
+          totalRrtTypeHaemodialysis
+          totalRrtTypePd
+
+          totalVentilatorTypeNone
+          totalVentilatorTypeSv
+          totalVentilatorTypeInvasive
         }
       }
     }
@@ -74,7 +82,13 @@ defmodule BedTrackingGraphql.HospitalTest do
                "totalBeds" => 9,
                "totalCovidBeds" => 3,
                "totalGreenBeds" => 3,
-               "unavailableBeds" => 6
+               "unavailableBeds" => 6,
+               "totalRrtTypeRiskOfNextTwentyFourH" => 2,
+               "totalRrtTypeHaemodialysis" => 2,
+               "totalRrtTypePd" => 2,
+               "totalVentilatorTypeNone" => 1,
+               "totalVentilatorTypeSv" => 1,
+               "totalVentilatorTypeInvasive" => 4
              } = response["data"]["getHospital"]["hospital"]
     end
   end
