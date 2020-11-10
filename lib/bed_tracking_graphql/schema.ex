@@ -11,6 +11,7 @@ defmodule BedTrackingGraphql.Schema do
   import_types(BedTrackingGraphql.Schema.Error)
   import_types(BedTrackingGraphql.Schema.Hospital)
   import_types(BedTrackingGraphql.Schema.HospitalManager)
+  import_types(BedTrackingGraphql.Schema.Report)
   import_types(BedTrackingGraphql.Schema.Ward)
 
   query do
@@ -18,6 +19,7 @@ defmodule BedTrackingGraphql.Schema do
     import_fields(:bed_queries)
     import_fields(:error_queries)
     import_fields(:hospital_queries)
+    import_fields(:report_queries)
   end
 
   mutation do
@@ -62,9 +64,7 @@ defmodule BedTrackingGraphql.Schema do
         query_fun.(query, args)
 
       not_implemented ->
-        Logger.warn(
-          "Dataloader query not implemented for query function #{inspect(not_implemented)}"
-        )
+        Logger.warn("Dataloader query not implemented for query function #{inspect(not_implemented)}")
 
         query
     end
