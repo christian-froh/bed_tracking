@@ -86,12 +86,6 @@ defmodule BedTrackingGraphql.Schema.Report do
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_ventilation_type_invasive, :integer do
-      resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(report, params, info, {"positive", "suspected", "invasive"})
-      end)
-    end
-
     field :total_non_available_beds_where_covid_status_positive_or_suspected_and_ventilation_type_non_invasive, :integer do
       resolve(fn report, params, info ->
         Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
