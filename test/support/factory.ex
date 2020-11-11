@@ -3,6 +3,7 @@ defmodule BedTracking.Factory do
 
   use BedTracking.Factory.{
     Bed,
+    Discharge,
     Hospital,
     HospitalManager,
     Ward

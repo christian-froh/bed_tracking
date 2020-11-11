@@ -4,6 +4,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
   alias BedTracking.Repo
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Ward
+  alias BedTracking.Repo.Discharge
 
   def get_report(_params, info) do
     with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
@@ -161,6 +162,138 @@ defmodule BedTrackingGraphql.Resolver.Report do
         |> length()
 
       {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
+        _report,
+        _params,
+        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        {covid_status1, covid_status2, rrt_type}
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      total_beds =
+        Enum.filter(beds, fn bed ->
+          bed.available == false and (bed.covid_status == covid_status1 or bed.covid_status == covid_status2) and bed.rrt_type == rrt_type
+        end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_non_available_beds_where_date_admitted_yesterday(
+        _report,
+        _params,
+        %{context: %{current_hospital: hospital, loader: loader}} = _info
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+
+      total_beds =
+        Enum.filter(beds, fn bed ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+          %DateTime{year: year, month: month, day: day} = yesterday
+
+          yesterday = %DateTime{
+            year: year,
+            month: month,
+            day: day,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            microsecond: {0, 0},
+            time_zone: "Etc/UTC",
+            zone_abbr: "UTC",
+            utc_offset: 0,
+            std_offset: 0
+          }
+
+          bed.available == false and DateTime.compare(bed.date_of_admission, yesterday) == :gt
+        end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_discharges_where_reason_not_death_and_inserted_at_yesterday(
+        _report,
+        _params,
+        %{context: %{current_hospital: hospital, loader: loader}} = _info
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: hospital.id)
+
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+          %DateTime{year: year, month: month, day: day} = yesterday
+
+          yesterday = %DateTime{
+            year: year,
+            month: month,
+            day: day,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            microsecond: {0, 0},
+            time_zone: "Etc/UTC",
+            zone_abbr: "UTC",
+            utc_offset: 0,
+            std_offset: 0
+          }
+
+          discharge.reason != "death" and DateTime.compare(discharge.inserted_at, yesterday) == :gt
+        end)
+        |> length()
+
+      {:ok, total_discharges}
+    end)
+  end
+
+  def dataloader_total_discharges_where_reason_death_and_inserted_at_yesterday(
+        _report,
+        _params,
+        %{context: %{current_hospital: hospital, loader: loader}} = _info
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: hospital.id)
+
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+          %DateTime{year: year, month: month, day: day} = yesterday
+
+          yesterday = %DateTime{
+            year: year,
+            month: month,
+            day: day,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            microsecond: {0, 0},
+            time_zone: "Etc/UTC",
+            zone_abbr: "UTC",
+            utc_offset: 0,
+            std_offset: 0
+          }
+
+          discharge.reason == "death" and DateTime.compare(discharge.inserted_at, yesterday) == :gt
+        end)
+        |> length()
+
+      {:ok, total_discharges}
     end)
   end
 end
