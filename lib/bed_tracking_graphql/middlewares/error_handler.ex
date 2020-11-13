@@ -56,6 +56,7 @@ defmodule BedTrackingGraphql.Middlewares.ErrorHandler do
     error
   end
 
+  # sobelow_skip ["BedTrackingGraphql.Middlewares.ErrorHandler"]
   defp replace_graphql_keys(error) do
     error =
       Enum.reduce(error, %{}, fn {k, v}, acc ->

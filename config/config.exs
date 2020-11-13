@@ -10,7 +10,7 @@ use Mix.Config
 config :bed_tracking,
   ecto_repos: [BedTracking.Repo],
   generators: [binary_id: true],
-  token_secret: "rwXhvaM/jd6J1ZQWONddzBoAK3a/O4neBCqLrq3SyIiJf38wh1t1SBvA90KC3xI2",
+  token_secret: "",
   token_salt: "bed-tracking",
   token_max_age: 86_400_000
 

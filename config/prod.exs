@@ -3,6 +3,7 @@ use Mix.Config
 config :bed_tracking, BedTrackingWeb.Endpoint,
   load_from_system_env: true,
   server: true,
+  force_ssl: [hsts: true],
   root: ".",
   version: Application.spec(:bed_tracking, :vsn)
 
