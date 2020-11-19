@@ -95,32 +95,32 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_rrt_type(hospital, params, info, "pd") end)
     end
 
-    field :total_ventilator_type_none, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "none") end)
+    field :total_ventilation_type_none, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "none") end)
     end
 
-    field :total_ventilator_type_sv, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "sv") end)
+    field :total_ventilation_type_sv, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "sv") end)
     end
 
-    field :total_ventilator_type_nasal, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "nasal") end)
+    field :total_ventilation_type_nasal, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "nasal") end)
     end
 
-    field :total_ventilator_type_cpap, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "cpap") end)
+    field :total_ventilation_type_cpap, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "cpap") end)
     end
 
-    field :total_ventilator_type_hfno, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "hfno") end)
+    field :total_ventilation_type_hfno, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "hfno") end)
     end
 
-    field :total_ventilator_type_bipap, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "bipap") end)
+    field :total_ventilation_type_bipap, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "bipap") end)
     end
 
-    field :total_ventilator_type_invasive, :integer do
-      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilator_type(hospital, params, info, "invasive") end)
+    field :total_ventilation_type_invasive, :integer do
+      resolve(fn hospital, params, info -> Resolver.Hospital.dataloader_total_ventilation_type(hospital, params, info, "invasive") end)
     end
 
     field :total_number_of_critcare_nurses, :integer do

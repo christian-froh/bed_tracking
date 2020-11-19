@@ -252,7 +252,7 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
-  def dataloader_total_ventilator_type(
+  def dataloader_total_ventilation_type(
         hospital,
         _params,
         %{context: %{loader: loader}} = _info,

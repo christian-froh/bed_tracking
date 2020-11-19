@@ -47,9 +47,9 @@ defmodule BedTrackingGraphql.HospitalTest do
           totalRrtTypeHaemodialysis
           totalRrtTypePd
 
-          totalVentilatorTypeNone
-          totalVentilatorTypeSv
-          totalVentilatorTypeInvasive
+          totalVentilationTypeNone
+          totalVentilationTypeSv
+          totalVentilationTypeInvasive
 
           totalNumberOfCritcareNurses
           totalNumberOfOtherRns
@@ -89,9 +89,9 @@ defmodule BedTrackingGraphql.HospitalTest do
                "totalRrtTypeRiskOfNextTwentyFourH" => 2,
                "totalRrtTypeHaemodialysis" => 2,
                "totalRrtTypePd" => 2,
-               "totalVentilatorTypeNone" => 1,
-               "totalVentilatorTypeSv" => 1,
-               "totalVentilatorTypeInvasive" => 4,
+               "totalVentilationTypeNone" => 1,
+               "totalVentilationTypeSv" => 1,
+               "totalVentilationTypeInvasive" => 4,
                "totalNumberOfCritcareNurses" => 23,
                "totalNumberOfOtherRns" => 10
              } = response["data"]["getHospital"]["hospital"]

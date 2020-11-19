@@ -132,22 +132,22 @@ defmodule BedTrackingGraphql.Resolver.Ward do
     end)
   end
 
-  def dataloader_total_ventilator_type(
+  def dataloader_total_ventilation_type(
         ward,
         _params,
         %{context: %{loader: loader}} = _info,
-        ventilator_type
+        ventilation_type
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, ward_id: ward.id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, ward_id: ward.id)
 
-      total_ventilator_type =
-        Enum.filter(beds, fn bed -> bed.ventilator_type == ventilator_type end)
+      total_ventilation_type =
+        Enum.filter(beds, fn bed -> bed.ventilation_type == ventilation_type end)
         |> length()
 
-      {:ok, total_ventilator_type}
+      {:ok, total_ventilation_type}
     end)
   end
 end
