@@ -2,6 +2,7 @@ defmodule BedTracking.Repo.Bed do
   use BedTracking.Repo.Schema
   import Ecto.Changeset
   alias BedTracking.Repo.Hospital
+  alias BedTracking.Repo.HospitalManager
   alias BedTracking.Repo.Ward
 
   schema "beds" do
@@ -19,6 +20,7 @@ defmodule BedTracking.Repo.Bed do
 
     belongs_to(:hospital, Hospital)
     belongs_to(:ward, Ward)
+    belongs_to(:updated_by_hospital_manager, HospitalManager)
 
     timestamps()
   end
@@ -29,11 +31,13 @@ defmodule BedTracking.Repo.Bed do
       :available,
       :ward_id,
       :reference,
-      :hospital_id
+      :hospital_id,
+      :updated_by_hospital_manager_id
     ])
     |> validate_required([
       :ward_id,
-      :hospital_id
+      :hospital_id,
+      :updated_by_hospital_manager_id
     ])
   end
 
@@ -50,20 +54,26 @@ defmodule BedTracking.Repo.Bed do
       :date_of_admission,
       :source_of_admission,
       :use_tracheostomy,
-      :rrt_type
+      :rrt_type,
+      :updated_by_hospital_manager_id
+    ])
+    |> validate_required([
+      :updated_by_hospital_manager_id
     ])
     |> clean_bed_if_available_set_to_true()
   end
 
-  def clean_changeset(struct) do
+  def clean_changeset(struct, params) do
     struct
-    |> cast(%{}, [])
+    |> cast(params, [:updated_by_hospital_manager_id])
+    |> validate_required([:updated_by_hospital_manager_id])
     |> clean_bed()
   end
 
-  def move_changeset(struct, old_bed) do
+  def move_changeset(struct, params, old_bed) do
     struct
-    |> cast(%{}, [])
+    |> cast(params, [:updated_by_hospital_manager_id])
+    |> validate_required([:updated_by_hospital_manager_id])
     |> set_field_to(:available, false)
     |> set_field_to(:covid_status, old_bed.covid_status)
     |> set_field_to(:level_of_care, old_bed.level_of_care)

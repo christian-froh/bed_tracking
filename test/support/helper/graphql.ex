@@ -14,7 +14,7 @@ defmodule BedTrackingWeb.Helper.Graphql do
 
     conn(:post, "/api", build_query(options[:query], options[:variables]))
     |> put_req_header("content-type", "application/json")
-    |> put_req_header("hospitalid", token)
+    |> put_req_header("authorization", "Bearer #{token}")
   end
 
   defp build_query(query, variables) do

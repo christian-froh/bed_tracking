@@ -3,6 +3,7 @@ defmodule BedTracking.Repo.Ward do
   import Ecto.Changeset
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Hospital
+  alias BedTracking.Repo.HospitalManager
 
   schema "wards" do
     field(:name, :string)
@@ -17,6 +18,7 @@ defmodule BedTracking.Repo.Ward do
 
     has_many(:beds, Bed, on_delete: :delete_all)
     belongs_to(:hospital, Hospital)
+    belongs_to(:updated_by_hospital_manager, HospitalManager)
 
     timestamps()
   end
@@ -33,9 +35,10 @@ defmodule BedTracking.Repo.Ward do
       :number_of_nurse_support_staff,
       :max_admission_capacity,
       :can_provide_ics_ratios,
-      :hospital_id
+      :hospital_id,
+      :updated_by_hospital_manager_id
     ])
-    |> validate_required([:name, :ward_type, :hospital_id])
+    |> validate_required([:name, :ward_type, :hospital_id, :updated_by_hospital_manager_id])
   end
 
   def update_changeset(struct, params) do
@@ -49,7 +52,9 @@ defmodule BedTracking.Repo.Ward do
       :number_of_other_rns,
       :number_of_nurse_support_staff,
       :max_admission_capacity,
-      :can_provide_ics_ratios
+      :can_provide_ics_ratios,
+      :updated_by_hospital_manager_id
     ])
+    |> validate_required([:updated_by_hospital_manager_id])
   end
 end

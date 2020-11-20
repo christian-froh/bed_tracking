@@ -21,8 +21,9 @@ defmodule BedTracking.Context.HospitalManager do
     with email <- String.downcase(email),
          {:ok, hospital_manager} <- fetch_by_email(email),
          {:ok, :verified} <- verify_password(hospital_manager, password),
-         {:ok, updated_hospital_manager} <- update_last_login(hospital_manager) do
-      {:ok, updated_hospital_manager}
+         {:ok, _updated_hospital_manager} <- update_last_login(hospital_manager),
+         {:ok, token} <- Context.Authentication.create_token(hospital_manager.id) do
+      {:ok, token}
     end
   end
 

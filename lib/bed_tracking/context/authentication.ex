@@ -2,33 +2,27 @@ defmodule BedTracking.Context.Authentication do
   alias BedTracking.Context
   alias BedTracking.Error
   alias BedTracking.Repo
-  alias BedTracking.Repo.Admin
+  alias BedTracking.Repo.HospitalManager
 
-  def current_admin(%{context: %{current_admin: current_admin}}) do
-    {:ok, current_admin}
+  def current_hospital_manager(%{context: %{current_hospital_manager: current_hospital_manager}}) do
+    {:ok, current_hospital_manager}
   end
 
-  def current_admin(_info), do: {:error, %Error.AuthenticationError{}}
-
-  def current_hospital(%{context: %{current_hospital: current_hospital}}) do
-    {:ok, current_hospital}
-  end
-
-  def current_hospital(_info), do: {:error, %Error.AuthenticationError{}}
+  def current_hospital_manager(_info), do: {:error, %Error.AuthenticationError{}}
 
   def parse_token(token) do
-    with {:ok, admin_id} <- verify_token(token),
-         {:ok, admin} <- get_admin(admin_id) do
-      {:ok, admin}
+    with {:ok, hospital_manager_id} <- verify_token(token),
+         {:ok, hospital_manager} <- get_hospital_manager(hospital_manager_id) do
+      {:ok, hospital_manager}
     end
   end
 
-  def create_token(admin_id) do
+  def create_token(hospital_manager_id) do
     secret = Application.get_env(:bed_tracking, :token_secret)
     salt = Application.get_env(:bed_tracking, :token_salt)
 
-    with {:ok, admin} <- get_admin(admin_id),
-         token <- Phoenix.Token.sign(secret, salt, admin.id) do
+    with {:ok, hospital_manager} <- get_hospital_manager(hospital_manager_id),
+         token <- Phoenix.Token.sign(secret, salt, hospital_manager.id) do
       {:ok, token}
     end
   end
@@ -45,16 +39,17 @@ defmodule BedTracking.Context.Authentication do
     end
   end
 
-  defp get_admin(admin_id) do
-    Admin
-    |> Context.Admin.Query.where_id(admin_id)
+  defp get_hospital_manager(hospital_manager_id) do
+    HospitalManager
+    |> Context.HospitalManager.Query.where_id(hospital_manager_id)
+    |> Context.HospitalManager.Query.with_hospital()
     |> Repo.one()
     |> case do
       nil ->
-        {:error, %Error.NotFoundError{fields: %{id: admin_id}, type: "Admin"}}
+        {:error, %Error.NotFoundError{fields: %{id: hospital_manager_id}, type: "HospitalManager"}}
 
-      admin ->
-        {:ok, admin}
+      hospital_manager ->
+        {:ok, hospital_manager}
     end
   end
 end

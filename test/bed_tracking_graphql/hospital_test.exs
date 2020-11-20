@@ -22,7 +22,7 @@ defmodule BedTrackingGraphql.HospitalTest do
       insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "haemodialysis", ward: ward_covid, hospital: hospital)
       insert(:bed, available: false, ventilation_type: "invasive", rrt_type: "haemodialysis", ward: ward_covid, hospital: hospital)
 
-      token = hospital_manager.hospital_id
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
 
       %{token: token, hospital_manager: hospital_manager, hospital: hospital}
     end

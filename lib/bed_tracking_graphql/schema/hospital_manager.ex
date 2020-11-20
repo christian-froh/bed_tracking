@@ -15,6 +15,10 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   end
 
   ### PAYLOADS ###
+  object :current_hospital_manager_payload do
+    field(:hospital_manager, non_null(:hospital_manager))
+  end
+
   object :create_hospital_manager_payload do
     field(:hospital_manager, non_null(:hospital_manager))
   end
@@ -24,7 +28,7 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   end
 
   object :login_hospital_manager_payload do
-    field(:hospital_manager, non_null(:hospital_manager))
+    field(:token, non_null(:string))
   end
 
   ### INPUTS ###
@@ -47,6 +51,13 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   input_object :login_hospital_manager_input do
     field(:email, non_null(:string))
     field(:password, non_null(:string))
+  end
+
+  ### QUERIES ###
+  object :hospital_manager_queries do
+    field :current_hospital_manager, type: :current_hospital_manager_payload do
+      resolve(&Resolver.HospitalManager.get_current/2)
+    end
   end
 
   ### MUTATIONS ###

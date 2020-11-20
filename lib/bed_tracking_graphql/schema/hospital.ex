@@ -175,20 +175,8 @@ defmodule BedTrackingGraphql.Schema.Hospital do
 
   ### QUERIES ###
   object :hospital_queries do
-    field :get_hospitals, :get_hospitals_payload do
-      resolve(&Resolver.Hospital.get_hospitals/2)
-    end
-
     field :get_hospital, :get_hospital_payload do
       resolve(&Resolver.Hospital.get_hospital/2)
-    end
-  end
-
-  ### MUTATIONS ###
-  object :hospital_mutations do
-    field :create_hospital, type: :create_hospital_payload do
-      arg(:input, non_null(:create_hospital_input))
-      resolve(&Resolver.Hospital.create_hospital/2)
     end
   end
 end

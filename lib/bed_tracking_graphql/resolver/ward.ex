@@ -6,21 +6,21 @@ defmodule BedTrackingGraphql.Resolver.Ward do
   alias BedTracking.Repo.Hospital
 
   def create(%{input: %{name: _name, ward_type: _ward_type} = params}, info) do
-    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, ward} <- Context.Ward.create(params, current_hospital.id) do
+    with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+         {:ok, ward} <- Context.Ward.create(params, current_hospital_manager) do
       {:ok, %{ward: ward}}
     end
   end
 
   def update(%{input: %{id: id} = params}, info) do
-    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, ward} <- Context.Ward.update(id, params) do
+    with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+         {:ok, ward} <- Context.Ward.update(id, params, current_hospital_manager) do
       {:ok, %{ward: ward}}
     end
   end
 
   def remove(%{input: %{id: id}}, info) do
-    with {:ok, _current_hospital} <- Context.Authentication.current_hospital(info),
+    with {:ok, _current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
          {:ok, success} <- Context.Ward.remove(id) do
       {:ok, %{success: success}}
     end

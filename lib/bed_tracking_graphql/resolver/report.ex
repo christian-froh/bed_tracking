@@ -7,8 +7,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
   alias BedTracking.Repo.Discharge
 
   def get_report(_params, info) do
-    with {:ok, current_hospital} <- Context.Authentication.current_hospital(info),
-         {:ok, _hospital} <- Context.Hospital.get(current_hospital.id) do
+    with {:ok, _current_hospital_manager} <- Context.Authentication.current_hospital_manager(info) do
       {:ok, %{report: "report"}}
     end
   end
@@ -16,15 +15,15 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_beds_of_non_surge_wards(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
         is_surge_ward
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       wards = Enum.filter(wards, fn ward -> ward.is_surge_ward == is_surge_ward end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
@@ -37,11 +36,11 @@ defmodule BedTrackingGraphql.Resolver.Report do
     end)
   end
 
-  def dataloader_total_critcare_nurses_of_wards(_report, _params, %{context: %{current_hospital: hospital, loader: loader}} = _info) do
+  def dataloader_total_critcare_nurses_of_wards(_report, _params, %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
 
       total_number_of_critcare_nurses = Enum.map(wards, fn ward -> ward.number_of_critcare_nurses || 0 end) |> Enum.sum()
 
@@ -49,11 +48,11 @@ defmodule BedTrackingGraphql.Resolver.Report do
     end)
   end
 
-  def dataloader_total_other_rns_of_wards(_report, _params, %{context: %{current_hospital: hospital, loader: loader}} = _info) do
+  def dataloader_total_other_rns_of_wards(_report, _params, %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
 
       total_number_of_other_rns = Enum.map(wards, fn ward -> ward.number_of_other_rns || 0 end) |> Enum.sum()
 
@@ -61,11 +60,11 @@ defmodule BedTrackingGraphql.Resolver.Report do
     end)
   end
 
-  def dataloader_total_nurse_support_staff_of_wards(_report, _params, %{context: %{current_hospital: hospital, loader: loader}} = _info) do
+  def dataloader_total_nurse_support_staff_of_wards(_report, _params, %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
 
       total_number_of_nurse_support_staff = Enum.map(wards, fn ward -> ward.number_of_nurse_support_staff || 0 end) |> Enum.sum()
 
@@ -73,11 +72,11 @@ defmodule BedTrackingGraphql.Resolver.Report do
     end)
   end
 
-  def dataloader_all_wards_can_provide_ics_ratios(_report, _params, %{context: %{current_hospital: hospital, loader: loader}} = _info) do
+  def dataloader_all_wards_can_provide_ics_ratios(_report, _params, %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info) do
     loader
-    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
 
       can_provide_ics_ratios = Enum.all?(wards, fn ward -> ward.can_provide_ics_ratios == true end)
 
@@ -88,12 +87,12 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed -> bed.available == false end)
@@ -106,13 +105,13 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds_where_covid_status(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
         covid_status
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed -> bed.available == false and bed.covid_status == covid_status end)
@@ -125,13 +124,13 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
         {covid_status1, covid_status2, ventilation_type}
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed ->
@@ -146,13 +145,13 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
         {covid_status1, covid_status2, ventilation_type1, ventilation_type2}
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed ->
@@ -168,13 +167,13 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
         {covid_status1, covid_status2, rrt_type}
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed ->
@@ -189,12 +188,12 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_non_available_beds_where_date_admitted_yesterday(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: hospital.id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed ->
@@ -226,12 +225,12 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_discharges_where_reason_not_death_and_inserted_at_yesterday(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: hospital.id)
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
 
       total_discharges =
         Enum.filter(discharges, fn discharge ->
@@ -263,12 +262,12 @@ defmodule BedTrackingGraphql.Resolver.Report do
   def dataloader_total_discharges_where_reason_death_and_inserted_at_yesterday(
         _report,
         _params,
-        %{context: %{current_hospital: hospital, loader: loader}} = _info
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info
       ) do
     loader
-    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: hospital.id)
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
-      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: hospital.id)
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
 
       total_discharges =
         Enum.filter(discharges, fn discharge ->

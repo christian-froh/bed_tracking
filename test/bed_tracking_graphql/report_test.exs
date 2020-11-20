@@ -92,7 +92,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:discharge, reason: "external_ward", ward: ward_amber, hospital: hospital)
       insert(:discharge, reason: "death", inserted_at: DateTime.add(DateTime.utc_now(), -172_800, :second), ward: ward_covid, hospital: hospital)
 
-      token = hospital_manager.hospital_id
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
 
       %{token: token, hospital_manager: hospital_manager, hospital: hospital}
     end

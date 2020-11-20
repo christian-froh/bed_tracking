@@ -8,7 +8,7 @@ defmodule BedTrackingGraphql.BedTest do
       bed = insert(:bed, available: true, hospital: hospital, ward: ward)
 
       hospital_manager = insert(:hospital_manager, hospital: hospital)
-      token = hospital_manager.hospital_id
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
 
       %{
         token: token,

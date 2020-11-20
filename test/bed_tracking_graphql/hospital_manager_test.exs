@@ -12,16 +12,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
     @query """
     mutation loginHospitalManager($input: LoginHospitalManagerInput!) {
       loginHospitalManager(input: $input) {
-        hospitalManager {
-          id
-          firstname
-          lastname
-          email
-
-          hospital {
-            id
-          }
-        }
+        token
       }
     }
     """
@@ -36,19 +27,14 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
         |> Map.get(:resp_body)
         |> Jason.decode!()
 
-      assert response["data"]["loginHospitalManager"]["hospitalManager"]["firstname"] ==
-               hospital_manager.firstname
-
-      assert response["data"]["loginHospitalManager"]["hospitalManager"]["hospital"]["id"] ==
-               hospital_manager.hospital.id
+      assert response["data"]["loginHospitalManager"]["token"] != nil
     end
 
     test "email works case sensitive", %{hospital: hospital} do
-      hospital_manager =
-        insert(:hospital_manager,
-          email: "thomas.mueller@example.com",
-          hospital: hospital
-        )
+      insert(:hospital_manager,
+        email: "thomas.mueller@example.com",
+        hospital: hospital
+      )
 
       response =
         graphql_public_query(
@@ -59,11 +45,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
         |> Map.get(:resp_body)
         |> Jason.decode!()
 
-      assert response["data"]["loginHospitalManager"]["hospitalManager"]["firstname"] ==
-               hospital_manager.firstname
-
-      assert response["data"]["loginHospitalManager"]["hospitalManager"]["hospital"]["id"] ==
-               hospital_manager.hospital.id
+      assert response["data"]["loginHospitalManager"]["token"] != nil
     end
 
     test "returns error when password is wrong", %{hospital_manager: hospital_manager} do
