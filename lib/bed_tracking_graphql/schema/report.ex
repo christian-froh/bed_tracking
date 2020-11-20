@@ -142,6 +142,108 @@ defmodule BedTrackingGraphql.Schema.Report do
     field :total_discharges_where_reason_death_and_inserted_at_yesterday, :integer do
       resolve(&Resolver.Report.dataloader_total_discharges_where_reason_death_and_inserted_at_yesterday/3)
     end
+
+    field :total_non_available_beds_where_ward_type_covid_and_level_of_care_level_3, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"covid", "level_3"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_covid_and_level_of_care_level_2, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"covid", "level_2"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_green_and_level_of_care_level_3, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"green", "level_3"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_green_and_level_of_care_level_2, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"green", "level_2"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_amber_and_level_of_care_level_3, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"amber", "level_3"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_amber_and_level_of_care_level_2, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_level_of_care(report, params, info, {"amber", "level_2"})
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_covid_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "covid"
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_amber_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "amber"
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_green_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "green"
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_covid_and_rrt_type_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "covid"
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_amber_and_rrt_type_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "amber"
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_ward_type_green_and_rrt_type_risk_of_next_twenty_four_h, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_ward_type_and_rrt_type_risk_of_next_twenty_four_h(
+          report,
+          params,
+          info,
+          "green"
+        )
+      end)
+    end
   end
 
   ### PAYLOADS ###

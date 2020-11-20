@@ -295,4 +295,76 @@ defmodule BedTrackingGraphql.Resolver.Report do
       {:ok, total_discharges}
     end)
   end
+
+  def dataloader_total_non_available_beds_where_ward_type_and_level_of_care(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        {ward_type, level_of_care}
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.level_of_care == level_of_care end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_non_available_beds_where_ward_type_and_rrt_type_not_none_or_not_risk_of_next_twenty_four_h(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        ward_type
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type != "none" or bed.rrt_type != "risk_of_next_twenty_four_h") end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_non_available_beds_where_ward_type_and_rrt_type_risk_of_next_twenty_four_h(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        ward_type
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.rrt_type == "risk_of_next_twenty_four_h" end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
 end
