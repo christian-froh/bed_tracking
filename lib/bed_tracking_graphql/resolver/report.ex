@@ -367,4 +367,28 @@ defmodule BedTrackingGraphql.Resolver.Report do
       {:ok, total_beds}
     end)
   end
+
+  def dataloader_total_non_available_beds_where_ward_type_and_source_of_admission(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        {ward_type, source_of_admission}
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+
+      wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
+      ward_ids = Enum.map(wards, fn ward -> ward.id end)
+
+      total_beds =
+        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission end)
+        |> length()
+
+      {:ok, total_beds}
+    end)
+  end
 end
