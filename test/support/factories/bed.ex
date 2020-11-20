@@ -4,6 +4,7 @@ defmodule BedTracking.Factory.Bed do
       def bed_factory do
         hospital = build(:hospital)
         ward = build(:ward)
+        hospital_manager = build(:hospital_manager)
 
         %BedTracking.Repo.Bed{
           available: true,
@@ -18,7 +19,8 @@ defmodule BedTracking.Factory.Bed do
           use_tracheostomy: nil,
           rrt_type: nil,
           hospital: hospital,
-          ward: ward
+          ward: ward,
+          updated_by_hospital_manager: hospital_manager
         }
       end
     end

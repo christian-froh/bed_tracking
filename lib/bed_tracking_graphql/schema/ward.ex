@@ -23,6 +23,14 @@ defmodule BedTrackingGraphql.Schema.Ward do
     field(:max_admission_capacity, :integer)
     field(:can_provide_ics_ratios, :boolean)
 
+    field :last_updated_at_of_ward_or_beds, :datetime do
+      resolve(&Resolver.Ward.dataloader_last_updated_at_of_ward_or_beds/3)
+    end
+
+    field :last_updated_by_hospital_manager_of_ward_or_beds, :hospital_manager do
+      resolve(&Resolver.Ward.dataloader_last_updated_by_hospital_manager_of_ward_or_beds/3)
+    end
+
     field :total_beds, :integer do
       resolve(&Resolver.Ward.dataloader_total_beds/3)
     end

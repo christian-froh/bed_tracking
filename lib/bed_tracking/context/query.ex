@@ -14,6 +14,16 @@ defmodule BedTracking.Context.Query do
         from row in query,
           where: row.id in ^ids
       end
+
+      def ordered_by(query, order, field) do
+        from row in query,
+          order_by: [{^order, field(row, ^field)}]
+      end
+
+      def limit(query, limit) do
+        from row in query,
+          limit: ^limit
+      end
     end
   end
 end

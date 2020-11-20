@@ -4,6 +4,7 @@ defmodule BedTrackingGraphql.Resolver.Ward do
   alias BedTracking.Repo
   alias BedTracking.Repo.Bed
   alias BedTracking.Repo.Hospital
+  alias BedTracking.Repo.HospitalManager
 
   def create(%{input: %{name: _name, ward_type: _ward_type} = params}, info) do
     with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
@@ -24,6 +25,60 @@ defmodule BedTrackingGraphql.Resolver.Ward do
          {:ok, success} <- Context.Ward.remove(id) do
       {:ok, %{success: success}}
     end
+  end
+
+  def dataloader_last_updated_at_of_ward_or_beds(ward, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Bed}, ward_id: ward.id)
+    |> on_load(fn loader ->
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, ward_id: ward.id)
+      sorted_beds = Enum.sort_by(beds, & &1.updated_at, {:desc, DateTime})
+
+      case List.first(sorted_beds) do
+        nil ->
+          {:ok, ward.updated_at}
+
+        first_bed ->
+          last_updated_at =
+            case DateTime.compare(first_bed.updated_at, ward.updated_at) do
+              :lt -> ward.updated_at
+              _ -> first_bed.updated_at
+            end
+
+          {:ok, last_updated_at}
+      end
+    end)
+  end
+
+  def dataloader_last_updated_by_hospital_manager_of_ward_or_beds(ward, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:one, HospitalManager}, id: ward.updated_by_hospital_manager_id)
+    |> Dataloader.load(Repo, {:many, Bed}, ward_id: ward.id)
+    |> on_load(fn loader ->
+      hospital_manager = Dataloader.get(loader, Repo, {:one, HospitalManager}, id: ward.updated_by_hospital_manager_id)
+      beds = Dataloader.get(loader, Repo, {:many, Bed}, ward_id: ward.id)
+      sorted_beds = Enum.sort_by(beds, & &1.updated_at, {:desc, DateTime})
+
+      case List.first(sorted_beds) do
+        nil ->
+          {:ok, hospital_manager}
+
+        first_bed ->
+          loader
+          |> Dataloader.load(Repo, {:one, HospitalManager}, id: first_bed.updated_by_hospital_manager_id)
+          |> on_load(fn loader ->
+            bed_hospital_manager = Dataloader.get(loader, Repo, {:one, HospitalManager}, id: first_bed.updated_by_hospital_manager_id)
+
+            hospital_manager =
+              case DateTime.compare(first_bed.updated_at, ward.updated_at) do
+                :lt -> hospital_manager
+                _ -> bed_hospital_manager
+              end
+
+            {:ok, hospital_manager}
+          end)
+      end
+    end)
   end
 
   def dataloader_total_beds(ward, _params, %{context: %{loader: loader}} = _info) do
