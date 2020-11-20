@@ -40,9 +40,9 @@ defmodule BedTracking.Context.Bed.Query do
       where: b.ventilation_type == ^ventilation_type
   end
 
-  def ordered_by(query, order, field) do
+  def with_ward(query) do
     from b in query,
-      order_by: [{^order, field(b, ^field)}]
+      preload: [:ward]
   end
 
   def count(query) do

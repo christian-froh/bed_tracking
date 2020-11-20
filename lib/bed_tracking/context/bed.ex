@@ -40,7 +40,7 @@ defmodule BedTracking.Context.Bed do
   def discharge_patient(id, %{reason: reason} = params, hospital_manager) do
     with {:ok, bed} <- get_bed(id),
          {:ok, _bed} <- move_to_another_bed_if_reason_internal_icu(bed, params, hospital_manager),
-         {:ok, _discharge} <- create_discharge(bed.ward_id, bed.hospital_id, reason, hospital_manager),
+         {:ok, _discharge} <- create_discharge(bed.ward_id, bed.hospital_id, reason, bed.ward.ward_type, hospital_manager),
          {:ok, _deleted_bed} <- clean_bed(bed, hospital_manager) do
       {:ok, true}
     end
@@ -49,6 +49,7 @@ defmodule BedTracking.Context.Bed do
   defp get_bed(id) do
     Bed
     |> Context.Bed.Query.where_id(id)
+    |> Context.Bed.Query.with_ward()
     |> Repo.one()
     |> case do
       nil ->
@@ -128,10 +129,10 @@ defmodule BedTracking.Context.Bed do
     |> Repo.update()
   end
 
-  defp create_discharge(_ward_id, _hospital_id, "internal_icu", _hospital_manager), do: {:ok, :noop}
+  defp create_discharge(_ward_id, _hospital_id, "internal_icu", _ward_type, _hospital_manager), do: {:ok, :noop}
 
-  defp create_discharge(ward_id, hospital_id, reason, hospital_manager) do
-    params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason, updated_by_hospital_manager_id: hospital_manager.id}
+  defp create_discharge(ward_id, hospital_id, reason, ward_type, hospital_manager) do
+    params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason, ward_type: ward_type, updated_by_hospital_manager_id: hospital_manager.id}
 
     %Discharge{}
     |> Discharge.create_changeset(params)

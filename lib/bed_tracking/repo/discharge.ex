@@ -7,6 +7,7 @@ defmodule BedTracking.Repo.Discharge do
 
   schema "discharges" do
     field(:reason, :string)
+    field(:ward_type, :string)
 
     belongs_to(:ward, Ward)
     belongs_to(:hospital, Hospital)
@@ -19,12 +20,14 @@ defmodule BedTracking.Repo.Discharge do
     struct
     |> cast(params, [
       :reason,
+      :ward_type,
       :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id
     ])
     |> validate_required([
       :reason,
+      :ward_type,
       :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id
