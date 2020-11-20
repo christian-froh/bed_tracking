@@ -108,7 +108,7 @@ defmodule BedTracking.Context.Bed do
   end
 
   defp update_bed(bed, params, hospital_manager) do
-    Map.merge(params, %{updated_by_hospital_manager_id: hospital_manager.id})
+    params = Map.merge(params, %{updated_by_hospital_manager_id: hospital_manager.id})
 
     bed
     |> Bed.update_changeset(params)
