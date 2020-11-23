@@ -105,7 +105,7 @@ defmodule BedTrackingGraphql.Schema.Report do
 
     field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_haemofiltration, :integer do
       resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
           report,
           params,
           info,
@@ -116,7 +116,7 @@ defmodule BedTrackingGraphql.Schema.Report do
 
     field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_haemodialysis, :integer do
       resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
           report,
           params,
           info,
@@ -127,7 +127,7 @@ defmodule BedTrackingGraphql.Schema.Report do
 
     field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_pd, :integer do
       resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(report, params, info, {"positive", "suspected", "pd"})
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(report, params, info, {"positive", "suspected", "pd"})
       end)
     end
 

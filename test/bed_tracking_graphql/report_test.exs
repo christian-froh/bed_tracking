@@ -108,6 +108,7 @@ defmodule BedTrackingGraphql.ReportTest do
           totalNonAvailableBedsWhereDateAdmittedYesterday
           totalDischargesWhereReasonNotDeathAndInsertedAtYesterday
           totalDischargesWhereReasonDeathAndInsertedAtYesterday
+          totalNonAvailableBedsWhereCovidStatusPositiveOrSuspectedAndRrtTypeHaemodialysis
         }
       }
     }
@@ -127,7 +128,8 @@ defmodule BedTrackingGraphql.ReportTest do
                "totalNonAvailableBedsWhereCovidStatusGreenOrNegativeAndVentilationTypeNonInvasive" => 2,
                "totalNonAvailableBedsWhereDateAdmittedYesterday" => 4,
                "totalDischargesWhereReasonNotDeathAndInsertedAtYesterday" => 1,
-               "totalDischargesWhereReasonDeathAndInsertedAtYesterday" => 1
+               "totalDischargesWhereReasonDeathAndInsertedAtYesterday" => 1,
+               "totalNonAvailableBedsWhereCovidStatusPositiveOrSuspectedAndRrtTypeHaemodialysis" => 2
              } = response["data"]["getReport"]["report"]
     end
   end
