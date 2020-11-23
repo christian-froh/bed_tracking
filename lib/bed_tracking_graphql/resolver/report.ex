@@ -368,7 +368,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
     end)
   end
 
-  def dataloader_total_non_available_beds_where_ward_type_and_source_of_admission(
+  def dataloader_total_non_available_beds_where_ward_type_and_source_of_admission_where_date_admitted_yesterday(
         _report,
         _params,
         %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
@@ -384,8 +384,12 @@ defmodule BedTrackingGraphql.Resolver.Report do
       wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
+      yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+
       total_beds =
-        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission end)
+        Enum.filter(beds, fn bed ->
+          Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission and DateTime.compare(bed.date_of_admission, yesterday) == :gt
+        end)
         |> length()
 
       {:ok, total_beds}
