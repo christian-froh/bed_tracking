@@ -385,6 +385,21 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+      %DateTime{year: year, month: month, day: day} = yesterday
+
+      yesterday = %DateTime{
+        year: year,
+        month: month,
+        day: day,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        microsecond: {0, 0},
+        time_zone: "Etc/UTC",
+        zone_abbr: "UTC",
+        utc_offset: 0,
+        std_offset: 0
+      }
 
       total_beds =
         Enum.filter(beds, fn bed ->
