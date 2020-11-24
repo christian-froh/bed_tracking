@@ -403,11 +403,88 @@ defmodule BedTrackingGraphql.Resolver.Report do
 
       total_beds =
         Enum.filter(beds, fn bed ->
-          Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission and DateTime.compare(bed.date_of_admission, yesterday) == :gt
+          Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission and
+            DateTime.compare(bed.date_of_admission, yesterday) == :gt
         end)
         |> length()
 
       {:ok, total_beds}
+    end)
+  end
+
+  def dataloader_total_discharges_where_reason_not_death_and_ward_type_inserted_at_yesterday(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        ward_type
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
+
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+          %DateTime{year: year, month: month, day: day} = yesterday
+
+          yesterday = %DateTime{
+            year: year,
+            month: month,
+            day: day,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            microsecond: {0, 0},
+            time_zone: "Etc/UTC",
+            zone_abbr: "UTC",
+            utc_offset: 0,
+            std_offset: 0
+          }
+
+          discharge.reason != "death" and discharge.ward_type == ward_type and DateTime.compare(discharge.inserted_at, yesterday) == :gt
+        end)
+        |> length()
+
+      {:ok, total_discharges}
+    end)
+  end
+
+  def dataloader_total_discharges_where_reason_and_ward_type_inserted_at_yesterday(
+        _report,
+        _params,
+        %{context: %{current_hospital_manager: current_hospital_manager, loader: loader}} = _info,
+        {reason, ward_type}
+      ) do
+    loader
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
+    |> on_load(fn loader ->
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
+
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+          %DateTime{year: year, month: month, day: day} = yesterday
+
+          yesterday = %DateTime{
+            year: year,
+            month: month,
+            day: day,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            microsecond: {0, 0},
+            time_zone: "Etc/UTC",
+            zone_abbr: "UTC",
+            utc_offset: 0,
+            std_offset: 0
+          }
+
+          discharge.reason == reason and discharge.ward_type == ward_type and DateTime.compare(discharge.inserted_at, yesterday) == :gt
+        end)
+        |> length()
+
+      {:ok, total_discharges}
     end)
   end
 end
