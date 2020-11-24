@@ -313,7 +313,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
-        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.level_of_care == level_of_care end)
+        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and bed.level_of_care == level_of_care end)
         |> length()
 
       {:ok, total_beds}
@@ -337,7 +337,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
-        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type != "none" or bed.rrt_type != "risk_of_next_twenty_four_h") end)
+        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type != "none" or bed.rrt_type != "risk_of_next_twenty_four_h") end)
         |> length()
 
       {:ok, total_beds}
@@ -361,7 +361,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
-        Enum.filter(beds, fn bed -> Enum.member?(ward_ids, bed.ward_id) == true and bed.rrt_type == "risk_of_next_twenty_four_h" end)
+        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and bed.rrt_type == "risk_of_next_twenty_four_h" end)
         |> length()
 
       {:ok, total_beds}
@@ -403,7 +403,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
 
       total_beds =
         Enum.filter(beds, fn bed ->
-          Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission and
+          bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and bed.source_of_admission == source_of_admission and
             DateTime.compare(bed.date_of_admission, yesterday) == :gt
         end)
         |> length()
