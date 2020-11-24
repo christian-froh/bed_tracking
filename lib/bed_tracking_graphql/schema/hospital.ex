@@ -23,6 +23,10 @@ defmodule BedTrackingGraphql.Schema.Hospital do
       resolve(&Resolver.Hospital.dataloader_unavailable_beds/3)
     end
 
+    field :total_max_admission_capacity, :integer do
+      resolve(&Resolver.Hospital.dataloader_total_max_admission_capacity/3)
+    end
+
     field :total_amber_beds, :integer do
       resolve(&Resolver.Hospital.dataloader_total_amber_beds/3)
     end

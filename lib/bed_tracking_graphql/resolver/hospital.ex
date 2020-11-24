@@ -61,6 +61,21 @@ defmodule BedTrackingGraphql.Resolver.Hospital do
     end)
   end
 
+  def dataloader_total_max_admission_capacity(hospital, _params, %{context: %{loader: loader}} = _info) do
+    loader
+    |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
+    |> on_load(fn loader ->
+      wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: hospital.id)
+
+      total_max_admission_capacity =
+        Enum.map(wards, fn(ward) -> ward.max_admission_capacity end)
+        |> Enum.reject(fn(max_admission_capacity) -> max_admission_capacity == nil end)
+        |> Enum.sum()
+
+      {:ok, total_max_admission_capacity}
+    end)
+  end
+
   def dataloader_total_amber_beds(hospital, _params, %{context: %{loader: loader}} = _info) do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: hospital.id)
