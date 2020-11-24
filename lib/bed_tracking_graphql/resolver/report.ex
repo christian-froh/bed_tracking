@@ -292,7 +292,7 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
-        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type != "none" or bed.rrt_type != "risk_of_next_twenty_four_h") end)
+        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type == "haemodialysis" or bed.rrt_type == "haemofiltration" or bed.rrt_type == "pd") end)
         |> length()
 
       {:ok, total_beds}
