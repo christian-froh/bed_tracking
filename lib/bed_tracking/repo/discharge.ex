@@ -8,6 +8,8 @@ defmodule BedTracking.Repo.Discharge do
   schema "discharges" do
     field(:reason, :string)
     field(:ward_type, :string)
+    field(:date_of_admission, :utc_datetime)
+    field(:source_of_admission, :string)
 
     belongs_to(:ward, Ward)
     belongs_to(:hospital, Hospital)
@@ -21,6 +23,8 @@ defmodule BedTracking.Repo.Discharge do
     |> cast(params, [
       :reason,
       :ward_type,
+      :date_of_admission,
+      :source_of_admission,
       :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id
@@ -28,6 +32,8 @@ defmodule BedTracking.Repo.Discharge do
     |> validate_required([
       :reason,
       :ward_type,
+      :date_of_admission,
+      :source_of_admission,
       :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id

@@ -40,7 +40,7 @@ defmodule BedTracking.Context.Bed do
   def discharge_patient(id, %{reason: reason} = params, hospital_manager) do
     with {:ok, bed} <- get_bed(id),
          {:ok, _bed} <- move_to_another_bed_if_reason_internal_icu(bed, params, hospital_manager),
-         {:ok, _discharge} <- create_discharge(bed.ward_id, bed.hospital_id, reason, bed.ward.ward_type, hospital_manager),
+         {:ok, _discharge} <- create_discharge(reason, bed, hospital_manager),
          {:ok, _deleted_bed} <- clean_bed(bed, hospital_manager) do
       {:ok, true}
     end
@@ -129,10 +129,10 @@ defmodule BedTracking.Context.Bed do
     |> Repo.update()
   end
 
-  defp create_discharge(_ward_id, _hospital_id, "internal_icu", _ward_type, _hospital_manager), do: {:ok, :noop}
+  defp create_discharge("internal_icu", _bed, _hospital_manager), do: {:ok, :noop}
 
-  defp create_discharge(ward_id, hospital_id, reason, ward_type, hospital_manager) do
-    params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason, ward_type: ward_type, updated_by_hospital_manager_id: hospital_manager.id}
+  defp create_discharge(reason, %{ward_id: ward_id, hospital_id: hospital_id, date_of_admission: date_of_admission, source_of_admission: source_of_admission, ward: %{ward_type: ward_type}}, hospital_manager) do
+    params = %{ward_id: ward_id, hospital_id: hospital_id, reason: reason, ward_type: ward_type, date_of_admission: date_of_admission, source_of_admission: source_of_admission, updated_by_hospital_manager_id: hospital_manager.id}
 
     %Discharge{}
     |> Discharge.create_changeset(params)

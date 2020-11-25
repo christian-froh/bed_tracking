@@ -192,8 +192,10 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ) do
     loader
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
 
       total_beds =
         Enum.filter(beds, fn bed ->
@@ -203,7 +205,16 @@ defmodule BedTrackingGraphql.Resolver.Report do
         end)
         |> length()
 
-      {:ok, total_beds}
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+
+          DateTime.compare(discharge.date_of_admission, yesterday) == :gt
+        end)
+        |> length()
+
+      total = total_beds + total_discharges
+      {:ok, total}
     end)
   end
 
@@ -332,9 +343,11 @@ defmodule BedTrackingGraphql.Resolver.Report do
     loader
     |> Dataloader.load(Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
     |> Dataloader.load(Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+    |> Dataloader.load(Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
     |> on_load(fn loader ->
       wards = Dataloader.get(loader, Repo, {:many, Ward}, hospital_id: current_hospital_manager.hospital_id)
       beds = Dataloader.get(loader, Repo, {:many, Bed}, hospital_id: current_hospital_manager.hospital_id)
+      discharges = Dataloader.get(loader, Repo, {:many, Discharge}, hospital_id: current_hospital_manager.hospital_id)
 
       wards = Enum.filter(wards, fn ward -> ward.ward_type == ward_type end)
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
@@ -348,7 +361,16 @@ defmodule BedTrackingGraphql.Resolver.Report do
         end)
         |> length()
 
-      {:ok, total_beds}
+      total_discharges =
+        Enum.filter(discharges, fn discharge ->
+          yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
+
+          discharge.ward_type == ward_type and discharge.source_of_admission == source_of_admission and DateTime.compare(discharge.date_of_admission, yesterday) == :gt
+        end)
+        |> length()
+
+      total = total_beds + total_discharges
+      {:ok, total}
     end)
   end
 

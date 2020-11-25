@@ -28,7 +28,7 @@ defmodule BedTrackingGraphql.BedTest do
     """
 
     test "discharges a patient", %{token: token, hospital: hospital, ward: ward} do
-      bed = insert(:bed, available: false, initials: "CF", hospital: hospital, ward: ward)
+      bed = insert(:bed, available: false, initials: "CF", date_of_admission: DateTime.utc_now(), source_of_admission: "ed", hospital: hospital, ward: ward)
 
       response =
         graphql_query(

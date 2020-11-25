@@ -19,6 +19,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.utc_now(),
+        source_of_admission: "ed",
         covid_status: "green",
         ventilation_type: "invasive",
         rrt_type: "risk_of_next_twenty_four_h",
@@ -29,6 +30,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.utc_now(),
+        source_of_admission: "ed",
         covid_status: "green",
         ventilation_type: "bipap",
         rrt_type: "pd",
@@ -45,6 +47,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.utc_now(),
+        source_of_admission: "ed",
         covid_status: "negative",
         ventilation_type: "invasive",
         rrt_type: "risk_of_next_twenty_four_h",
@@ -55,6 +58,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.utc_now(),
+        source_of_admission: "ed",
         covid_status: "negative",
         ventilation_type: "cpap",
         rrt_type: "pd",
@@ -71,6 +75,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.add(DateTime.utc_now(), -172_800, :second),
+        source_of_admission: "ed",
         covid_status: "positive",
         ventilation_type: "invasive",
         rrt_type: "haemodialysis",
@@ -81,6 +86,7 @@ defmodule BedTrackingGraphql.ReportTest do
       insert(:bed,
         available: false,
         date_of_admission: DateTime.add(DateTime.utc_now(), -172_800, :second),
+        source_of_admission: "ed",
         covid_status: "positive",
         ventilation_type: "invasive",
         rrt_type: "haemodialysis",
@@ -88,9 +94,9 @@ defmodule BedTrackingGraphql.ReportTest do
         hospital: hospital
       )
 
-      insert(:discharge, reason: "death", ward: ward_covid, hospital: hospital)
-      insert(:discharge, reason: "external_ward", ward: ward_amber, hospital: hospital)
-      insert(:discharge, reason: "death", inserted_at: DateTime.add(DateTime.utc_now(), -172_800, :second), ward: ward_covid, hospital: hospital)
+      insert(:discharge, reason: "death", date_of_admission: DateTime.utc_now(), source_of_admission: "ed", ward: ward_covid, hospital: hospital)
+      insert(:discharge, reason: "external_ward", date_of_admission: DateTime.utc_now(), source_of_admission: "ed", ward: ward_amber, hospital: hospital)
+      insert(:discharge, reason: "death", date_of_admission: DateTime.add(DateTime.utc_now(), -172_800, :second), source_of_admission: "ed", inserted_at: DateTime.add(DateTime.utc_now(), -172_800, :second), ward: ward_covid, hospital: hospital)
 
       {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
 
@@ -126,7 +132,7 @@ defmodule BedTrackingGraphql.ReportTest do
                "totalBedsOfSurgeWards" => 6,
                "totalNonAvailableBedsWhereCovidStatusGreenOrNegativeAndVentilationTypeInvasive" => 2,
                "totalNonAvailableBedsWhereCovidStatusGreenOrNegativeAndVentilationTypeNonInvasive" => 2,
-               "totalNonAvailableBedsWhereDateAdmittedYesterday" => 4,
+               "totalNonAvailableBedsWhereDateAdmittedYesterday" => 6,
                "totalDischargesWhereReasonNotDeathAndInsertedAtYesterday" => 1,
                "totalDischargesWhereReasonDeathAndInsertedAtYesterday" => 1,
                "totalNonAvailableBedsWhereCovidStatusPositiveOrSuspectedAndRrtTypeHaemodialysis" => 2
