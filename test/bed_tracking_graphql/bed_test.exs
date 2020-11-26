@@ -81,7 +81,7 @@ defmodule BedTrackingGraphql.BedTest do
         |> Map.get(:resp_body)
         |> Jason.decode!()
 
-      assert new_response["data"]["updateBed"]["bed"]["id"] == bed.id
+      assert [%{"details" => "required", "errorCode" => "ValidationError", "field" => "covid_status", "message" => "Invalid parameter", "path" => ["updateBed"], "reason" => "can't be blank"}] = new_response["errors"]
     end
 
     test "updates a bed when only one field is set", %{token: token, bed: bed} do
