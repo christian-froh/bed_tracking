@@ -61,6 +61,7 @@ defmodule BedTracking.Repo.Bed do
       :updated_by_hospital_manager_id
     ])
     |> clean_bed_if_available_set_to_true()
+    |> validate_conditional_required()
   end
 
   def clean_changeset(struct, params) do
@@ -84,6 +85,19 @@ defmodule BedTracking.Repo.Bed do
     |> set_field_to(:source_of_admission, old_bed.source_of_admission)
     |> set_field_to(:use_tracheostomy, old_bed.use_tracheostomy)
     |> set_field_to(:rrt_type, old_bed.rrt_type)
+  end
+
+  defp validate_conditional_required(changeset) do
+    changeset
+    |> fetch_field!(:available)
+    |> case do
+      false ->
+        changeset
+        |> validate_required([:covid_status, :level_of_care, :ventilation_type, :reference, :date_of_admission, :source_of_admission, :use_tracheostomy, :rrt_type])
+
+      _ ->
+        changeset
+    end
   end
 
   defp clean_bed_if_available_set_to_true(changeset) do
