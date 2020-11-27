@@ -3,12 +3,10 @@ defmodule BedTracking.Factory.Discharge do
     quote do
       def discharge_factory do
         hospital = build(:hospital)
-        ward = build(:ward)
 
         %BedTracking.Repo.Discharge{
           reason: "death",
-          hospital: hospital,
-          ward: ward
+          hospital: hospital
         }
       end
     end

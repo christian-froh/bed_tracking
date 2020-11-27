@@ -3,7 +3,6 @@ defmodule BedTracking.Repo.Discharge do
   import Ecto.Changeset
   alias BedTracking.Repo.Hospital
   alias BedTracking.Repo.HospitalManager
-  alias BedTracking.Repo.Ward
 
   schema "discharges" do
     field(:reason, :string)
@@ -11,7 +10,6 @@ defmodule BedTracking.Repo.Discharge do
     field(:date_of_admission, :utc_datetime)
     field(:source_of_admission, :string)
 
-    belongs_to(:ward, Ward)
     belongs_to(:hospital, Hospital)
     belongs_to(:updated_by_hospital_manager, HospitalManager)
 
@@ -25,7 +23,6 @@ defmodule BedTracking.Repo.Discharge do
       :ward_type,
       :date_of_admission,
       :source_of_admission,
-      :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id
     ])
@@ -34,7 +31,6 @@ defmodule BedTracking.Repo.Discharge do
       :ward_type,
       :date_of_admission,
       :source_of_admission,
-      :ward_id,
       :hospital_id,
       :updated_by_hospital_manager_id
     ])
