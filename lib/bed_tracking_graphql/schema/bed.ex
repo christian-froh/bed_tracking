@@ -3,7 +3,8 @@ defmodule BedTrackingGraphql.Schema.Bed do
 
   ### ENUMS ###
   enum :covid_status do
-    value(:suspected, as: "suspected")
+    value(:unknown_suspected, as: "unknown_suspected")
+    value(:unknown_not_suspected, as: "unknown_not_suspected")
     value(:negative, as: "negative")
     value(:positive, as: "positive")
     value(:green, as: "green")

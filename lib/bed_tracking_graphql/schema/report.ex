@@ -35,8 +35,8 @@ defmodule BedTrackingGraphql.Schema.Report do
       resolve(fn report, params, info -> Resolver.Report.dataloader_total_non_available_beds_where_covid_status(report, params, info, "positive") end)
     end
 
-    field :total_non_available_beds_where_covid_status_suspected, :integer do
-      resolve(fn report, params, info -> Resolver.Report.dataloader_total_non_available_beds_where_covid_status(report, params, info, "suspected") end)
+    field :total_non_available_beds_where_covid_status_unknown_suspected, :integer do
+      resolve(fn report, params, info -> Resolver.Report.dataloader_total_non_available_beds_where_covid_status(report, params, info, "unknown_suspected") end)
     end
 
     field :total_non_available_beds_where_covid_status_green_or_negative_and_ventilation_type_invasive, :integer do
@@ -80,54 +80,64 @@ defmodule BedTrackingGraphql.Schema.Report do
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_ventilation_type_invasive, :integer do
-      resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(report, params, info, {"positive", "suspected", "invasive"})
-      end)
-    end
-
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_ventilation_type_non_invasive, :integer do
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_ventilation_type_invasive, :integer do
       resolve(fn report, params, info ->
         Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
           report,
           params,
           info,
-          {"positive", "suspected", "cpap", "bipap"}
+          {"positive", "unknown_suspected", "invasive"}
         )
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_ventilation_type_hfno, :integer do
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_ventilation_type_non_invasive, :integer do
       resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(report, params, info, {"positive", "suspected", "hfno"})
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
+          report,
+          params,
+          info,
+          {"positive", "unknown_suspected", "cpap", "bipap"}
+        )
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_haemofiltration, :integer do
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_ventilation_type_hfno, :integer do
+      resolve(fn report, params, info ->
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_ventilation_type(
+          report,
+          params,
+          info,
+          {"positive", "unknown_suspected", "hfno"}
+        )
+      end)
+    end
+
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_rrt_type_haemofiltration, :integer do
       resolve(fn report, params, info ->
         Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
           report,
           params,
           info,
-          {"positive", "suspected", "haemofiltration"}
+          {"positive", "unknown_suspected", "haemofiltration"}
         )
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_haemodialysis, :integer do
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_rrt_type_haemodialysis, :integer do
       resolve(fn report, params, info ->
         Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(
           report,
           params,
           info,
-          {"positive", "suspected", "haemodialysis"}
+          {"positive", "unknown_suspected", "haemodialysis"}
         )
       end)
     end
 
-    field :total_non_available_beds_where_covid_status_positive_or_suspected_and_rrt_type_pd, :integer do
+    field :total_non_available_beds_where_covid_status_positive_or_unknown_suspected_and_rrt_type_pd, :integer do
       resolve(fn report, params, info ->
-        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(report, params, info, {"positive", "suspected", "pd"})
+        Resolver.Report.dataloader_total_non_available_beds_where_covid_status_and_rrt_type(report, params, info, {"positive", "unknown_suspected", "pd"})
       end)
     end
 

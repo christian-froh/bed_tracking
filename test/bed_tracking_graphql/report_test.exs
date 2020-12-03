@@ -96,7 +96,14 @@ defmodule BedTrackingGraphql.ReportTest do
 
       insert(:discharge, reason: "death", date_of_admission: DateTime.utc_now(), source_of_admission: "ed", hospital: hospital)
       insert(:discharge, reason: "external_ward", date_of_admission: DateTime.utc_now(), source_of_admission: "ed", hospital: hospital)
-      insert(:discharge, reason: "death", date_of_admission: DateTime.add(DateTime.utc_now(), -172_800, :second), source_of_admission: "ed", inserted_at: DateTime.add(DateTime.utc_now(), -172_800, :second), hospital: hospital)
+
+      insert(:discharge,
+        reason: "death",
+        date_of_admission: DateTime.add(DateTime.utc_now(), -172_800, :second),
+        source_of_admission: "ed",
+        inserted_at: DateTime.add(DateTime.utc_now(), -172_800, :second),
+        hospital: hospital
+      )
 
       {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
 
@@ -114,7 +121,7 @@ defmodule BedTrackingGraphql.ReportTest do
           totalNonAvailableBedsWhereDateAdmittedYesterday
           totalDischargesWhereReasonNotDeathAndInsertedAtYesterday
           totalDischargesWhereReasonDeathAndInsertedAtYesterday
-          totalNonAvailableBedsWhereCovidStatusPositiveOrSuspectedAndRrtTypeHaemodialysis
+          totalNonAvailableBedsWhereCovidStatusPositiveOrUnknownSuspectedAndRrtTypeHaemodialysis
         }
       }
     }
@@ -135,7 +142,7 @@ defmodule BedTrackingGraphql.ReportTest do
                "totalNonAvailableBedsWhereDateAdmittedYesterday" => 6,
                "totalDischargesWhereReasonNotDeathAndInsertedAtYesterday" => 1,
                "totalDischargesWhereReasonDeathAndInsertedAtYesterday" => 1,
-               "totalNonAvailableBedsWhereCovidStatusPositiveOrSuspectedAndRrtTypeHaemodialysis" => 2
+               "totalNonAvailableBedsWhereCovidStatusPositiveOrUnknownSuspectedAndRrtTypeHaemodialysis" => 2
              } = response["data"]["getReport"]["report"]
     end
   end

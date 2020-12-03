@@ -303,7 +303,10 @@ defmodule BedTrackingGraphql.Resolver.Report do
       ward_ids = Enum.map(wards, fn ward -> ward.id end)
 
       total_beds =
-        Enum.filter(beds, fn bed -> bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and (bed.rrt_type == "haemodialysis" or bed.rrt_type == "haemofiltration" or bed.rrt_type == "pd") end)
+        Enum.filter(beds, fn bed ->
+          bed.available == false and Enum.member?(ward_ids, bed.ward_id) == true and
+            (bed.rrt_type == "haemodialysis" or bed.rrt_type == "haemofiltration" or bed.rrt_type == "pd")
+        end)
         |> length()
 
       {:ok, total_beds}
@@ -365,7 +368,8 @@ defmodule BedTrackingGraphql.Resolver.Report do
         Enum.filter(discharges, fn discharge ->
           yesterday = DateTime.add(DateTime.utc_now(), -86400, :second)
 
-          discharge.ward_type == ward_type and discharge.source_of_admission == source_of_admission and DateTime.compare(discharge.date_of_admission, yesterday) == :gt
+          discharge.ward_type == ward_type and discharge.source_of_admission == source_of_admission and
+            DateTime.compare(discharge.date_of_admission, yesterday) == :gt
         end)
         |> length()
 

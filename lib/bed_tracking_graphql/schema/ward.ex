@@ -43,8 +43,12 @@ defmodule BedTrackingGraphql.Schema.Ward do
       resolve(&Resolver.Ward.dataloader_unavailable_beds/3)
     end
 
-    field :total_covid_status_suspected, :integer do
-      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "suspected") end)
+    field :total_covid_status_unknown_suspected, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "unknown_suspected") end)
+    end
+
+    field :total_covid_status_unknown_not_suspected, :integer do
+      resolve(fn hospital, params, info -> Resolver.Ward.dataloader_total_covid_status(hospital, params, info, "unknown_not_suspected") end)
     end
 
     field :total_covid_status_negative, :integer do
