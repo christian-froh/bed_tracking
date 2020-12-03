@@ -8,7 +8,7 @@ defmodule BedTrackingGraphql.BedTest do
       bed = insert(:bed, available: true, hospital: hospital, ward: ward)
 
       hospital_manager = insert(:hospital_manager, hospital: hospital)
-      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
 
       %{
         token: token,
@@ -34,7 +34,20 @@ defmodule BedTrackingGraphql.BedTest do
       response =
         graphql_query(
           query: @query,
-          variables: %{input: %{id: bed.id, available: false, covid_status: "POSITIVE", level_of_care: "LEVEL_1", ventilation_type: "CPAP", reference: "1", date_of_admission: DateTime.utc_now(), source_of_admission: "ED", rrt_type: "HAEMOFILTRATION", use_tracheostomy: true}},
+          variables: %{
+            input: %{
+              id: bed.id,
+              available: false,
+              covid_status: "POSITIVE",
+              level_of_care: "LEVEL_1",
+              ventilation_type: "CPAP",
+              reference: "1",
+              date_of_admission: DateTime.utc_now(),
+              source_of_admission: "ED",
+              rrt_type: "HAEMOFILTRATION",
+              use_tracheostomy: true
+            }
+          },
           token: token
         )
         |> BedTrackingWeb.Endpoint.call([])
@@ -48,21 +61,55 @@ defmodule BedTrackingGraphql.BedTest do
       response =
         graphql_query(
           query: @query,
-          variables: %{input: %{id: bed.id, available: false, covid_status: "POSITIVE", level_of_care: "LEVEL_1", ventilation_type: "CPAP", reference: "1", date_of_admission: DateTime.utc_now(), source_of_admission: "ED", use_tracheostomy: true}},
+          variables: %{
+            input: %{
+              id: bed.id,
+              available: false,
+              covid_status: "POSITIVE",
+              level_of_care: "LEVEL_1",
+              ventilation_type: "CPAP",
+              reference: "1",
+              date_of_admission: DateTime.utc_now(),
+              source_of_admission: "ED",
+              use_tracheostomy: true
+            }
+          },
           token: token
         )
         |> BedTrackingWeb.Endpoint.call([])
         |> Map.get(:resp_body)
         |> Jason.decode!()
 
-      assert [%{"details" => "required", "errorCode" => "ValidationError", "field" => "rrt_type", "message" => "Invalid parameter", "path" => ["updateBed"], "reason" => "can't be blank"}] = response["errors"]
+      assert [
+               %{
+                 "details" => "required",
+                 "errorCode" => "ValidationError",
+                 "field" => "rrt_type",
+                 "message" => "Invalid parameter",
+                 "path" => ["updateBed"],
+                 "reason" => "can't be blank"
+               }
+             ] = response["errors"]
     end
 
     test "returns error when a field is set to nil which is mendatory when bed is occupied", %{token: token, bed: bed} do
       response =
         graphql_query(
           query: @query,
-          variables: %{input: %{id: bed.id, available: false, covid_status: "POSITIVE", level_of_care: "LEVEL_1", ventilation_type: "CPAP", reference: "1", date_of_admission: DateTime.utc_now(), source_of_admission: "ED", rrt_type: "HAEMOFILTRATION", use_tracheostomy: true}},
+          variables: %{
+            input: %{
+              id: bed.id,
+              available: false,
+              covid_status: "POSITIVE",
+              level_of_care: "LEVEL_1",
+              ventilation_type: "CPAP",
+              reference: "1",
+              date_of_admission: DateTime.utc_now(),
+              source_of_admission: "ED",
+              rrt_type: "HAEMOFILTRATION",
+              use_tracheostomy: true
+            }
+          },
           token: token
         )
         |> BedTrackingWeb.Endpoint.call([])
@@ -81,14 +128,36 @@ defmodule BedTrackingGraphql.BedTest do
         |> Map.get(:resp_body)
         |> Jason.decode!()
 
-      assert [%{"details" => "required", "errorCode" => "ValidationError", "field" => "covid_status", "message" => "Invalid parameter", "path" => ["updateBed"], "reason" => "can't be blank"}] = new_response["errors"]
+      assert [
+               %{
+                 "details" => "required",
+                 "errorCode" => "ValidationError",
+                 "field" => "covid_status",
+                 "message" => "Invalid parameter",
+                 "path" => ["updateBed"],
+                 "reason" => "can't be blank"
+               }
+             ] = new_response["errors"]
     end
 
     test "updates a bed when only one field is set", %{token: token, bed: bed} do
       response =
         graphql_query(
           query: @query,
-          variables: %{input: %{id: bed.id, available: false, covid_status: "POSITIVE", level_of_care: "LEVEL_1", ventilation_type: "CPAP", reference: "1", date_of_admission: DateTime.utc_now(), source_of_admission: "ED", rrt_type: "HAEMOFILTRATION", use_tracheostomy: true}},
+          variables: %{
+            input: %{
+              id: bed.id,
+              available: false,
+              covid_status: "POSITIVE",
+              level_of_care: "LEVEL_1",
+              ventilation_type: "CPAP",
+              reference: "1",
+              date_of_admission: DateTime.utc_now(),
+              source_of_admission: "ED",
+              rrt_type: "HAEMOFILTRATION",
+              use_tracheostomy: true
+            }
+          },
           token: token
         )
         |> BedTrackingWeb.Endpoint.call([])
@@ -118,7 +187,7 @@ defmodule BedTrackingGraphql.BedTest do
       bed = insert(:bed, available: true, hospital: hospital, ward: ward)
 
       hospital_manager = insert(:hospital_manager, hospital: hospital)
-      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
 
       %{
         token: token,

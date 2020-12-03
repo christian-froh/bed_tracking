@@ -17,11 +17,19 @@ defmodule BedTracking.Context.HospitalManager do
     end
   end
 
-  def login(email, password) do
-    with email <- String.downcase(email),
-         {:ok, hospital_manager} <- fetch_by_email(email),
+  def login(username, password) do
+    with username <- String.downcase(username),
+         {:ok, hospital_manager} <- fetch_by_username(username),
          {:ok, :verified} <- verify_password(hospital_manager, password),
          {:ok, _updated_hospital_manager} <- update_last_login(hospital_manager),
+         {:ok, token} <- Context.Authentication.create_token(hospital_manager.id) do
+      {:ok, token}
+    end
+  end
+
+  def change_password(old_password, new_password, hospital_manager) do
+    with {:ok, :verified} <- verify_old_password(old_password, hospital_manager),
+         {:ok, hospital_manager} <- change_password(new_password, hospital_manager),
          {:ok, token} <- Context.Authentication.create_token(hospital_manager.id) do
       {:ok, token}
     end
@@ -39,9 +47,9 @@ defmodule BedTracking.Context.HospitalManager do
     |> Repo.update()
   end
 
-  defp fetch_by_email(email) do
+  defp fetch_by_username(username) do
     HospitalManager
-    |> Context.HospitalManager.Query.where_email(email)
+    |> Context.HospitalManager.Query.where_username(username)
     |> Repo.one()
     |> case do
       nil ->
@@ -79,5 +87,21 @@ defmodule BedTracking.Context.HospitalManager do
       hospital_manager ->
         {:ok, hospital_manager}
     end
+  end
+
+  defp verify_old_password(old_password, hospital_manager) do
+    if Bcrypt.verify_pass(old_password, hospital_manager.password_hash) do
+      {:ok, :verified}
+    else
+      {:error, %Error.WrongPasswordError{}}
+    end
+  end
+
+  defp change_password(new_password, hospital_manager) do
+    params = %{password: new_password}
+
+    hospital_manager
+    |> HospitalManager.change_password_changeset(params)
+    |> Repo.update()
   end
 end

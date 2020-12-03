@@ -5,7 +5,7 @@ defmodule BedTracking.Factory.HospitalManager do
         hospital = build(:hospital)
 
         %BedTracking.Repo.HospitalManager{
-          email: sequence(:email, &"hospital_manager-#{&1}@hospital.com"),
+          username: sequence(:username, &"hospital_manager-#{&1}@hospital.com"),
           firstname: "Christian",
           lastname: "Froh",
           phone_number: "+491748556633",

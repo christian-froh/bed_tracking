@@ -105,7 +105,7 @@ defmodule BedTrackingGraphql.ReportTest do
         hospital: hospital
       )
 
-      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.email, @password)
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
 
       %{token: token, hospital_manager: hospital_manager, hospital: hospital}
     end

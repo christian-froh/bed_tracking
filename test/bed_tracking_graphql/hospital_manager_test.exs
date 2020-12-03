@@ -21,7 +21,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
       response =
         graphql_public_query(
           query: @query,
-          variables: %{input: %{email: hospital_manager.email, password: @password}}
+          variables: %{input: %{username: hospital_manager.username, password: @password}}
         )
         |> BedTrackingWeb.Endpoint.call([])
         |> Map.get(:resp_body)
@@ -30,16 +30,16 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
       assert response["data"]["loginHospitalManager"]["token"] != nil
     end
 
-    test "email works case sensitive", %{hospital: hospital} do
+    test "username works case sensitive", %{hospital: hospital} do
       insert(:hospital_manager,
-        email: "thomas.mueller@example.com",
+        username: "thomas.mueller@example.com",
         hospital: hospital
       )
 
       response =
         graphql_public_query(
           query: @query,
-          variables: %{input: %{email: "Thomas.Mueller@example.com", password: @password}}
+          variables: %{input: %{username: "Thomas.Mueller@example.com", password: @password}}
         )
         |> BedTrackingWeb.Endpoint.call([])
         |> Map.get(:resp_body)
@@ -52,7 +52,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
       response =
         graphql_public_query(
           query: @query,
-          variables: %{input: %{email: hospital_manager.email, password: "wrong_pw"}}
+          variables: %{input: %{username: hospital_manager.username, password: "wrong_pw"}}
         )
         |> BedTrackingWeb.Endpoint.call([])
         |> Map.get(:resp_body)
@@ -72,7 +72,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
       response =
         graphql_public_query(
           query: @query,
-          variables: %{input: %{email: "wrong_email", password: @password}}
+          variables: %{input: %{username: "wrong_username", password: @password}}
         )
         |> BedTrackingWeb.Endpoint.call([])
         |> Map.get(:resp_body)
@@ -84,6 +84,59 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
                  "locations" => [%{"column" => 0, "line" => 2}],
                  "message" => "Authentication failed",
                  "path" => ["loginHospitalManager"]
+               }
+             ] = response["errors"]
+    end
+  end
+
+  describe "change_password" do
+    setup do
+      hospital = insert(:hospital)
+      hospital_manager = insert(:hospital_manager, hospital: hospital)
+
+      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
+
+      %{hospital_manager: hospital_manager, hospital: hospital, token: token}
+    end
+
+    @query """
+    mutation changePassword($input: ChangePasswordInput!) {
+      changePassword(input: $input) {
+        token
+      }
+    }
+    """
+
+    test "changing password returns new token", %{token: token} do
+      response =
+        graphql_query(
+          query: @query,
+          variables: %{input: %{old_password: @password, new_password: "123456789"}},
+          token: token
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      assert response["data"]["changePassword"]["token"] != nil
+    end
+
+    test "wrong old password returns error", %{token: token} do
+      response =
+        graphql_query(
+          query: @query,
+          variables: %{input: %{old_password: "wrong password", new_password: "123456789"}},
+          token: token
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      assert [
+               %{
+                 "errorCode" => "WrongPasswordError",
+                 "message" => "Wrong password",
+                 "path" => ["changePassword"]
                }
              ] = response["errors"]
     end

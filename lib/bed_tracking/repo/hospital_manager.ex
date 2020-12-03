@@ -4,7 +4,7 @@ defmodule BedTracking.Repo.HospitalManager do
   alias BedTracking.Repo.Hospital
 
   schema "hospital_managers" do
-    field(:email, :string)
+    field(:username, :string)
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
     field(:firstname, :string)
@@ -19,14 +19,21 @@ defmodule BedTracking.Repo.HospitalManager do
 
   def create_changeset(struct, params) do
     struct
-    |> cast(params, [:email, :password, :firstname, :lastname, :phone_number, :hospital_id])
-    |> validate_required([:email, :password, :firstname, :lastname, :hospital_id])
+    |> cast(params, [:username, :password, :firstname, :lastname, :phone_number, :hospital_id])
+    |> validate_required([:username, :password, :firstname, :lastname, :hospital_id])
     |> set_password_hash()
   end
 
   def update_changeset(struct, params) do
     struct
     |> cast(params, [:firstname, :lastname, :phone_number, :last_login_at])
+  end
+
+  def change_password_changeset(struct, params) do
+    struct
+    |> cast(params, [:password])
+    |> validate_required([:password])
+    |> set_password_hash()
   end
 
   defp set_password_hash(changeset) do

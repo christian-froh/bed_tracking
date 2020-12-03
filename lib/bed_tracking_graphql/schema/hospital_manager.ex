@@ -4,10 +4,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   ### OBJECTS ###
   object :hospital_manager do
     field(:id, non_null(:id))
-    field(:email, non_null(:string))
+    field(:username, non_null(:string))
     field(:firstname, non_null(:string))
     field(:lastname, non_null(:string))
     field(:phone_number, :string)
+    field(:last_login_at, :datetime)
 
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
@@ -31,9 +32,13 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:token, non_null(:string))
   end
 
+  object :change_password_payload do
+    field(:token, non_null(:string))
+  end
+
   ### INPUTS ###
   input_object :create_hospital_manager_input do
-    field(:email, non_null(:string))
+    field(:username, non_null(:string))
     field(:password, non_null(:string))
     field(:firstname, non_null(:string))
     field(:lastname, non_null(:string))
@@ -49,8 +54,13 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   end
 
   input_object :login_hospital_manager_input do
-    field(:email, non_null(:string))
+    field(:username, non_null(:string))
     field(:password, non_null(:string))
+  end
+
+  input_object :change_password_input do
+    field(:old_password, non_null(:string))
+    field(:new_password, non_null(:string))
   end
 
   ### QUERIES ###
@@ -75,6 +85,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field :login_hospital_manager, type: :login_hospital_manager_payload do
       arg(:input, non_null(:login_hospital_manager_input))
       resolve(&Resolver.HospitalManager.login/2)
+    end
+
+    field :change_password, type: :change_password_payload do
+      arg(:input, non_null(:change_password_input))
+      resolve(&Resolver.HospitalManager.change_password/2)
     end
   end
 end
