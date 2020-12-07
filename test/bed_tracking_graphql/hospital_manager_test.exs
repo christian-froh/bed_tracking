@@ -13,6 +13,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
     mutation loginHospitalManager($input: LoginHospitalManagerInput!) {
       loginHospitalManager(input: $input) {
         token
+        isChangedPassword
       }
     }
     """
@@ -28,6 +29,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
         |> Jason.decode!()
 
       assert response["data"]["loginHospitalManager"]["token"] != nil
+      assert response["data"]["loginHospitalManager"]["isChangedPassword"] == false
     end
 
     test "username works case sensitive", %{hospital: hospital} do
@@ -94,7 +96,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
       hospital = insert(:hospital)
       hospital_manager = insert(:hospital_manager, hospital: hospital)
 
-      {:ok, token} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
+      {:ok, %{token: token}} = BedTracking.Context.HospitalManager.login(hospital_manager.username, @password)
 
       %{hospital_manager: hospital_manager, hospital: hospital, token: token}
     end
@@ -107,7 +109,7 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
     }
     """
 
-    test "changing password returns new token", %{token: token} do
+    test "changing password returns new token and sets is_changed_password to true", %{token: token, hospital_manager: hospital_manager} do
       response =
         graphql_query(
           query: @query,
@@ -119,6 +121,9 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
         |> Jason.decode!()
 
       assert response["data"]["changePassword"]["token"] != nil
+
+      reloaded_hospital_manager = BedTracking.Repo.get(BedTracking.Repo.HospitalManager, hospital_manager.id)
+      assert reloaded_hospital_manager.is_changed_password == true
     end
 
     test "wrong old password returns error", %{token: token} do

@@ -8,7 +8,6 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:firstname, non_null(:string))
     field(:lastname, non_null(:string))
     field(:phone_number, :string)
-    field(:last_login_at, :datetime)
 
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
@@ -30,6 +29,7 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
 
   object :login_hospital_manager_payload do
     field(:token, non_null(:string))
+    field(:is_changed_password, non_null(:boolean))
   end
 
   object :change_password_payload do

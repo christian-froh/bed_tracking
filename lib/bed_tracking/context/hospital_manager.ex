@@ -23,7 +23,7 @@ defmodule BedTracking.Context.HospitalManager do
          {:ok, :verified} <- verify_password(hospital_manager, password),
          {:ok, _updated_hospital_manager} <- update_last_login(hospital_manager),
          {:ok, token} <- Context.Authentication.create_token(hospital_manager.id) do
-      {:ok, token}
+      {:ok, %{token: token, is_changed_password: hospital_manager.is_changed_password}}
     end
   end
 

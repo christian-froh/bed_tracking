@@ -7,6 +7,7 @@ defmodule BedTracking.Repo.HospitalManager do
     field(:username, :string)
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
+    field(:is_changed_password, :boolean, default: false)
     field(:firstname, :string)
     field(:lastname, :string)
     field(:phone_number, :string)
@@ -34,6 +35,7 @@ defmodule BedTracking.Repo.HospitalManager do
     |> cast(params, [:password])
     |> validate_required([:password])
     |> set_password_hash()
+    |> set_field_to(:is_changed_password, true)
   end
 
   defp set_password_hash(changeset) do
@@ -44,5 +46,9 @@ defmodule BedTracking.Repo.HospitalManager do
       _ ->
         changeset
     end
+  end
+
+  defp set_field_to(changeset, field, value) do
+    put_change(changeset, field, value)
   end
 end

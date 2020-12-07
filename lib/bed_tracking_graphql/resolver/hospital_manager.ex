@@ -26,8 +26,8 @@ defmodule BedTrackingGraphql.Resolver.HospitalManager do
   end
 
   def login(%{input: %{username: username, password: password}}, _info) do
-    with {:ok, token} <- Context.HospitalManager.login(username, password) do
-      {:ok, %{token: token}}
+    with {:ok, %{token: token, is_changed_password: is_changed_password}} <- Context.HospitalManager.login(username, password) do
+      {:ok, %{token: token, is_changed_password: is_changed_password}}
     end
   end
 
