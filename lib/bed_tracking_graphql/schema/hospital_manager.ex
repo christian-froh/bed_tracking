@@ -46,10 +46,9 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
   input_object :create_hospital_manager_input do
     field(:username, non_null(:string))
     field(:password, non_null(:string))
-    field(:firstname, non_null(:string))
-    field(:lastname, non_null(:string))
+    field(:firstname, :string)
+    field(:lastname, :string)
     field(:phone_number, :string)
-    field(:hospital_id, non_null(:id))
   end
 
   input_object :update_hospital_manager_input do

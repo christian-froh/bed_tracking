@@ -9,11 +9,10 @@ defmodule BedTrackingGraphql.Resolver.HospitalManager do
     end
   end
 
-  def create(
-        %{input: %{username: _, password: _, firstname: _, lastname: _, hospital_id: _} = params},
-        info
-      ) do
-    with {:ok, _current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+  def create(%{input: %{username: _, password: _} = params}, info) do
+    with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+         {:ok, true} <- is_admin(current_hospital_manager),
+         {:ok, params} <- build_params(params, current_hospital_manager),
          {:ok, hospital_manager} <- Context.HospitalManager.create(params) do
       {:ok, %{hospital_manager: hospital_manager}}
     end
@@ -53,5 +52,10 @@ defmodule BedTrackingGraphql.Resolver.HospitalManager do
     else
       {:error, %Error.AuthenticationError{}}
     end
+  end
+
+  defp build_params(params, current_hospital_manager) do
+    params = Map.merge(params, %{hospital_id: current_hospital_manager.hospital_id})
+    {:ok, params}
   end
 end

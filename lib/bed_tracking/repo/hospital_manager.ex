@@ -22,7 +22,8 @@ defmodule BedTracking.Repo.HospitalManager do
   def create_changeset(struct, params) do
     struct
     |> cast(params, [:username, :password, :firstname, :lastname, :phone_number, :hospital_id])
-    |> validate_required([:username, :password, :firstname, :lastname, :hospital_id])
+    |> validate_required([:username, :password, :hospital_id])
+    |> set_field_to(:is_changed_password, false)
     |> set_password_hash()
   end
 
