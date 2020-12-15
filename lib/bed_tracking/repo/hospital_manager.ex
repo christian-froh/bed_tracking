@@ -24,6 +24,7 @@ defmodule BedTracking.Repo.HospitalManager do
     struct
     |> cast(params, [:username, :password, :firstname, :lastname, :phone_number, :hospital_id])
     |> validate_required([:username, :password, :hospital_id])
+    |> downcase_username()
     |> set_field_to(:is_changed_password, false)
     |> set_password_hash()
   end
@@ -53,6 +54,16 @@ defmodule BedTracking.Repo.HospitalManager do
     |> validate_required([:password])
     |> set_password_hash()
     |> set_field_to(:is_changed_password, false)
+  end
+
+  defp downcase_username(changeset) do
+    case changeset do
+      %Ecto.Changeset{changes: %{username: username}} ->
+        put_change(changeset, :username, String.downcase(username))
+
+      _ ->
+        changeset
+    end
   end
 
   defp set_password_hash(changeset) do
