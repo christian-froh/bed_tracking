@@ -8,6 +8,8 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:firstname, non_null(:string))
     field(:lastname, non_null(:string))
     field(:phone_number, :string)
+    field(:is_admin, :boolean)
+    field(:last_login_at, :datetime)
 
     field :hospital, non_null(:hospital) do
       resolve(dataloader(Repo))
@@ -36,6 +38,10 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:token, non_null(:string))
   end
 
+  object :reset_password_payload do
+    field(:success, non_null(:boolean))
+  end
+
   ### INPUTS ###
   input_object :create_hospital_manager_input do
     field(:username, non_null(:string))
@@ -60,6 +66,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
 
   input_object :change_password_input do
     field(:old_password, non_null(:string))
+    field(:new_password, non_null(:string))
+  end
+
+  input_object :reset_password_input do
+    field(:hospital_manager_id, non_null(:id))
     field(:new_password, non_null(:string))
   end
 
@@ -90,6 +101,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field :change_password, type: :change_password_payload do
       arg(:input, non_null(:change_password_input))
       resolve(&Resolver.HospitalManager.change_password/2)
+    end
+
+    field :reset_password, type: :reset_password_payload do
+      arg(:input, non_null(:reset_password_input))
+      resolve(&Resolver.HospitalManager.reset_password/2)
     end
   end
 end

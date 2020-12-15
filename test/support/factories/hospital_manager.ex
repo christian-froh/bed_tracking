@@ -10,6 +10,7 @@ defmodule BedTracking.Factory.HospitalManager do
           lastname: "Froh",
           phone_number: "+491748556633",
           last_login_at: DateTime.utc_now(),
+          is_admin: false,
           # 123123123
           password_hash: "$2b$12$kgEGbWoo1pJFrmY5ssvdgePt8YY2gKwj.2N7tmCNOWcieY7gFHT.O",
           hospital: hospital

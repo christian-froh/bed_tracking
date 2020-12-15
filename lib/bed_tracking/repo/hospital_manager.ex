@@ -8,6 +8,7 @@ defmodule BedTracking.Repo.HospitalManager do
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
     field(:is_changed_password, :boolean, default: false)
+    field(:is_admin, :boolean, default: false)
     field(:firstname, :string)
     field(:lastname, :string)
     field(:phone_number, :string)
@@ -36,6 +37,14 @@ defmodule BedTracking.Repo.HospitalManager do
     |> validate_required([:password])
     |> set_password_hash()
     |> set_field_to(:is_changed_password, true)
+  end
+
+  def reset_password_changeset(struct, params) do
+    struct
+    |> cast(params, [:password])
+    |> validate_required([:password])
+    |> set_password_hash()
+    |> set_field_to(:is_changed_password, false)
   end
 
   defp set_password_hash(changeset) do

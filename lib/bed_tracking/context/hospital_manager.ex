@@ -29,9 +29,16 @@ defmodule BedTracking.Context.HospitalManager do
 
   def change_password(old_password, new_password, hospital_manager) do
     with {:ok, :verified} <- verify_old_password(old_password, hospital_manager),
-         {:ok, hospital_manager} <- change_password(new_password, hospital_manager),
+         {:ok, hospital_manager} <- do_change_password(new_password, hospital_manager),
          {:ok, token} <- Context.Authentication.create_token(hospital_manager.id) do
       {:ok, token}
+    end
+  end
+
+  def reset_password(hospital_manager_id, new_password) do
+    with {:ok, hospital_manager} <- get_hospital_manager(hospital_manager_id),
+         {:ok, _hospital_manager} <- do_reset_password(new_password, hospital_manager) do
+      {:ok, true}
     end
   end
 
@@ -97,11 +104,19 @@ defmodule BedTracking.Context.HospitalManager do
     end
   end
 
-  defp change_password(new_password, hospital_manager) do
+  defp do_change_password(new_password, hospital_manager) do
     params = %{password: new_password}
 
     hospital_manager
     |> HospitalManager.change_password_changeset(params)
+    |> Repo.update()
+  end
+
+  defp do_reset_password(new_password, hospital_manager) do
+    params = %{password: new_password}
+
+    hospital_manager
+    |> HospitalManager.reset_password_changeset(params)
     |> Repo.update()
   end
 end
