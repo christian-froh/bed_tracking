@@ -17,6 +17,14 @@ defmodule BedTracking.Context.HospitalManager do
     end
   end
 
+  def delete(id, current_hospital_manager) do
+    with {:ok, hospital_manager} <- get_hospital_manager(id),
+         {:ok, true} <- can_delete?(hospital_manager, current_hospital_manager),
+         {:ok, _} <- delete_hospital_manager(hospital_manager) do
+      {:ok, true}
+    end
+  end
+
   def login(username, password) do
     with username <- String.downcase(username),
          {:ok, hospital_manager} <- fetch_by_username(username),
@@ -57,6 +65,7 @@ defmodule BedTracking.Context.HospitalManager do
   defp fetch_by_username(username) do
     HospitalManager
     |> Context.HospitalManager.Query.where_username(username)
+    |> Context.HospitalManager.Query.where_not_deleted()
     |> Repo.one()
     |> case do
       nil ->
@@ -80,6 +89,14 @@ defmodule BedTracking.Context.HospitalManager do
 
     hospital_manager
     |> HospitalManager.update_changeset(params)
+    |> Repo.update()
+  end
+
+  defp delete_hospital_manager(hospital_manager) do
+    params = %{deleted_at: DateTime.utc_now()}
+
+    hospital_manager
+    |> HospitalManager.delete_changeset(params)
     |> Repo.update()
   end
 
@@ -118,5 +135,13 @@ defmodule BedTracking.Context.HospitalManager do
     hospital_manager
     |> HospitalManager.reset_password_changeset(params)
     |> Repo.update()
+  end
+
+  defp can_delete?(hospital_manager, current_hospital_manager) do
+    if current_hospital_manager.hospital_id == hospital_manager.hospital_id do
+      {:ok, true}
+    else
+      {:error, "not belong to hospital"}
+    end
   end
 end

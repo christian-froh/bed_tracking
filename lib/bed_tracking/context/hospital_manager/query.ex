@@ -6,6 +6,11 @@ defmodule BedTracking.Context.HospitalManager.Query do
       where: hm.username == ^username
   end
 
+  def where_not_deleted(query) do
+    from hm in query,
+      where: is_nil(hm.deleted_at)
+  end
+
   def with_hospital(query) do
     from hm in query,
       preload: [:hospital]

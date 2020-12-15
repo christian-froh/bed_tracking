@@ -13,7 +13,7 @@ defmodule BedTracking.Repo.Hospital do
     field(:address, :string)
 
     has_many(:wards, Ward)
-    has_many(:hospital_managers, HospitalManager)
+    has_many(:hospital_managers, HospitalManager, where: [deleted_at: nil])
     has_many(:beds, Bed)
     has_many(:discharges, Discharge)
 

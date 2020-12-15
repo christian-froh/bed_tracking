@@ -89,6 +89,27 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
                }
              ] = response["errors"]
     end
+
+    test "returns error when hospital mamager got deleted", %{hospital: hospital} do
+      hospital_manager = insert(:hospital_manager, deleted_at: DateTime.utc_now(), hospital: hospital)
+
+      response =
+        graphql_public_query(
+          query: @query,
+          variables: %{input: %{username: hospital_manager.username, password: @password}}
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      assert [
+               %{
+                 "errorCode" => "AuthenticationError",
+                 "message" => "Authentication failed",
+                 "path" => ["loginHospitalManager"]
+               }
+             ] = response["errors"]
+    end
   end
 
   describe "change_password" do

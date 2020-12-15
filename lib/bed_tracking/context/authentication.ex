@@ -42,6 +42,7 @@ defmodule BedTracking.Context.Authentication do
   defp get_hospital_manager(hospital_manager_id) do
     HospitalManager
     |> Context.HospitalManager.Query.where_id(hospital_manager_id)
+    |> Context.HospitalManager.Query.where_not_deleted()
     |> Context.HospitalManager.Query.with_hospital()
     |> Repo.one()
     |> case do

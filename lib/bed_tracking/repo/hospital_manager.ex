@@ -13,6 +13,7 @@ defmodule BedTracking.Repo.HospitalManager do
     field(:lastname, :string)
     field(:phone_number, :string)
     field(:last_login_at, :utc_datetime)
+    field(:deleted_at, :utc_datetime)
 
     belongs_to(:hospital, Hospital)
 
@@ -30,6 +31,12 @@ defmodule BedTracking.Repo.HospitalManager do
   def update_changeset(struct, params) do
     struct
     |> cast(params, [:firstname, :lastname, :phone_number, :last_login_at])
+  end
+
+  def delete_changeset(struct, params) do
+    struct
+    |> cast(params, [:deleted_at])
+    |> validate_required([:deleted_at])
   end
 
   def change_password_changeset(struct, params) do

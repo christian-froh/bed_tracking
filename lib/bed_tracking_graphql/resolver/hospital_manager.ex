@@ -19,9 +19,18 @@ defmodule BedTrackingGraphql.Resolver.HospitalManager do
   end
 
   def update(%{input: %{id: id} = params}, info) do
-    with {:ok, _current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+    with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+         {:ok, true} <- is_admin(current_hospital_manager),
          {:ok, hospital_manager} <- Context.HospitalManager.update(id, params) do
       {:ok, %{hospital_manager: hospital_manager}}
+    end
+  end
+
+  def delete(%{input: %{id: id}}, info) do
+    with {:ok, current_hospital_manager} <- Context.Authentication.current_hospital_manager(info),
+         {:ok, true} <- is_admin(current_hospital_manager),
+         {:ok, success} <- Context.HospitalManager.delete(id, current_hospital_manager) do
+      {:ok, %{success: success}}
     end
   end
 

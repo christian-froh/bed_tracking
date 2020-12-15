@@ -29,6 +29,10 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:hospital_manager, non_null(:hospital_manager))
   end
 
+  object :delete_hospital_manager_payload do
+    field(:success, non_null(:boolean))
+  end
+
   object :login_hospital_manager_payload do
     field(:token, non_null(:string))
     field(:is_changed_password, non_null(:boolean))
@@ -56,6 +60,10 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field(:firstname, :string)
     field(:lastname, :string)
     field(:phone_number, :string)
+  end
+
+  input_object :delete_hospital_manager_input do
+    field(:id, non_null(:id))
   end
 
   input_object :login_hospital_manager_input do
@@ -90,6 +98,11 @@ defmodule BedTrackingGraphql.Schema.HospitalManager do
     field :update_hospital_manager, type: :update_hospital_manager_payload do
       arg(:input, non_null(:update_hospital_manager_input))
       resolve(&Resolver.HospitalManager.update/2)
+    end
+
+    field :delete_hospital_manager, type: :delete_hospital_manager_payload do
+      arg(:input, non_null(:delete_hospital_manager_input))
+      resolve(&Resolver.HospitalManager.delete/2)
     end
 
     field :login_hospital_manager, type: :login_hospital_manager_payload do

@@ -61,6 +61,10 @@ defmodule BedTrackingGraphql.HospitalTest do
               id
             }
           }
+
+          hospitalManagers {
+            id
+          }
         }
       }
     }
@@ -163,6 +167,32 @@ defmodule BedTrackingGraphql.HospitalTest do
       {:ok, datetime, 0} = DateTime.from_iso8601(ward_amber_result["lastUpdatedAtOfWardOrBeds"])
       assert datetime == ward_amber_bed2.updated_at
       assert ward_amber_result["lastUpdatedByHospitalManagerOfWardOrBeds"]["id"] == hospital_manager.id
+    end
+
+    test "returns hospital managers", %{token: token, hospital: hospital} do
+      insert(:hospital_manager, hospital: hospital)
+
+      response =
+        graphql_query(query: @query, token: token)
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      hospital_managers = response["data"]["getHospital"]["hospital"]["hospitalManagers"]
+      assert length(hospital_managers) == 2
+    end
+
+    test "doesnt return deleted hospital managers", %{token: token, hospital: hospital} do
+      insert(:hospital_manager, deleted_at: DateTime.utc_now(), hospital: hospital)
+
+      response =
+        graphql_query(query: @query, token: token)
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      hospital_managers = response["data"]["getHospital"]["hospital"]["hospitalManagers"]
+      assert length(hospital_managers) == 1
     end
   end
 end
