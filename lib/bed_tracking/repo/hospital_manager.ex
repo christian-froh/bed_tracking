@@ -27,6 +27,7 @@ defmodule BedTracking.Repo.HospitalManager do
     |> downcase_username()
     |> set_field_to(:is_changed_password, false)
     |> set_password_hash()
+    |> unique_constraint(:username)
   end
 
   def update_changeset(struct, params) do

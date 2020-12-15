@@ -54,6 +54,13 @@ defmodule BedTracking.Context.HospitalManager do
     %HospitalManager{}
     |> HospitalManager.create_changeset(params)
     |> Repo.insert()
+    |> case do
+      {:error, %Ecto.Changeset{errors: [username: {_, [constraint: :unique, constraint_name: "hospital_managers_username_index"]}]}} ->
+        {:error, %Error.UsernameAlreadyInUseError{}}
+
+      other ->
+        other
+    end
   end
 
   defp update_hospital_manager(hospital_manager, params) do

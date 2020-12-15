@@ -231,4 +231,65 @@ defmodule BedTrackingGraphql.HospitalManagerTest do
              ] = response["errors"]
     end
   end
+
+  describe "create_hospital_maanager" do
+    setup do
+      hospital = insert(:hospital)
+      hospital_manager_admin = insert(:hospital_manager, is_admin: true, hospital: hospital)
+
+      {:ok, %{token: token}} = BedTracking.Context.HospitalManager.login(hospital_manager_admin.username, @password)
+
+      %{hospital_manager_admin: hospital_manager_admin, hospital: hospital, token: token}
+    end
+
+    @query """
+    mutation createHospitalManager($input: CreateHospitalManagerInput!) {
+      createHospitalManager(input: $input) {
+        hospitalManager {
+          id
+          username
+        }
+      }
+    }
+    """
+
+    test "admin can create hospital managers", %{token: token} do
+      response =
+        graphql_query(
+          query: @query,
+          variables: %{input: %{username: "test_username", password: "test_password"}},
+          token: token
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      assert %{"id" => id, "username" => "test_username"} = response["data"]["createHospitalManager"]["hospitalManager"]
+
+      reloaded_hospital_manager = BedTracking.Repo.get(BedTracking.Repo.HospitalManager, id)
+      assert reloaded_hospital_manager.is_changed_password == false
+    end
+
+    test "returns error when username already exist", %{token: token, hospital: hospital} do
+      insert(:hospital_manager, username: "test_username", hospital: hospital)
+
+      response =
+        graphql_query(
+          query: @query,
+          variables: %{input: %{username: "test_username", password: "test_password"}},
+          token: token
+        )
+        |> BedTrackingWeb.Endpoint.call([])
+        |> Map.get(:resp_body)
+        |> Jason.decode!()
+
+      assert [
+               %{
+                 "errorCode" => "UsernameAlreadyInUseError",
+                 "message" => "Username already in use",
+                 "path" => ["createHospitalManager"]
+               }
+             ] = response["errors"]
+    end
+  end
 end
